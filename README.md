@@ -6,6 +6,9 @@ This is a material in Golang to be presented **"face-to-face"** in a **"hand in 
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/gocompilation#installation)
 
+There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
+Well that site here [Play Golang] (https://play.golang.org) we can play Golang online.
+
 Soon below some channels that I participate and can find me online.
 
 #### Telegram:
@@ -160,7 +163,7 @@ Soon below some channels that I participate and can find me online.
 - [Exercise six](#Exercise-six)
 
 
-### O verview
+### Overview
 
 Go is a powerful language when it comes to competition and high performance, with a clean and efficient architecture. It grows year after 
 year and every day the communities grow even more.
@@ -175,7 +178,6 @@ Go is a compiled, competing, strong and statically typed programming language.
 It is a "General Use" language that can be used to solve various problems and in different areas.
 Problems involving competition, web applications, high performance applications, development of APIs, communications sockets etc ... 
 Is where language is increasingly becoming prominent in the market and in communities.
-
 
 ### Installation 
 
