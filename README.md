@@ -1,9 +1,9 @@
 # Golang Workshop DevOps
 
-Workshop material for 8 hours using golang
+Workshop material for **8 hours** using **Golang**
 
-This is a material in Golang to be presented face-to-face in a "hand in hand" Workshop that will be done in 8 hours.
-The content and references used are from the [Golang Official Site] website (https://golang.org) and the material being developed 
+This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
+The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/gocompilation#installation)
 
 Soon below some channels that I participate and can find me online.
@@ -42,19 +42,23 @@ Soon below some channels that I participate and can find me online.
   - [go mod vendor](#go-mod-vendor)
   - [GO111MODULE](#go111module)
 
-## Lab 02 Types with Golang
+## Lab 02 Println and Types with Golang and For
+- [Println](#println)
+- [Types](#types)
+  - [Pointer Types](#pointer-types)
+  - [Array Types](#array-types)
+  - [Slice Types](#slice-types)
+  - [Struct Types](#struct-types)
+  - [Map Types](#map-types)
+  - [Channel Types](#channel-types)
+  - [Blank identifier](#blank-identifier)
+  - [Interface Types](#interface-types)
+	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
+	 - [Interface as type](#interface-as-type)
+- [For Break Range If else](#for-break-range-if-else)
 
-- [Types](#Types)
-	- [Pointer Types](#pointer-types)
-	- [Array Types](#array-types)
-	- [Slice Types](#slice-types)
-	- [Struct Types](#struct-types)
-	- [Map Types](#map-types)
-	- [Channel Types](#channel-types)
-	- [Blank identifier](#blank-identifier)
-	- [Interface Types](#interface-types)
-		- [Here's an interface as a method](#heres-an-interface-as-a-method)
-		- [Interface as type](#interface-as-type)
+- [Exercise one](#Exercise-one)
+
 - [Erros](#erros)
   - [introduction](#)
     - [How Error Control Works](#)
@@ -73,6 +77,7 @@ Soon below some channels that I participate and can find me online.
     - [Asynchronous Functions](#asynchromous)
 - [Defer](#defer)
 
+- [Exercise two](#Exercise-two)
 
 ## Lab 03 Json with Golang
 
@@ -88,6 +93,8 @@ Soon below some channels that I participate and can find me online.
     - [Yaml](#jsonyaml)
     - [Gcfg](#jsongcfg)
 
+- [Exercise three](#Exercise-three)
+
 ## Lab 04 Goroutine the power
 
 - [Goroutine](#)
@@ -102,6 +109,8 @@ Soon below some channels that I participate and can find me online.
     - [Ticker](#)
     - [Singleton Connect Thread Safe](#)
 
+- [Exercise four](#Exercise-four)
+
 ## Lab 05 Using Golang to create Command Line programs
 
 - [Golang Cli](#golang-cli)
@@ -115,6 +124,8 @@ Soon below some channels that I participate and can find me online.
     - [Stdout](#stdout)
     - [Stdin](#stdin)
     - [Parse Yaml](#parse-yaml)
+
+- [Exercise five](#Exercise-five)
 
 ## Lab 06 building apis with net/http
 
@@ -145,3 +156,5 @@ Soon below some channels that I participate and can find me online.
     - [http,Post](#)
     - [http.NewRequest](#)
     - [Context.WithCancel](#)
+
+- [Exercise six](#Exercise-six)
