@@ -158,3 +158,240 @@ Soon below some channels that I participate and can find me online.
     - [Context.WithCancel](#)
 
 - [Exercise six](#Exercise-six)
+
+
+### O verview
+
+Go is a powerful language when it comes to competition and high performance, with a clean and efficient architecture. It grows year after 
+year and every day the communities grow even more.
+
+Some paradigms have been broken to make it a high performance language, where competition is one of its strengths. Go makes it easy to 
+create programs that take full advantage of multicore and networked machines, while the new type system allows you to build flexible and modular programs.
+
+It is a fast and statically compiled language that looks like a dynamically interpreted language. This feature Golang becomes 
+a unique language as the subject is web.
+
+Go is a compiled, competing, strong and statically typed programming language.
+It is a "General Use" language that can be used to solve various problems and in different areas.
+Problems involving competition, web applications, high performance applications, development of APIs, communications sockets etc ... 
+Is where language is increasingly becoming prominent in the market and in communities.
+
+
+### Installation 
+
+
+We will download the file, unpack it and install it in /usr/local/go, if we have golang already installed in the machine we will have to remove the existing one to leave our installation as unique.
+Let's create our directory in our workspace and test to see if everything went well
+
+#### Linux
+
+```bash
+$ sudo rm -rf /usr/local/go
+$ wget https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+```
+
+#### $GOPATH
+
+$GOPATH is the golang in your $HOME, this is necessary for your projects to use pkg and build properly. This was mandatory for all versions before version 1.11. The cool thing is that from now on we will not have to create projects in $GOPATH, we can create in any other directory that is not in $GOPATH.
+
+Here is the link to the versioning proposal [Proposal: Versioned Go Modules](https://go.googlesource.com/proposal/+/master/design/24301-versioned-go.md/) or [Go 1.11 Modules](https://github.com/golang/go/wiki/Modules/)
+
+We'll detail how to work with **go mod**, it was one of the best experiences I had for versioning projects using Golang.
+
+Let's set up our environment to run Go. Add **/usr/local/go/bin** to the PATH environment variable. You can do this by adding this line to your **/etc/profile** (for a system-wide installation) or **$HOME/.profile**. 
+
+```bash
+$ export PATH=$PATH:/usr/local/go/bin
+```
+
+**Note**: changes made to a profile file may not apply until the next time you log into your computer. To apply the changes immediately, just run the shell commands directly or execute them from the profile using a command such as source $HOME/.profile. 
+
+```bash
+$ echo "export GOPATH=$HOME/go" >> $HOME/.profile
+$ echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
+$ echo "export PATH=$PATH:$GOPATH/bin" >> $HOME/.profile
+```
+
+#### Test your installation
+
+Let's run go version to see if everything is correct.
+
+```bash
+$ go version
+go version go1.11.4 linux/amd64
+```
+
+Check that Go is installed correctly by setting up a workspace and building a simple program, as follows. 
+
+Create your **workspace** directory, $HOME/go. (If you'd like to use a different directory, you will need to set the $GOPATH environment variable.)
+
+Next, make the directory src/hello inside your workspace, and in that directory create a file named hello.go that looks like:
+
+#### Workspace
+
+Workspace is our place of work, where we will organize our directories with our projects. As shown above, until **Go version 1.11** we were forced to do everything under the Workspace. $GOPATH Down Projects.
+
+**Example hello**
+
+```bash
+$ export GOPATH=$HOME/go
+$ mkdir $HOME/go
+$ mkdir $HOME/go/src
+$ mkdir $HOME/go/src/hello
+$ vim $HOME/go/src/hello/hello.go
+```
+```bash
+$GOPATH/
+  |-src
+    |-hello
+      |-hello.go
+```
+
+**Example Project**
+
+```bash
+$ export GOPATH=$HOME/go
+$ mkdir $HOME/go/src/project1
+$ mkdir $HOME/go/src/project1/my-pkg
+$ mkdir $HOME/go/src/project1/my-cmd
+$ mkdir $HOME/go/src/project1/my-vendor
+$ mkdir $HOME/go/src/project1/my-logs
+$ mkdir $HOME/go/src/project1/my-models
+$ mkdir $HOME/go/src/project1/my-repo
+$ mkdir $HOME/go/src/project1/my-handler
+```
+
+```bash
+$GOPATH/
+  |-src
+    |-github.com/user/project1/
+        |-cmd (of project1)
+          |-main.go
+        |-vendor
+        |-logs
+        |-models
+        |-repo
+        |-handler
+    |-github.com/user/project2/
+      ....
+      ....
+```
+
+The $GOPATH environment variable tells the Go tool where your workspace is located. 
+
+```go
+$ go get github.com/user/project1
+```
+The **go get** command fetches source repositories from the internet and places them in your workspace.
+Package paths matter to the Go tool. Using "github.com/..." means the tool knows how to fetch your repository. 
+
+In the scenario above everything would have to stay in our **$GOPATH** so that our projects worked correctly.
+
+#### Outside $GOPATH
+
+Now we can do our projects without being in $GOPATH, we can, for example, do it in any directory.
+
+**Project outside GOPATH**
+
+```bash
+$ export GOPATH=$HOME/go
+$ mkdir $HOME/2019/project1
+$ mkdir $HOME/2019/project1/my-pkg
+$ mkdir $HOME/2019/project1/my-cmd
+$ mkdir $HOME/2019/project1/my-logs
+$ mkdir $HOME/2019/project1/my-models
+$ mkdir $HOME/2019/project1/my-repo
+$ mkdir $HOME/2019/project1/my-handler
+```
+```bash
+$HOME/
+  |-2019
+    |-github.com/user/project1/
+      |-cmd
+        |-main.go
+      |-vendor
+      |-logs
+      |-models
+      |-repo
+      |-handler
+```
+
+We can put our project in any directory now.
+
+```bash
+$HOME/
+  |-any-directory
+    |-github.com/user/project1/
+      |-cmd
+        |-main.go
+      |-vendor
+      |-logs
+      |-models
+      |-repo
+      |-handler
+```
+
+For the above scenario, we will have to use **go mod** in our project so that all external packages can work correctly, in this way we will be able to manage them correctly and version.
+More information can be found here: [Wiki Go Modules](https://github.com/golang/go/wiki/Modules)
+
+```go
+$ go mod init github.com/user/project1
+```
+**Note**: 
+When we use go mod in $GOPATH we will have to enable using GO111MODULE=on, so that it can work within the $GOPATH structure.
+So our program can compile successfully.
+
+```go
+$ GO111MODULE=on go run cmd/main.go
+$ GO111MODULE=on go build -o project1 cmd/main.go
+```
+
+#### Func Main
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+  fmt.Printf("hello, Gophers\n")
+}
+
+```
+
+Then **build** it with the **go tool**: 
+
+```go
+$ cd $HOME/go/src/hello
+$ go build
+```
+
+The command above will build an executable named hello in the directory alongside your source code. Execute it to see the greeting: 
+
+```go
+$ ./hello
+hello, Gophers
+```
+
+Check also the command **run** it with the go: 
+
+```go
+$ go run hello.go
+hello, Gophers
+```
+
+If you see the "hello, Gophers" message then your Go installation **is working**.
+
+You can run **go install** to install the binary into your workspace's **bin** directory or **go clean -i** to remove it.
+
+```go
+$ pwd
+$ $HOME/go/src/hello
+$ cd $HOME/go/src/hello
+$ go install
+$ ls -lhs $HOME/go/bin
+-rwxrwxr-x 1 user user 2,9M nov  8 03:11 hello
+$ go clean -i 
+$ ls -lhs $HOME/go/bin
+```
