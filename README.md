@@ -338,9 +338,11 @@ $HOME/
 For the above scenario, we will have to use **go mod** in our project so that all external packages can work correctly, in this way we will be able to manage them correctly and version.
 More information can be found here: [Wiki Go Modules](https://github.com/golang/go/wiki/Modules)
 
+Practical example of how you will proceed:
 ```go
 $ go mod init github.com/user/project1
 ```
+
 **Note**: 
 When we use go mod in $GOPATH we will have to enable using GO111MODULE=on, so that it can work within the $GOPATH structure.
 So our program can compile successfully.
@@ -349,6 +351,119 @@ So our program can compile successfully.
 $ GO111MODULE=on go run cmd/main.go
 $ GO111MODULE=on go build -o project1 cmd/main.go
 ```
+
+#### Go run
+---
+
+Usage:
+```bash
+go run [build flags] [-exec xprog] package [arguments...]
+```
+
+Run compiles and runs the named main Go package. Typically the package is specified as a list of .go source files, but it may also be an import path, file system path, or pattern matching a single known package, as in 'go run .' or 'go run my/cmd'.
+
+By default, 'go run' runs the compiled binary directly: 'a.out arguments...'. If the -exec flag is given, 'go run' invokes the binary using xprog: 
+
+If the -exec flag is not given, GOOS or GOARCH is different from the system default, and a program named go_$GOOS_$GOARCH_exec can be found on the current search path, 'go run' invokes the binary using that program, for example 'go_nacl_386_exec a.out arguments...'. This allows execution of cross-compiled programs when a simulator or other execution method is available.
+
+The exit status of Run is not the exit status of the compiled binary.
+
+For more about build flags, see 'go help build'. For more about specifying packages, see 'go help packages'.
+
+See below an example:
+
+```go
+// test println
+package main
+
+func main() {
+   println("Debugging my system with println")
+}
+```
+Go run:
+```bash
+go run println.go
+```
+
+Output:
+```bash
+Debugging my system with println
+```
+
+#### Go build
+---
+
+Build compiles the packages named by the import paths, along with their dependencies, but it does not install the results. 
+
+When compiling packages, build ignores files that end in '_test.go'.
+
+The -o flag, only allowed when compiling a single package, forces build to write the resulting executable or object to the named output file, instead of the default behavior described in the last two paragraphs.
+
+The -i flag installs the packages that are dependencies of the target.
+
+```go
+$ go build [-o output] [-i] [build flags] [packages]
+```
+
+See an example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+  fmt.Println("Workshop Golang 2019.")
+}
+```
+
+Output:
+```bash
+Workshop Golang 2019.
+```
+
+Normal compilation
+```go
+go build -o hello hello.go
+```
+
+Output:
+```bash
+$ ls -lh 
+-rwxrwxr-x 1 root root **1,9M** jan 18 12:42 hello
+-rw-rw-r-- 1 root root   75 jan 17 12:04 hello.go
+```
+
+Leaving the file smaller after compiling
+```go
+go build -ldflags="-s -w" hello.go
+```
+
+Output:
+```bash
+$ ls -lh 
+-rwxrwxr-x 1 root root **1,3M** jan 18 12:42 hello
+-rw-rw-r-- 1 root root   75 jan 17 12:04 hello.go
+```
+
+### Go Test
+---
+
+Test packages
+
+Usage:
+
+```go
+go test [build/test flags] [packages] [build/test flags & test binary flags]
+```
+
+Go **test** automates testing the packages named by the import paths. It prints a summary of the test results in the format: 
+
+```bash
+ok   archive/tar   0.011s
+FAIL archive/zip   0.022s
+ok   compress/gzip 0.033s
+```
+
 
 #### Func Main
 
@@ -360,7 +475,6 @@ import "fmt"
 func main() {
   fmt.Printf("hello, Gophers\n")
 }
-
 ```
 
 Then **build** it with the **go tool**: 
@@ -368,6 +482,12 @@ Then **build** it with the **go tool**:
 ```go
 $ cd $HOME/go/src/hello
 $ go build
+```
+
+Or we can compile like this:
+```go
+$ cd $HOME/go/src/hello
+$ go build -o hello hello.go
 ```
 
 The command above will build an executable named hello in the directory alongside your source code. Execute it to see the greeting: 
@@ -384,10 +504,11 @@ $ go run hello.go
 hello, Gophers
 ```
 
-If you see the "hello, Gophers" message then your Go installation **is working**.
+If you see the **"hello, Gophers"** message then your Go installation **is working**.
 
 You can run **go install** to install the binary into your workspace's **bin** directory or **go clean -i** to remove it.
 
+Example: go install
 ```go
 $ pwd
 $ $HOME/go/src/hello
@@ -395,6 +516,11 @@ $ cd $HOME/go/src/hello
 $ go install
 $ ls -lhs $HOME/go/bin
 -rwxrwxr-x 1 user user 2,9M nov  8 03:11 hello
+```
+
+Example: go clean -i
+
+```go
 $ go clean -i 
 $ ls -lhs $HOME/go/bin
 ```
