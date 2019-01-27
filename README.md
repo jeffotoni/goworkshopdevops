@@ -4,7 +4,7 @@ Workshop material for **8 hours** using **Golang**
 
 This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
-which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/gocompilation#installation)
+which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
 Well that site here [Play Golang](https://play.golang.org) we can play Golang online.
@@ -528,12 +528,12 @@ In this example we will make an examination as it would be in our projects.
 
 In this program I will pass parameter at compile time or in our execution to facilitate and also serve as an example the use of **"ldflags"** that we can use in both **go run -ldflags ** and **go build -ldflags**
 
-From a check in our code below:
+From a check in our code below / main.go:
 ```go
 import "strconv"
 
 import (
-  "github.com/jeffotoni/gocompilation/examples/tests/pkg/math"
+  "github.com/jeffotoni/goworkshopdevops/examples/tests/pkg/math"
 )
 
 var (
@@ -549,12 +549,6 @@ func init() {
 func main() {
   println(math.Sum(xi, yi))
 }
-```
-
-For this to work we will need to add in our go mod init our github repository as I do here
-
-```bash
-go mod init github.com/jeffotoni/gocompilation/examples/tests/pkg
 ```
 
 Now we have a Sum function in a pkg that we create in **pkg/math/sum.go**
@@ -623,7 +617,7 @@ Output:
         sum_test.go:29: Sum() = 16, want 15
 FAIL
 exit status 1
-FAIL  github.com/jeffotoni/gocompilation/examples/tests/pkg/pkg/math  0.001s
+FAIL  github.com/jeffotoni/goworkshopdevops/examples/tests/pkg/pkg/math  0.001s
 ```
 
 It converts to json the output of the tests
@@ -632,7 +626,48 @@ It converts to json the output of the tests
 $ go test -v -json
 ```
 
-check your output on your terminal screen
+check your output on your terminal screen to view json output.
+
+---
+
+Now that we've saved our pkg / math / sum.go let's do a main.go by making the call in this packet.
+But first let's run go mod to manage our packages and versions correctly.
+
+Check the command below:
+```bash
+$ go mod init github.com/jeffotoni/goworkshopdevops/examples/tests/pkg
+```
+
+Output:
+```bash
+go: finding github.com/jeffotoni/goworkshopdevops/examples/tests/pkg/math latest
+go: finding github.com/jeffotoni/goworkshopdevops/examples/tests latest
+go: finding github.com/jeffotoni/goworkshopdevops/examples latest
+go: finding github.com/jeffotoni/goworkshopdevops latest
+go: downloading github.com/jeffotoni/goworkshopdevops v0.0.0-20190127023912-a2fa53299867
+0
+```
+
+Now we can do **build** or **run** in our **main.go**.
+Let's run go run using the **"-ldflags"** flag to pass parameter to our code at compile time.
+
+```bash
+$ go run -ldflags "-X main.x=2 -X main.y=3" main.go
+```
+
+Output:
+```bash
+5
+```
+
+```bash
+$ go run -ldflags "-X main.x=7 -X main.y=3" main.go
+```
+
+Output:
+```bash
+10
+```
 
 #### Func Main
 
