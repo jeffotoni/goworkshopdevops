@@ -35,18 +35,17 @@ Soon below some channels that I participate and can find me online.
 	- [Install Docker to Golang](#install-docker-to-golang)
 	- [Compile your app inside the Docker container](#compile-your-app-inside-the-docker-container)
 	- [Cross-compile your app inside the Docker container](#cross-compile-your-app-inside-the-docker-container)
-
 - [Go commands](#go-commands)
   - [Go commands introduction](#go-commands-introduction)
   - [go run](#go-run) 
   - [go build](#go-build)
-  - [go get](#go-get)
-  - [go test](#go-test)
   - [go install](#go-install)
+  - [go get](#go-get)
   - [Go mod](#go-mod)
   - [go mod init](#gomodinit)
   - [go mod vendor](#go-mod-vendor)
   - [GO111MODULE](#go111module)
+  - [go test](#go-test)
 - [Func Main](#func-main)
 
 ## Lab 02 Println and Types with Golang and For
@@ -399,7 +398,8 @@ $ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.11.5 make
 If you need to compile your application for a platform other than linux/amd64 (such as windows/386):
 
 ```bash
-$ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=windows -e GOARCH=386 golang:1.11.5 go build -v
+$ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=windows \
+-e GOARCH=386 golang:1.11.5 go build -v
 ```
 
 ### Example main.go
@@ -436,6 +436,36 @@ Output:
 ```bash
 go version go1.11.5 linux/amd64
 ```
+
+### Go commands
+---
+
+### Go commands introduction
+
+In golang we have an arsenal to help us when it comes to compiling, testing, documenting, managing Profiling etc.
+
+```bash
+bug         start a bug report
+build       compile packages and dependencies
+clean       remove object files and cached files
+doc         show documentation for package or symbol
+env         print Go environment information
+fix         update packages to use new APIs
+fmt         gofmt (reformat) package sources
+generate    generate Go files by processing source
+get         download and install packages and dependencies
+install     compile and install packages and dependencies
+list        list packages or modules
+mod         module maintenance
+run         compile and run Go program
+test        test packages
+tool        run specified go tool
+version     print Go version
+vet         report likely mistakes in packages
+```
+
+Use "go help " for more information about a command.
+
 
 ### Go run
 ---
@@ -529,6 +559,60 @@ $ ls -lh
 -rwxrwxr-x 1 root root **1,3M** jan 18 12:42 hello
 -rw-rw-r-- 1 root root   75 jan 17 12:04 hello.go
 ```
+
+### Go Install
+---
+
+Install packages and dependencies
+
+Usage:
+```bash
+$ go install [-i] [build flags] [packages]
+```
+
+Install compiles and installs the packages named by the import paths.
+
+The **-i flag** installs the dependencies of the named packages as well.
+
+For more about the build flags, see 'go help build'. For more about specifying packages, see 'go help packages'.
+
+### Go Get
+---
+
+The **'go get'** command changes behavior depending on whether the go command is running in module-aware mode or legacy GOPATH mode. This help text, accessible as 'go help module-get' even in legacy GOPATH mode, describes 'go get' as it operates in module-aware mode.
+
+Usage:
+```bash
+$ go get [-d] [-m] [-u] [-v] [-insecure] [build flags] [packages]
+```
+
+Get downloads the packages named by the import paths, along with their dependencies. It then installs the named packages, like 'go install'.
+
+Look at the flags accepted below:
+```bash
+The -d flag instructs get to stop after downloading the packages; that is, it instructs get not to install the packages.
+
+The -f flag, valid only when -u is set, forces get -u not to verify that each package has been checked out from the source control repository implied by its import path. This can be useful if the source is a local fork of the original.
+
+The -fix flag instructs get to run the fix tool on the downloaded packages before resolving dependencies or building the code.
+
+The -insecure flag permits fetching from repositories and resolving custom domains using insecure schemes such as HTTP. Use with caution.
+
+The -t flag instructs get to also download the packages required to build the tests for the specified packages.
+
+The -u flag instructs get to use the network to update the named packages and their dependencies. By default, get uses the network to check out missing packages but does not use it to look for updates to existing packages.
+
+The -v flag enables verbose progress and debug output.
+```
+
+Examples:
+```bash
+$ go get -v github.com/guptarohit/asciigraph
+$ go get -u github.com/mxk/go-sqlite
+$ go get -v github.com/google/uuid
+$ go get -v github.com/sirupsen/logru
+```
+
 
 ### Go Test
 ---
