@@ -83,15 +83,15 @@ Soon below some channels that I participate and can find me online.
     - [How Error Control Works](#how-error-control-works)
     - [Errors.New](#errors-new)
     - [Custom Errors](#custom-errors)    
-    - [fmt.Errorf](#fmt-errorf)
+    - [fmt Errorf](#fmt-errorf)
 - [Functions](#functions)
-  - [introduction](#)
-    - [return multiple values](#returnmulti) 
-    - [Variadic Functions](#variadicfunc) 
-    - [functions as a parameter](#funcparameter) 
+  - [Introduction Function](#introduction-function)
+    - [Return multiple values](#return-multiple) 
+    - [Variadic Functions](#variadic-functions) 
+    - [functions as a parameter](#functions-as-a-parameter) 
     - [Closures](#closures)
     - [Recursion](#recursion)
-    - [Asynchronous Functions](#asynchromous)
+    - [Asynchronous Functions](#asynchromous-functions)
 - [Defer](#defer)
 
 - [Exercise one](#exercise-one)
@@ -2637,7 +2637,7 @@ MyFunc worked in line:  200
 MyFunc failed: 99 - can't work with it
 ```
 
-### fmt.Errorf
+### fmt Errorf
 
 ```go
 package main
@@ -2668,6 +2668,257 @@ Output:
 ```bash
 Area calculation failed, radius -80.00 is less than zero
 ```
+
+### Functions 
+---
+
+Declaring and Calling Functions in Golang. 
+In Golang, we declare a function using the func keyword. 
+A function has a name, a list of comma-separated input parameters along with their types, the result type(s), and a body. 
+The input parameters and return type(s) are optional for a function.
+
+Example of declaring and Calling Functions in Golang:
+```go
+func Sum(x float64, y float64) float64 {
+	return (x + y) / 2
+}
+```
+
+### Introduction Function
+
+Go requires explicit returns, i.e. it won’t automatically return the value of the last expression.
+When you have multiple consecutive parameters of the same type, you may omit the type name for the like-typed parameters up to the final parameter that declares the type.
+A function type denotes the set of all functions with the same parameter and result types. The value of an uninitialized variable of function type is nil. 
+
+Some possibilities:
+```bash
+func()
+func(x int) int
+func(a, _ int, z float32) bool
+func(a, b int, z float32) (bool)
+func(prefix string, values ...int)
+func(a, b int, z float64, opt ...interface{}) (success bool)
+func(int, int, float64) (float64, *[]int)
+func(n int) func(p *T)
+```
+
+```go
+package main
+
+func F1(name string) string {
+    return "Hello, " + name
+}
+
+func main() {
+
+    println(F1("@go_br"))
+}
+```
+
+Output:
+```bash
+Hello, @go_br
+```
+
+### Return multiple values
+
+Go has built-in support for multiple return values. This feature is used often in idiomatic Go, for example to return both result and error values from a function.
+
+```go
+package main
+
+import "fmt"
+
+// The `(int, int)` in this function signature shows that
+// the function returns 2 `int`s.
+func F1() (string, int, error) {
+    return "@go_br", 100, nil
+}
+
+func main() {
+
+    // Here we use the 2 different return values from the
+    // call with _multiple assignment_.
+    a, b, err := F1()
+    fmt.Println(a)
+    fmt.Println(b)
+    fmt.Println(err)
+
+    // If you only want a subset of the returned values,
+    // use the blank identifier `_`.
+    a, _, err = F1()
+    fmt.Println(a)
+    fmt.Println(err)
+}
+```
+
+Output:
+```bash
+@go_br
+100
+<nil>
+@go_br
+<nil>
+```
+
+### Variadic Functions
+
+Variadic functions can be called with any number of trailing arguments. For example, fmt.Println is a common variadic function.
+Here’s a function that will take an arbitrary number of ints as arguments.
+Variadic functions can be called in the usual way with individual arguments.
+
+```go
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+// This variadic function takes an arbitrary number of ints as arguments.
+func Show(names ...string) {
+	fmt.Print("The Len of ", len(names)) // Also a variadic function.
+	appends := ""
+	for _, name := range names {
+		appends += name + ","
+	}
+	appends = strings.Trim(appends, ",")
+	fmt.Println(" is: [", appends, "]") // Also a variadic function.
+}
+
+func main() {
+
+	// Variadic functions can be called in the usual way with individual
+	// arguments.
+	Show("C", "C++")
+	Show("Clojure", "Elixir", "Scala")
+
+	// If you already have multiple args in a slice, apply them to a variadic
+	// function using func(slice...) like this.
+	nums := []string{"Algol", "C", "C++", "Golang"}
+	Show(nums...)
+}
+```
+
+Output:
+```bash
+The Len of 2 is: [ C,C++ ]
+The Len of 3 is: [ Clojure,Elixir,Scala ]
+The Len of 4 is: [ Algol,C,C++,Golang ]
+```
+
+### functions as a parameter
+
+You can pass function as parameter to a Go function. Here is an example of passing function as parameter to another Go function.
+
+```go
+package main
+
+import "fmt"
+
+// convert types take an int
+// and return a string value.
+type fn func(int) string
+
+func f1(param int) string {
+	return fmt.Sprintf("param is %v", param)
+}
+
+func f2(param int) string {
+	return fmt.Sprintf("param is %v", param)
+}
+
+func test(f fn, val int) {
+	fmt.Println(f(val))
+}
+
+func main() {
+	test(f1, 432)
+	test(f2, 874)
+}
+```
+
+Output:
+```bash
+param is 432
+param is 874
+```
+
+```go
+package main
+
+import "fmt"
+
+// --------------------------------
+func Square(num int) int {
+	return num * num
+}
+
+func Mapp(f func(int) int, List []int) []int {
+	var a = make([]int, len(List), len(List))
+	for index, val := range List {
+
+		a[index] = f(val)
+	}
+	return a
+}
+
+func main() {
+	list := []int{454, 455, 86, 988}
+	result := Mapp(Square, list)
+	fmt.Println(result)
+}
+```
+
+Output:
+```bash
+[206116 207025 7396 976144]
+```
+
+### Closures
+
+Go supports anonymous functions, which can form closures. Anonymous functions are useful when you want to define a function inline without having to name it.
+This function intSeq returns another function, which we define anonymously in the body of intSeq. The returned function closes over the variable i to form a closure.
+
+Example:
+```go
+package main
+
+import "fmt"
+
+func plusTwo() func(v int) int {
+    return func(v int) int {
+        return v + 5
+    }
+}
+
+func plusX(x int) func(v int) int {
+    return func(v int) int {
+        return v + x
+    }
+}
+
+func main() {
+    p := plusTwo()
+    fmt.Printf("5+15: %d\n", p(15))
+
+    px := plusX(6)
+    fmt.Printf("6+10: %d\n", px(10))
+}
+```
+
+Output:
+```bash
+5+15: 20
+6+10: 16
+```
+
+### Recursion
+
+### Asynchronous Functions
+
+### Defer
+
 
 ### Exercise one
 ---
