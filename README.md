@@ -77,17 +77,13 @@ Soon below some channels that I participate and can find me online.
     - [Control Switch case break](#control-switch-case-break)
     - [Control Label](#control-label)
     - [Control Range](#control-range)
-
-- [Exercise one](#Exercise-one)
-
-- [Erros](#erros)
-  - [introduction](#)
+- [Errors](#Errors)
+  - [Introduction Errors](#introduction-Errors)
     - [How Error Control Works](#)
     - [Custom Errors](#customerrors)
     - [Interface Errors](#)
     - [Errors.New](#)
     - [fmt.Errorf](#)
-
 - [Functions](#functions)
   - [introduction](#)
     - [return multiple values](#returnmulti) 
@@ -98,7 +94,7 @@ Soon below some channels that I participate and can find me online.
     - [Asynchronous Functions](#asynchromous)
 - [Defer](#defer)
 
-- [Exercise two](#Exercise-two)
+- [Exercise one](#exercise-one)
 
 ## Lab 03 Json with Golang
 
@@ -2413,4 +2409,203 @@ wed 2
 thu 3
 fri 4
 ```
+### Errors
+---
+ 
+ The predeclared type error is defined as 
+
+ ```bash
+ type error interface {
+	Error() string
+}
+ ```
+It is the conventional interface for representing an error condition, with the nil value representing no error. For instance, a function to read data from a file might be defined: 
+
+```bash
+func Read(f *File, b []byte) (n int, err error)
+```
+
+### Introduction Errors
+
+Error handling in Golang is very simple to deal with. There is no try, catch or exceptions.
+The error is handled with every call of some function.
+As we show "error" is an interface, and much used.
+
+When we talk about handling errors in Golang everything is very simple, a good practice is to return an error in the functions that we created and treat them.
+
+Let's see in practice how it works.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var error error
+	fmt.Println(error)
+}
+```
+
+Output:
+```bash
+<nil>
+```
+### How Error Control Works
+
+Example:
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+var Error error
+var b []byte
+
+func main() {
+	fmt.Println(Error)
+	cpu := make(chan int)
+	// Create JSON from the instance data.
+	b, Error = json.Marshal(cpu)
+	if Error != nil {
+		fmt.Println(Error)
+	} else {
+		fmt.Println(string(b))
+	}
+}
+```
+
+Output:
+```bash
+<nil>
+json: unsupported type: chan int
+```
+
+### Errors.New
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"math"
+)
+
+func Sqrt(fvalue float64) (float64, error) {
+	if fvalue < 0 {
+		return 0, errors.New("Math: negative number passed to Sqrt [" + fmt.Sprintf("%.2f", fvalue) + "]")
+	}
+	return math.Sqrt(fvalue), nil
+}
+
+func main() {
+	result, err := Sqrt(-33)
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("Sqrt (-33) = [", result, "]")
+	}
+
+	result, err = Sqrt(81)
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("Sqrt(81) = [", result, "]")
+	}
+}
+```
+Output:
+```bash
+Math: negative number passed to Sqrt [-33.00]
+Sqrt(81) = [ 9 ]
+```
+
+### Custom Errors
+
+```go
+package main
+
+import "fmt"
+
+// It's possible to use custom types as `error`s by
+// implementing the `Error()` method on them.
+type MyError struct {
+    line int
+    msg  string
+}
+
+func (e *MyError) Error() string {
+    return fmt.Sprintf("%d - %s", e.line, e.msg)
+}
+
+func MyFunc(line int) (int, error) {
+    if line < 100 {
+
+        // In this case we use `&MyError` syntax to build
+        // a new struct, supplying values for the two
+        // fields `arg` and `prob`.
+        return -1, &MyError{line, "can't work with it"}
+    }
+    return line, nil
+}
+
+func main() {
+
+    // The one loops below test out each of our
+    // error-returning functions.
+    for _, i := range []int{200, 99} {
+        if r, e := MyFunc(i); e != nil {
+            fmt.Println("MyFunc failed:", e)
+        } else {
+            fmt.Println("MyFunc worked in line: ", r)
+        }
+    }
+}
+```
+
+Output:
+```bash
+MyFunc worked in line:  200
+MyFunc failed: 99 - can't work with it
+```
+
+### fmt.Errorf
+
+```go
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+func circleArea(radius float64) (float64, error) {
+    if radius < 0 {
+        return 0, fmt.Errorf("Failed, radius %0.2f is less than zero", radius)
+    }
+    return math.Pi * radius * radius, nil
+}
+
+func main() {
+    radius := -80.0
+    area, err := circleArea(radius)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("Area of circle: %0.2f", area)
+}
+```
+Output:
+```bash
+Area calculation failed, radius -80.00 is less than zero
+```
+
+### Exercise one
+---
 
