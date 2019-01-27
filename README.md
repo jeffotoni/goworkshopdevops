@@ -11,9 +11,9 @@ Well that site here [Play Golang](https://play.golang.org) we can play Golang on
 
 Soon below some channels that I participate and can find me online.
 
-#### Telegram:
+### Telegram:
    - [gobr](https://t.me/go_br)
-#### Slack: 
+### Slack: 
    - [gophers.slack.com](https://gophers.slack.com)
       - brazil
       - brasil
@@ -671,7 +671,7 @@ why         explain why packages or modules are needed
 Use "go help mod <command>" for more information about a command.
 
 
-#### Go Init
+### Go Init
 
 Initialize new module in current directory
 
@@ -697,7 +697,7 @@ require (
 )
 ```
 
-#### Go mod vendor
+### Go mod vendor
 
 The go mod vendor command will download all dependencies to the "vendor" directory.
 When using go mod init the packages are not in your directory.
@@ -715,7 +715,7 @@ drwxrwxr-x 3 root root 4,0K jan 27 01:47 github.com
 -rw-rw-r-- 1 root root  137 jan 27 01:47 modules.txt
 ```
 
-#### GO111MODULE
+### GO111MODULE
 
 Go 1.11 includes preliminary support for Go modules, including a new module-aware 'go get' command. We intend to keep revising this support, while preserving compatibility, until it can be declared official (no longer preliminary), and then at a later point we may remove support for work in GOPATH and the old 'go get' command.
 
@@ -1032,7 +1032,7 @@ The grammar is compact and regular, allowing for easy analysis by automatic tool
 ### Golang language
 ---
 
-#### Keywords
+### Keywords
 
 The following keywords are reserved and may not be used as identifiers. 
 
@@ -1044,7 +1044,7 @@ const        fallthrough  if           range        type
 continue     for          import       return       var
 ```
 
-#### Operators and punctuation
+### Operators and punctuation
 
 The following character sequences represent operators (including assignment operators) and punctuation: 
 
@@ -1153,7 +1153,7 @@ type (
 The underlying type of string, A1, A2, B1, and B2 is string. The underlying type of []B1, B3, and B4 is []B1. 
 
 
-#### Numeric Types
+### Numeric Types
 
 A numeric type represents sets of integer or floating-point values. The predeclared architecture-independent numeric types are: 
 
@@ -1189,7 +1189,7 @@ uintptr  an unsigned integer large enough to store the uninterpreted bits of a p
 
 To avoid portability issues all numeric types are defined types and thus distinct except byte, which is an alias for uint8, and rune, which is an alias for int32. Conversions are required when different numeric types are mixed in an expression or assignment. For instance, int32 and int are not the same type even though they may have the same size on a particular architecture. 
 
-#### String types
+### String types
 
 A string type represents the set of string values. A string value is a (possibly empty) sequence of bytes. Strings are immutable: once created, it is impossible to change the contents of a string. The predeclared string type is string; it is a defined type.
 
@@ -1237,7 +1237,7 @@ Glyph:             "日本語"
 UTF-8:             [e6 97 a5 e6 9c ac e8 aa 9e]
 Unicode codepoint: [U+65E5 U+672C U+8A9E]
 ```
-#### Pointer types
+### Pointer types
 
 Struct fields can be accessed through a struct pointer.
 
@@ -1360,7 +1360,7 @@ success is not nil
 success pointer is nil
 ```
 
-#### Array types
+### Array types
 
 An array is a numbered sequence of elements of a single type, called the element type. The number of elements is called the length and is never negative.
 
@@ -1408,7 +1408,7 @@ Output:
 [5 4 3 2 1]
 ```
 
-#### Slice Types
+### Slice Types
 
 A slice is a descriptor for a contiguous segment of an underlying array and provides access to a numbered sequence of elements from that array. A slice type denotes the set of all slices of arrays of its element type. The value of an uninitialized slice is nil. 
 
@@ -1497,7 +1497,7 @@ b []
 c [0 0]
 ```
 
-#### Struct types
+### Struct types
 
 A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-blank field names must be unique.
 
@@ -1566,7 +1566,7 @@ Output:
 {4 201}
 ```
 
-#### Map types
+### Map types
 
 A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.
 
@@ -1618,7 +1618,7 @@ Output:
 map[] map[] map[population:500000] map[population:500000] map[]
 ```
 
-#### Channel Types
+### Channel Types
 
 A channel provides a mechanism for concurrently executing functions to communicate by sending and receiving values of a specified element type. The value of an uninitialized channel is nil.
 
@@ -1743,7 +1743,7 @@ Output:
 100
 ```
 
-#### Blank identifier
+### Blank identifier
 
 The blank identifier is represented by the underscore character **_**. It serves as an anonymous placeholder instead of a regular (non-blank) identifier and has special meaning in declarations, as an operand, and in assignments.
 
@@ -1756,7 +1756,7 @@ func f() (int, string, error)
 _, _, _ := f()
 ```
 
-#### Interface types
+### Interface types
 
 **An interface is two things:**
  - it is a set of methods
@@ -1780,7 +1780,7 @@ type Stringer interface {
 }
 ```
 
-#### Here's an interface as a method
+### Here's an interface as a method
 
 An interface type specifies a method set called its interface. A variable of interface type can store a value of any type with a method set that is any superset of the interface. Such a type is said to implement the interface. The value of an uninitialized variable of interface type is nil.
 
@@ -1919,7 +1919,7 @@ Only: call Read
 Read: Only: call Read
 ```
 
-####  Interface as type
+###  Interface as type
 
 Interfaces as type __interface{}__ means you can put value of any type, including your own custom type. All types in Go satisfy an empty interface (interface{} is an empty interface).
 In your example, Msg field can have value of any type. 
