@@ -68,7 +68,15 @@ Soon below some channels that I participate and can find me online.
    - [Interface Types](#interface-types)
 	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
 	 - [Interface as type](#interface-as-type)
-- [For Break Range If else](#for-break-range-if-else)
+- [Control structures](#control-structures)
+  - [Control](#control)
+    - [Control Return](#control-return)
+    - [Control Goto](#control-goto)
+    - [Control if else](#control-if-else)
+    - [Control for break continue](#control-for-break-continue)
+    - [Control Switch case break](#control-switch-case-break)
+    - [Control Label](#control-label)
+    - [Control Range](#control-range)
 
 - [Exercise one](#Exercise-one)
 
@@ -1969,5 +1977,440 @@ func main() {
   b.Msg = map[string]string{"population": "500000", "language": "sueco"}
   fmt.Printf("%#v %T", b.Msg, b.Msg) //Output:  5 int
 }
+```
+
+
+### Control structures
+---
+
+### Control
+
+The control structures are:
+
+__For, If, else, else if__
+
+And some statments between them: __break, continue, switch, case and goto__.
+
+### Control Return
+
+Statements control execution.
+
+```bash
+Statement =
+  Declaration | LabeledStmt | SimpleStmt |
+  GoStmt | ReturnStmt | BreakStmt | ContinueStmt | GotoStmt |
+  FallthroughStmt | Block | IfStmt | SwitchStmt | SelectStmt | ForStmt |
+  DeferStmt .
+
+SimpleStmt = EmptyStmt | ExpressionStmt | SendStmt | IncDecStmt | Assignment | ShortVarDecl .
+```
+
+A terminating statement prevents execution of all statements that lexically appear after it in the same block. The following statements are terminating:
+
+1. A "return" or "goto" statement.
+
+Return:
+```go
+package main
+
+func main() {
+  println(Lambda())
+  return
+}
+
+func Lambda() string {
+
+  return "Lambda"
+}
+```
+
+Output:
+```bash
+Lambda
+```
+
+### Control Goto
+
+Goto:
+```go
+package main
+
+import "fmt"
+
+func main() {
+  n := 0
+
+LOOP1:
+  n++
+  if n == 10 {
+    println("fim")
+    return
+  }
+
+  if n%2 == 0 {
+    goto LOOP2
+  } else {
+
+    fmt.Println("n", n, "LOOP1 here...")
+    goto LOOP1
+  }
+
+LOOP2:
+  fmt.Println("n", n, "LOOP2 here...")
+  goto LOOP1
+
+}
+```
+
+Output:
+```bash
+n 1 LOOP1 here...
+n 2 LOOP2 here...
+n 3 LOOP1 here...
+n 4 LOOP2 here...
+n 5 LOOP1 here...
+n 6 LOOP2 here...
+n 7 LOOP1 here...
+n 8 LOOP2 here...
+n 9 LOOP1 here...
+fim
+```
+
+### Control if else
+
+2. An "if" statement in which:
+      - the "else" branch is present, and
+      - both branches are terminating statements.
+```go
+package main
+
+func main() {
+  n := 100
+  if n > 0 && n <= 55 {
+    println("n > 0 or n <= 55")
+  } else if n > 56 && n < 70 {
+    println("n > 56 and n < 70")
+  } else {
+
+    if n >= 100 {
+      println(" else here.. n > 100")
+    } else {
+      println(" else here.. n > 70")
+    }
+  }
+}
+```
+
+Output:
+```bash
+else here.. n > 100
+```
+
+### Control For break continue
+
+3. A "for" statement in which:
+      - there are no "break" statements referring to the "for" statement, and
+      - the loop condition is absent.
+      - there are "continue"
+      - A "break" statement terminates execution of the innermost "for", "switch", or "select" statement within the same 
+
+```go
+package main
+
+func main() {
+  // will be looping infinitely
+  // for {
+  // }
+
+  // will run only once and exit
+  for {
+    break
+  }
+
+  n := 5
+  for n > 0 {
+    n--
+    println(n)
+  }
+  // Output:
+  // 4
+  // 3
+  // 2
+  // 1
+  // 0
+
+  // declaring i no and increasing i
+  for i := 0; i < 5; i++ {
+    println(i)
+  }
+  // Output:
+  // 0
+  // 1
+  // 2
+  // 3
+  // 4
+
+  n = 5
+  for i := 0; i < n; i++ {
+    if i <= 2 {
+      continue
+    } else {
+      println("i > 2 = ", i)
+    }
+  }
+
+  // Output:
+  // i > 2 =  3
+  // i > 2 =  4
+
+  n = 5
+  for i := 0; i < n; i++ {
+    if i == 2 {
+      break
+    } else {
+      println("i: ", i)
+    }
+  }
+  // Output:
+  // i:  0
+  // i:  1
+  
+  // infinitely
+  for ; ; i++ {
+    println("i: ", i)
+  }
+  // Output:
+  // i:  1
+  // i:  2
+  // ..
+  // ..
+}
+```
+
+### Control Switch case break
+
+4. A "switch" statement in which:
+      - there are no "break" statements referring to the "switch" statement,
+      - there is a default "case", and
+      - the statement lists in each case, including the default, end in a terminating statement, or a possibly labeled "fallthrough" statement.
+
+```go
+package main
+
+func main() {
+  j := 10
+  i := 0
+  switch j {
+  case 11:
+    println("here: 11")
+    break
+  default:
+    println("here default")
+    break
+  }
+
+  // infinitely
+  for ; ; i++ {
+
+    switch i {
+    case 5:
+      goto LABELS
+    case i:
+      println("i: ", i)
+      break
+    default:
+      println("default: ", i)
+    }
+  }
+
+LABELS:
+  f()
+
+}
+
+func f() {
+  println("goto fim")
+}
+```
+
+Output:
+```bash
+here default
+i:  0
+i:  1
+i:  2
+i:  3
+i:  4
+goto fim
+```
+
+### Control Label
+
+5. A labeled statement labeling a terminating statement.
+
+```go
+package main
+
+func main() {
+  i := 0
+  // infinitely
+  for ; ; i++ {
+    for {
+      if i == 10 {
+        goto LABEL
+      }
+      i++
+    }
+  }
+
+LABEL:
+  f(i)
+
+}
+
+func f(i int) {
+  println("label fim i:", i)
+}
+```
+
+Output:
+```bash
+label fim i: 10
+```
+
+All other statements are not terminating.
+
+A statement list ends in a terminating statement if the list is not empty and its final non-empty statement is terminating. 
+
+A "for" statement with a "range" clause iterates through all entries of an array, slice, string or map, or values received on a channel. For each entry it assigns iteration values to corresponding iteration variables if present and then executes the block. 
+
+```bash
+RangeClause = [ ExpressionList "=" | IdentifierList ":=" ] "range" Expression .
+```
+
+### Control Range
+
+The expression on the right in the "range" clause is called the range expression, which may be an array, pointer to an array, slice, string, map, or channel permitting receive operations. As with an assignment, if present the operands on the left must be addressable or map index expressions; they denote the iteration variables. If the range expression is a channel, at most one iteration variable is permitted, otherwise there may be up to two. If the last iteration variable is the blank identifier, the range clause is equivalent to the same clause without that identifier. 
+
+```bash
+Range expression                          1st value          2nd value
+
+array or slice  a  [n]E, *[n]E, or []E    index    i  int    a[i]       E
+string          s  string type            index    i  int    see below  rune
+map             m  map[K]V                key      k  K      m[k]       V
+channel         c  chan E, <-chan E       element  e  E
+```
+
+See an example below, with various uses using Range:
+```go
+
+package main
+
+import "fmt"
+
+func main() {
+
+  // string arrays / slice
+  var lang = [...]string{"Erlang", "Elixir", "Haskell", "Clojure", "Scala"}
+
+  // screen list
+  fmt.Println(lang)
+
+  // list the positions srtring arrays
+  for k, v := range lang {
+    fmt.Println(k, v)
+  }
+
+  /* create a map*/
+  countryCapitalMap := map[string]string{"Brasil": "Brasilia", "EUA AMERICA": "Washington, D.C.", "France": "Paris", "Italy": "Roma", "Japan": "Tokyo"}
+
+  /* print map using key-value*/
+  for country, capital := range countryCapitalMap {
+    fmt.Println("Capital of", country, "is", capital)
+  }
+
+  // channel
+  jobs := make(chan int, 3)
+
+  // for channel
+  for j := 1; j <= 3; j++ {
+    jobs <- j
+  }
+  // println(<-jobs)
+  // println(<-jobs)
+  // println(<-jobs)
+
+  // close
+  /* date is required for range to work*/
+  close(jobs)
+
+  /* This syntax is valid too. */
+  for range jobs {
+  }
+
+  /* it is mandatory to close the channels to be able to scroll */
+  for ch := range jobs {
+    println(ch)
+  }
+
+  // it is not an array struct, it will range from error.
+  sa := struct{ nick string }{"@jeffotoni"}
+  fmt.Println(sa.nick)
+
+  // here the range will be able to list all struct
+  a := []struct{ nick string }{{"@devopsbr"}, {"@go_br"}, {"@awsbrasil"}, {"@go_br"}, {"@devopsbh"}}
+  for i, v := range a {
+    fmt.Println(i, v.nick)
+  }
+
+  // struct pointer
+  var testdata *struct {
+    a *[3]int
+  }
+  for i := range testdata.a {
+    // testdata.a is never evaluated; len(testdata.a) is constant
+    // i ranges from 0 to 2
+    fmt.Println(i)
+  }
+
+  // new example interface and range
+  var key string
+  var val interface{} // element type of m is assignable to val
+  m := map[string]int{"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
+  for key, val = range m {
+    fmt.Println(key, val)
+  }
+}
+```
+
+Output:
+```bash
+[Erlang Elixir Haskell Clojure Scala]
+0 Erlang
+1 Elixir
+2 Haskell
+3 Clojure
+4 Scala
+Capital of Brasil is Brasilia
+Capital of EUA AMERICA is Washington, D.C.
+Capital of France is Paris
+Capital of Italy is Roma
+Capital of Japan is Tokyo
+@jeffotoni
+0 @devopsbr
+1 @go_br
+2 @awsbrasil
+3 @go_br
+4 @devopsbh
+0
+1
+2
+sat 5
+sun 6
+mon 0
+tue 1
+wed 2
+thu 3
+fri 4
 ```
 
