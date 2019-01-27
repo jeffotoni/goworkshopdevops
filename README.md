@@ -42,7 +42,7 @@ Soon below some channels that I participate and can find me online.
   - [go install](#go-install)
   - [go get](#go-get)
   - [go mod](#go-mod)
-  - [go mod init](#gomodinit)
+  - [go mod init](#go-mod-init)
   - [go mod vendor](#go-mod-vendor)
   - [GO111MODULE](#go111module)
   - [go test](#go-test)
@@ -54,7 +54,8 @@ Soon below some channels that I participate and can find me online.
   - [Golang language](#golang-language)
     - [Keywords](#keywords)
     - [Operators and punctuation](#operators-and-punctuation)
-    - [Println Print](#println-print)   
+    - [Println Print](#println-print)
+    - [Bufio NewWriter](bufio-newWriter)
 - [Types](#types)
    - [Numeric Types](#numeric-types)
    - [String types](#string-types)
@@ -676,7 +677,7 @@ why         explain why packages or modules are needed
 Use "go help mod <command>" for more information about a command.
 
 
-### Go Init
+### Go Mod Init
 
 Initialize new module in current directory
 
@@ -1130,6 +1131,67 @@ debugging my system with fmt.Println
 
 The goal of starting and running the print, println or fmt.Println command is to help us with the tests we will be performing from now on at every step of our Go learning.
 
+
+### Bufio NewWriter
+
+```bash
+bufio.Writer
+```
+
+Doing many small writes can hurt performance. Each write is ultimately a syscall and if doing frequently can put burden on the CPU. Devices like disks work better dealing with block-aligned data. To avoid the overhead of many small write operations Golang is shipped with bufio.Writer. Data, instead of going straight to destination (implementing io.Writer interface) are first accumulated inside the buffer and send out when buffer is full:
+
+Let’s visualise how buffering works with nine writes (one character each) when buffer has space for 4 characters:
+
+```bash
+producer         buffer           destination (io.Writer)
+ 
+   a    ----->   a
+   b    ----->   ab
+   c    ----->   abc
+   d    ----->   abcd
+   e    ----->   e      ------>   abcd
+   f    ----->   ef               abcd
+   g    ----->   efg              abcd
+   h    ----->   efgh             abcd
+   i    ----->   i      ------>   abcdefgh
+```
+
+Check out the example below
+```go
+package main
+
+import (
+	"bufio"
+	"os"
+)
+
+// creating the write object pointer
+// so that we can receive value in every
+// scope of our program
+var writer *bufio.Writer
+
+func main() {
+	// All screen output will be redirected
+	// to bufio.NewWriter
+	writer = bufio.NewWriter(os.Stdout)
+	s := "How many stars does Orion have?\n"
+	var b byte = 'H'
+
+	writer.WriteString(s)
+	writer.WriteByte(b)
+	writer.WriteString("\n")
+
+	// when all the functions finishes it closes
+	// the buffer and sends to the.Stdout
+	defer writer.Flush()
+}
+```
+
+Output:
+```bash
+How many stars does Orion have?
+H
+```
 
 ### Types
 ---
