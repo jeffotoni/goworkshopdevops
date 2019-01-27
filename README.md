@@ -35,27 +35,27 @@ Soon below some channels that I participate and can find me online.
 	- [Install Docker to Golang](#install-docker-to-golang)
 	- [Compile your app inside the Docker container](#compile-your-app-inside-the-docker-container)
 	- [Cross-compile your app inside the Docker container](#cross-compile-your-app-inside-the-docker-container)
-- [Go commands](#go-commands)
-  - [go commands introduction](#go-commands-introduction)
-  - [go run](#go-run) 
-  - [go build](#go-build)
-  - [go install](#go-install)
-  - [go get](#go-get)
-  - [go mod](#go-mod)
-  - [go mod init](#go-mod-init)
-  - [go mod vendor](#go-mod-vendor)
-  - [GO111MODULE](#go111module)
-  - [go test](#go-test)
-- [Func Main](#func-main)
-
-## Lab 02 Println and Types with Golang and For
-
 - [Introduction golang](#introduction-golang)
   - [Golang language](#golang-language)
     - [Keywords](#keywords)
     - [Operators and punctuation](#operators-and-punctuation)
     - [Println Print](#println-print)
     - [Bufio NewWriter](#bufio-newWriter)
+    - [Func Main](#func-main)
+- [Go commands](#go-commands)
+   - [go commands introduction](#go-commands-introduction)
+   - [go run](#go-run) 
+   - [go build](#go-build)
+   - [go install](#go-install)
+   - [go get](#go-get)
+   - [go mod](#go-mod)
+   - [go mod init](#go-mod-init)
+   - [go mod vendor](#go-mod-vendor)
+   - [GO111MODULE](#go111module)
+   - [go test](#go-test)
+
+## Lab 02 Println and Types with Golang and For
+
 - [Types](#types)
    - [Numeric Types](#numeric-types)
    - [String types](#string-types)
@@ -448,6 +448,232 @@ $ docker run --rm -v "$PWD":/usr/src/main -w /usr/src/main golang:1.11.5 go vers
 Output:
 ```bash
 go version go1.11.5 linux/amd64
+```
+
+### Introduction golang
+---
+
+Go is a general-purpose language designed with systems programming in mind. It is strongly typed and garbage-collected and has explicit support for concurrent programming. 
+Programs are constructed from packages, whose properties allow efficient management of dependencies.
+
+The grammar is compact and regular, allowing for easy analysis by automatic tools such as integrated development environments.
+
+### Golang language
+---
+
+### Keywords
+
+The following keywords are reserved and may not be used as identifiers. 
+
+```bash
+break        default      func         interface    select
+case         defer        go           map          struct
+chan         else         goto         package      switch
+const        fallthrough  if           range        type
+continue     for          import       return       var
+```
+
+### Operators and punctuation
+
+The following character sequences represent operators (including assignment operators) and punctuation: 
+
+```bash
++    &     +=    &=     &&    ==    !=    (    )
+-    |     -=    |=     ||    <     <=    [    ]
+*    ^     *=    ^=     <-    >     >=    {    }
+/    <<    /=    <<=    ++    =     :=    ,    ;
+%    >>    %=    >>=    --    !     ...   .    :
+     &^          &^=
+```
+
+### Println Print
+
+Let's learn how to send data to screen which is actually **stdout** standard output we will see more ahead with details on **stdout** and **stdin**.
+
+Let's know **print, println and fmt.Println**
+
+Current implementations provide several built-in functions useful during bootstrapping. These functions are documented for completeness but are not guaranteed to stay in the language. They do not return a result. 
+
+Implementation restriction: **print** and **println** need not accept arbitrary argument types, but printing of boolean, numeric, and string types must be supported. 
+
+**println is an built-in function** (into the runtime) which may eventually be removed, while the **fmt package** is in the standard library, which will persist.
+
+
+```bash
+Function   Behavior
+
+print      prints all arguments; formatting of arguments is implementation-specific
+println    like print but prints spaces between arguments and a newline at the end
+```
+
+using print:
+```go
+// test print
+package main
+
+func main() {
+   print("debugging my system with print")
+}
+```
+
+Output:
+```bash
+debugging my system with print
+```
+
+using println:
+```go
+// test println
+package main
+
+func main() {
+   println("debugging my system with println")
+}
+```
+
+Output:
+```bash
+debugging my system with println
+```
+
+using fmt.Println:
+```go
+package main
+
+import "fmt"
+
+func main() {
+   fmt.Println("debugging my system with fmt.Println")
+}
+```
+
+Output:
+```bash
+debugging my system with fmt.Println
+```
+
+The goal of starting and running the print, println or fmt.Println command is to help us with the tests we will be performing from now on at every step of our Go learning.
+
+
+### Bufio NewWriter
+
+```bash
+bufio.Writer
+```
+
+Doing many small writes can hurt performance. Each write is ultimately a syscall and if doing frequently can put burden on the CPU. Devices like disks work better dealing with block-aligned data. To avoid the overhead of many small write operations Golang is shipped with bufio.Writer. Data, instead of going straight to destination (implementing io.Writer interface) are first accumulated inside the buffer and send out when buffer is full:
+
+Let’s visualise how buffering works with nine writes (one character each) when buffer has space for 4 characters:
+
+```bash
+producer         buffer           destination (io.Writer)
+ 
+   a    ----->   a
+   b    ----->   ab
+   c    ----->   abc
+   d    ----->   abcd
+   e    ----->   e      ------>   abcd
+   f    ----->   ef               abcd
+   g    ----->   efg              abcd
+   h    ----->   efgh             abcd
+   i    ----->   i      ------>   abcdefgh
+```
+
+Check out the example below
+```go
+package main
+
+import (
+	"bufio"
+	"os"
+)
+
+// creating the write object pointer
+// so that we can receive value in every
+// scope of our program
+var writer *bufio.Writer
+
+func main() {
+	// All screen output will be redirected
+	// to bufio.NewWriter
+	writer = bufio.NewWriter(os.Stdout)
+	s := "How many stars does Orion have?\n"
+	var b byte = 'H'
+
+	writer.WriteString(s)
+	writer.WriteByte(b)
+	writer.WriteString("\n")
+
+	// when all the functions finishes it closes
+	// the buffer and sends to the.Stdout
+	defer writer.Flush()
+}
+```
+
+Output:
+```bash
+How many stars does Orion have?
+H
+```
+
+### Func Main
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+  fmt.Printf("hello, Gophers\n")
+}
+```
+
+Then **build** it with the **go tool**: 
+
+```go
+$ cd $HOME/go/src/hello
+$ go build
+```
+
+Or we can compile like this:
+```go
+$ cd $HOME/go/src/hello
+$ go build -o hello hello.go
+```
+
+The command above will build an executable named hello in the directory alongside your source code. Execute it to see the greeting: 
+
+```go
+$ ./hello
+hello, Gophers
+```
+
+Check also the command **run** it with the go: 
+
+```go
+$ go run hello.go
+hello, Gophers
+```
+
+If you see the **"hello, Gophers"** message then your Go installation **is working**.
+
+You can run **go install** to install the binary into your workspace's **bin** directory or **go clean -i** to remove it.
+
+Example: go install
+```go
+$ pwd
+$ $HOME/go/src/hello
+$ cd $HOME/go/src/hello
+$ go install
+$ ls -lhs $HOME/go/bin
+-rwxrwxr-x 1 user user 2,9M nov  8 03:11 hello
+```
+
+Example: go clean -i
+
+```go
+$ go clean -i 
+$ ls -lhs $HOME/go/bin
 ```
 
 ### Go commands
@@ -964,234 +1190,8 @@ Output:
 10
 ```
 
-### Func Main
-
-```go
-package main
-
-import "fmt"
-
-func main() {
-  fmt.Printf("hello, Gophers\n")
-}
-```
-
-Then **build** it with the **go tool**: 
-
-```go
-$ cd $HOME/go/src/hello
-$ go build
-```
-
-Or we can compile like this:
-```go
-$ cd $HOME/go/src/hello
-$ go build -o hello hello.go
-```
-
-The command above will build an executable named hello in the directory alongside your source code. Execute it to see the greeting: 
-
-```go
-$ ./hello
-hello, Gophers
-```
-
-Check also the command **run** it with the go: 
-
-```go
-$ go run hello.go
-hello, Gophers
-```
-
-If you see the **"hello, Gophers"** message then your Go installation **is working**.
-
-You can run **go install** to install the binary into your workspace's **bin** directory or **go clean -i** to remove it.
-
-Example: go install
-```go
-$ pwd
-$ $HOME/go/src/hello
-$ cd $HOME/go/src/hello
-$ go install
-$ ls -lhs $HOME/go/bin
--rwxrwxr-x 1 user user 2,9M nov  8 03:11 hello
-```
-
-Example: go clean -i
-
-```go
-$ go clean -i 
-$ ls -lhs $HOME/go/bin
-```
-
 ## Lab 02 Println and Types with Golang and For
 ---
-
-### Introduction golang
----
-
-Go is a general-purpose language designed with systems programming in mind. It is strongly typed and garbage-collected and has explicit support for concurrent programming. 
-Programs are constructed from packages, whose properties allow efficient management of dependencies.
-
-The grammar is compact and regular, allowing for easy analysis by automatic tools such as integrated development environments.
-
-### Golang language
----
-
-### Keywords
-
-The following keywords are reserved and may not be used as identifiers. 
-
-```bash
-break        default      func         interface    select
-case         defer        go           map          struct
-chan         else         goto         package      switch
-const        fallthrough  if           range        type
-continue     for          import       return       var
-```
-
-### Operators and punctuation
-
-The following character sequences represent operators (including assignment operators) and punctuation: 
-
-```bash
-+    &     +=    &=     &&    ==    !=    (    )
--    |     -=    |=     ||    <     <=    [    ]
-*    ^     *=    ^=     <-    >     >=    {    }
-/    <<    /=    <<=    ++    =     :=    ,    ;
-%    >>    %=    >>=    --    !     ...   .    :
-     &^          &^=
-```
-
-### Println Print
-
-Let's learn how to send data to screen which is actually **stdout** standard output we will see more ahead with details on **stdout** and **stdin**.
-
-Let's know **print, println and fmt.Println**
-
-Current implementations provide several built-in functions useful during bootstrapping. These functions are documented for completeness but are not guaranteed to stay in the language. They do not return a result. 
-
-Implementation restriction: **print** and **println** need not accept arbitrary argument types, but printing of boolean, numeric, and string types must be supported. 
-
-**println is an built-in function** (into the runtime) which may eventually be removed, while the **fmt package** is in the standard library, which will persist.
-
-
-```bash
-Function   Behavior
-
-print      prints all arguments; formatting of arguments is implementation-specific
-println    like print but prints spaces between arguments and a newline at the end
-```
-
-using print:
-```go
-// test print
-package main
-
-func main() {
-   print("debugging my system with print")
-}
-```
-
-Output:
-```bash
-debugging my system with print
-```
-
-using println:
-```go
-// test println
-package main
-
-func main() {
-   println("debugging my system with println")
-}
-```
-
-Output:
-```bash
-debugging my system with println
-```
-
-using fmt.Println:
-```go
-package main
-
-import "fmt"
-
-func main() {
-   fmt.Println("debugging my system with fmt.Println")
-}
-```
-
-Output:
-```bash
-debugging my system with fmt.Println
-```
-
-The goal of starting and running the print, println or fmt.Println command is to help us with the tests we will be performing from now on at every step of our Go learning.
-
-
-### Bufio NewWriter
-
-```bash
-bufio.Writer
-```
-
-Doing many small writes can hurt performance. Each write is ultimately a syscall and if doing frequently can put burden on the CPU. Devices like disks work better dealing with block-aligned data. To avoid the overhead of many small write operations Golang is shipped with bufio.Writer. Data, instead of going straight to destination (implementing io.Writer interface) are first accumulated inside the buffer and send out when buffer is full:
-
-Let’s visualise how buffering works with nine writes (one character each) when buffer has space for 4 characters:
-
-```bash
-producer         buffer           destination (io.Writer)
- 
-   a    ----->   a
-   b    ----->   ab
-   c    ----->   abc
-   d    ----->   abcd
-   e    ----->   e      ------>   abcd
-   f    ----->   ef               abcd
-   g    ----->   efg              abcd
-   h    ----->   efgh             abcd
-   i    ----->   i      ------>   abcdefgh
-```
-
-Check out the example below
-```go
-package main
-
-import (
-	"bufio"
-	"os"
-)
-
-// creating the write object pointer
-// so that we can receive value in every
-// scope of our program
-var writer *bufio.Writer
-
-func main() {
-	// All screen output will be redirected
-	// to bufio.NewWriter
-	writer = bufio.NewWriter(os.Stdout)
-	s := "How many stars does Orion have?\n"
-	var b byte = 'H'
-
-	writer.WriteString(s)
-	writer.WriteByte(b)
-	writer.WriteString("\n")
-
-	// when all the functions finishes it closes
-	// the buffer and sends to the.Stdout
-	defer writer.Flush()
-}
-```
-
-Output:
-```bash
-How many stars does Orion have?
-H
-```
 
 ### Types
 ---
