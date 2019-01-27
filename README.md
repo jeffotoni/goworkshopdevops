@@ -24,15 +24,18 @@ Soon below some channels that I participate and can find me online.
 ## Lab 01 Install and commands Golang
 
 - [Overview](#overview)
-- [Installation](#installation)
-  - [Introduction](#introduction-installation)
+- [Introduction Installation](#introduction-installation)
+  - [Installation](#installation)
     - [Linux](#linux)
-    - [Test your installation](#test-your-installation)
     - [$GOPATH](#gopath)
+    - [Test your installation](#test-your-installation)
     - [Workspace](#workspace)
     - [Outside GOPATH](#outside-gopath)
-    - [Func Main](#func-main)
 - [Installation Docker](#installation-docker)
+	- [Install Docker to Golang](#install-docker-to-golang)
+	- [Compile your app inside the Docker container](#compile-your-app-inside-the-docker-container)
+	- [Cross-compile your app inside the Docker container](#cross-compile-your-app-inside-the-docker-container)
+
 - [Go commands](#go-commands)
   - [Go commands introduction](#go-commands-introduction)
   - [go run](#go-run) 
@@ -44,6 +47,7 @@ Soon below some channels that I participate and can find me online.
   - [go mod init](#gomodinit)
   - [go mod vendor](#go-mod-vendor)
   - [GO111MODULE](#go111module)
+- [Func Main](#func-main)
 
 ## Lab 02 Println and Types with Golang and For
 - [Println](#println)
@@ -180,13 +184,21 @@ It is a "General Use" language that can be used to solve various problems and in
 Problems involving competition, web applications, high performance applications, development of APIs, communications sockets etc ... 
 Is where language is increasingly becoming prominent in the market and in communities.
 
+### Introduction installation
+
+In golang the installation is all very simple and practical, for Linux, Mac and Windows.
+
+Just copy the files to the correct directory for each operating system and export the paths to the environment and prompt, golang is installed.
+
+Let's take a look at how we do this.
+
 ### Installation 
 ---
 
 We will download the file, unpack it and install it in /usr/local/go, if we have golang already installed in the machine we will have to remove the existing one to leave our installation as unique.
 Let's create our directory in our workspace and test to see if everything went well
 
-#### Linux
+### Linux
 
 ```bash
 $ sudo rm -rf /usr/local/go
@@ -194,7 +206,7 @@ $ wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
 ```
 
-#### $GOPATH
+### $GOPATH
 
 $GOPATH is the golang in your $HOME, this is necessary for your projects to use pkg and build properly. This was mandatory for all versions before version 1.11. The cool thing is that from now on we will not have to create projects in $GOPATH, we can create in any other directory that is not in $GOPATH.
 
@@ -216,7 +228,7 @@ $ echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
 $ echo "export PATH=$PATH:$GOPATH/bin" >> $HOME/.profile
 ```
 
-#### Test your installation
+### Test your installation
 
 Let's run go version to see if everything is correct.
 
@@ -231,7 +243,7 @@ Create your **workspace** directory, $HOME/go. (If you'd like to use a different
 
 Next, make the directory src/hello inside your workspace, and in that directory create a file named hello.go that looks like:
 
-#### Workspace
+### Workspace
 
 Workspace is our place of work, where we will organize our directories with our projects. As shown above, until **Go version 1.11** we were forced to do everything under the Workspace. $GOPATH Down Projects.
 
@@ -291,7 +303,7 @@ Package paths matter to the Go tool. Using "github.com/..." means the tool knows
 
 In the scenario above everything would have to stay in our **$GOPATH** so that our projects worked correctly.
 
-#### Outside $GOPATH
+### Outside $GOPATH
 
 Now we can do our projects without being in $GOPATH, we can, for example, do it in any directory.
 
@@ -352,7 +364,80 @@ $ GO111MODULE=on go run cmd/main.go
 $ GO111MODULE=on go build -o project1 cmd/main.go
 ```
 
-#### Go run
+### Installation Docker
+
+If we do not want to install directly on our operating system golang we can install it in a docker container.
+
+We can upload a docker container with the installed language and compile and run our programs from this container.
+
+Let's check how we can do it below.
+
+More information and details you can visit this link: [hub.docker](https://hub.docker.com/_/golang)
+
+### Install Docker to Golang
+
+```bash
+$ docker pull golang
+```
+
+### Compile your app inside the Docker container
+
+There may be occasions where it is not appropriate to run your app inside a container. To compile, but not run your app inside the 
+Docker instance, you can write something like:
+
+```bash
+$ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.11.5 go build -v
+```
+
+This will add your current directory as a volume to the container, set the working directory to the volume, and run the command go build which will tell go to compile the project in the working directory and output the executable to myapp. Alternatively, if you have a Makefile, you can run the make command inside your container.
+
+```bash
+$ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.11.5 make
+```
+
+### Cross-compile your app inside the Docker container
+If you need to compile your application for a platform other than linux/amd64 (such as windows/386):
+
+```bash
+$ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=windows -e GOARCH=386 golang:1.11.5 go build -v
+```
+
+### Example main.go
+
+Let's do our test program, let's call it main.go
+
+```go
+package main
+
+import "fmt"
+
+func main(){
+	fmt.Println("My first program being compiled by a docker container!")
+}
+```
+
+Now let's run a program to see if it works correctly
+
+```bash
+$ docker run --rm -v "$PWD":/usr/src/main -w /usr/src/main golang:1.11.5 go run main.go
+```
+
+Output:
+```bash
+My first program being compiled by a docker container!
+```
+
+Check the version:
+```bash
+$ docker run --rm -v "$PWD":/usr/src/main -w /usr/src/main golang:1.11.5 go versio
+```
+
+Output:
+```bash
+go version go1.11.5 linux/amd64
+```
+
+### Go run
 ---
 
 Usage:
@@ -390,7 +475,7 @@ Output:
 Debugging my system with println
 ```
 
-#### Go build
+### Go build
 ---
 
 Build compiles the packages named by the import paths, along with their dependencies, but it does not install the results. 
@@ -669,7 +754,7 @@ Output:
 10
 ```
 
-#### Func Main
+### Func Main
 
 ```go
 package main
