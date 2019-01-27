@@ -614,6 +614,119 @@ $ go get -v github.com/sirupsen/logru
 ```
 
 
+### Go mod
+---
+
+A module is a collection of related Go packages. Modules are the unit of source code interchange and versioning. The go command has direct support for working with modules, including recording and resolving dependencies on other modules. Modules replace the old GOPATH-based approach to specifying which source files are used in a given build. 
+
+Usage:
+
+```bash
+$ go mod <command> [arguments]
+```
+A module is defined by a tree of Go source files with a **go.mod** file in the tree's root directory. The directory containing the go.mod file is called the module root. Typically the module root will also correspond to a source code repository root (but in general it need not). The module is the set of all Go packages in the module root and its subdirectories, but excluding subtrees with their own go.mod files.
+
+The "module path" is the import path prefix corresponding to the module root. The go.mod file defines the module path and lists the specific versions of other modules that should be used when resolving imports during a build, by giving their module paths and versions.
+
+For example, this go.mod declares that the directory containing it is the root of the module with path example.com/m, and it also declares that the module depends on specific versions of golang.org/x/text and gopkg.in/yaml.v2: 
+
+```bash
+$ go mod init github.com/user/gomyproject
+
+require (
+  golang.org/x/text v0.3.0
+  gopkg.in/yaml.v2 v2.1.0
+)
+```
+The go.mod file can also specify replacements and excluded versions that only apply when building the module directly; they are ignored when the module is incorporated into a larger build. For more about the go.mod file, see 'go help go.mod'.
+
+To start a new module, simply create a go.mod file in the root of the module's directory tree, containing only a module statement. The 'go mod init' command can be used to do this: 
+
+```bash
+$ go mod init github.com/user/gomyproject
+```
+In a project already using an existing dependency management tool like **godep, glide, or dep, 'go mod init'** will also add require statements matching the existing configuration.
+
+Once the go.mod file exists, no additional steps are required: go commands like **'go build'**, **'go test'**, or even **'go list'** will automatically add new dependencies as needed to satisfy imports.
+
+The commands are: 
+
+```bash
+download    download modules to local cache
+edit        edit go.mod from tools or scripts
+graph       print module requirement graph
+init        initialize new module in current directory
+tidy        add missing and remove unused modules
+vendor      make vendored copy of dependencies
+verify      verify dependencies have expected content
+why         explain why packages or modules are needed
+```
+Use "go help mod <command>" for more information about a command.
+
+
+#### Go Init
+
+Initialize new module in current directory
+
+Usage:
+
+```bash
+$ go mod init [module]
+```
+
+Init initializes and writes a new **go.mod** to the current directory, in effect creating a new module rooted at the current directory. The file go.mod must not already exist. If possible, init will guess the module path from import comments (see 'go help importpath') or from version control configuration. To override this guess, supply the module path as an argument. 
+
+
+```bash
+$ go mod init github.com/user/gomyproject2
+
+require (
+  github.com/dgrijalva/jwt-go v3.2.0+incompatible
+  github.com/didip/tollbooth v4.0.0+incompatible
+  github.com/go-sql-driver/mysql v1.4.1
+  github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+  golang.org/x/crypto v0.0.0-20190103213133-ff983b9c42bc
+  golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
+)
+```
+
+#### Go mod vendor
+
+The go mod vendor command will download all dependencies to the "vendor" directory.
+When using go mod init the packages are not in your directory.
+
+```bash
+$ cd gomyproject2
+$ go mod vendor
+```
+
+Output:
+```bash
+$ ls -lh vendor
+total 8,0K
+drwxrwxr-x 3 root root 4,0K jan 27 01:47 github.com
+-rw-rw-r-- 1 root root  137 jan 27 01:47 modules.txt
+```
+
+#### GO111MODULE
+
+Go 1.11 includes preliminary support for Go modules, including a new module-aware 'go get' command. We intend to keep revising this support, while preserving compatibility, until it can be declared official (no longer preliminary), and then at a later point we may remove support for work in GOPATH and the old 'go get' command.
+
+The quickest way to take advantage of the new Go 1.11 module support is to check out your repository into a directory outside GOPATH/src, create a go.mod file (described in the next section) there, and run go commands from within that file tree.
+
+For more fine-grained control, the module support in Go 1.11 respects a temporary environment variable, GO111MODULE, which can be set to one of three string values: off, on, or auto (the default). If GO111MODULE=off, then the go command never uses the new module support. Instead it looks in vendor directories and GOPATH to find dependencies; we now refer to this as "GOPATH mode." If GO111MODULE=on, then the go command requires the use of modules, never consulting GOPATH. We refer to this as the command being module-aware or running in "module-aware mode". If GO111MODULE=auto or is unset, then the go command enables or disables module support based on the current directory. Module support is enabled only when the current directory is outside GOPATH/src and itself contains a go.mod file or is below a directory containing a go.mod file.
+
+In module-aware mode, GOPATH no longer defines the meaning of imports during a build, but it still stores downloaded dependencies (in GOPATH/pkg/mod) and installed commands (in GOPATH/bin, unless GOBIN is set).
+
+
+Check below how we use the command:
+```bash
+$ GO111MODULE=on go run myprogram.go
+$ GO111MODULE=on go build myprogram.go
+```
+When our project is not in our **$GOPATH** it is not necessary to use **GO111MODULE**, but when our project is in **$GOPATH** and we want to use **"go mod"** we need to inform this to the compiler using **GO111MODULE**...
+
+
 ### Go Test
 ---
 
