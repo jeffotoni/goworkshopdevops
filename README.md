@@ -54,7 +54,7 @@ Soon below some channels that I participate and can find me online.
    - [GO111MODULE](#go111module)
    - [go test](#go-test)
 
-## Lab 02 Println and Types with Golang and For
+## Lab 02 The golang types
 
 - [Types](#types)
    - [Numeric Types](#numeric-types)
@@ -1190,7 +1190,7 @@ Output:
 10
 ```
 
-## Lab 02 Println and Types with Golang and For
+## Lab 02 Types with Golang
 ---
 
 ### Types
@@ -1564,6 +1564,181 @@ b []
 c [0 0]
 ```
 
+A slice of type T is declared using []T. For example, Here is how you can declare a slice of type int -
+
+```go
+// Slice of type `int`
+var slice []int
+
+// Slice of type `string`
+var slice []string
+
+// Slice of type `string` with parameter variadic
+var lang = [...]string{"Erlang", "Elixir", "Haskell", "Clojure", "Scala"}
+```
+
+You can create a slice using a slice literal like this -
+
+```go
+// Creating a slice using a slice literal
+var s = []int{3, 5, 7, 9, 11, 13, 17}
+```
+
+The expression on the right-hand side of the above statement is a slice literal. The slice literal is declared just like an array literal, except that you do not specify any size in the square brackets [].
+
+When you create a slice using a slice literal, it first creates an array and then returns a slice reference to it.
+
+Let’s see:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	// Creating a slice using a slice literal
+	var s = []string{"@jeffotoni", "@awsbrasil", "@devopsbh", "@go_br"}
+
+	// Short hand declaration
+	t := []int{2, 4, 8, 16, 32, 64}
+
+	fmt.Println("s = ", s, len(s))
+	fmt.Println("t = ", t, len(t))
+}
+```
+Output:
+```bash
+s =  [@jeffotoni @awsbrasil @devopsbh @go_br] 4
+t =  [2 4 8 16 32 64] 6
+```
+
+Since a slice is a segment of an array, we can create a slice from an array.
+
+To create a slice from an array a, we specify two indices low (lower bound) and high (upper bound) separated by a colon
+
+```bash
+// Obtaining a slice from an array `a`
+a[low:high]
+```
+
+The above expression selects a slice from the array a. The resulting slice includes all the elements starting from index low to high, but excluding the element at index high.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	// Creating a slice using a slice literal
+	var groups = [5]string{"@awsbrasil", "@devopsbh", "@go_br", "@devopsbr", "@docker"}
+
+	// Creating a slice from the array
+	var s []string = groups[2:5]
+
+	s2 := s[1:3]
+	s3 := s[:3]
+	s4 := s[2:]
+	s5 := s[:]
+
+	fmt.Println("Array groups = ", groups, "len:", len(groups), "cap:", cap(groups))
+	fmt.Println("Slice s = ", s, "len:", len(s), "cap:", cap(s))
+	fmt.Println("Slice s = ", s2, "len:", len(s2), "cap:", cap(s2))
+	fmt.Println("Slice s = ", s3, "len:", len(s3), "cap:", cap(s3))
+	fmt.Println("Slice s = ", s4, "len:", len(s4), "cap:", cap(s4))
+	fmt.Println("Slice s = ", s5, "len:", len(s5), "cap:", cap(s5))
+}
+```
+
+Output:
+```bash
+Array groups =  [@awsbrasil @devopsbh @go_br @devopsbr @docker] len: 5 cap: 5
+Slice s =  [@go_br @devopsbr @docker] len: 3 cap: 3
+Slice s =  [@devopsbr @docker] len: 2 cap: 2
+Slice s =  [@go_br @devopsbr @docker] len: 3 cap: 3
+Slice s =  [@docker] len: 1 cap: 1
+Slice s =  [@go_br @devopsbr @docker] len: 3 cap: 3
+```
+
+The copy() function copies elements from one slice to another. Its signature looks like this
+
+```go
+func copy(dst, src []T) int
+```
+
+It takes two slices - a destination slice, and a source slice. It then copies elements from the source to the destination and returns the number of elements that are copied.
+
+Note that the elements are copied only if the destination slice has sufficient capacity.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	src := []string{"Erlang", "Elixir", "Haskell", "Clojure", "Scala"}
+	dest := make([]string, 2)
+
+	numElementsCopied := copy(dest, src)
+
+	fmt.Println("src = ", src)
+	fmt.Println("dest = ", dest)
+	fmt.Println("Number of elements copied from src to dest = ", numElementsCopied)
+}
+```
+
+Output:
+```bash
+src =  [Erlang Elixir Haskell Clojure Scala]
+dest =  [Erlang Elixir]
+Number of elements copied from src to dest =  2
+```
+The append() function appends new elements at the end of a given slice. Following is the signature of append function.
+
+```go
+func append(s []T, x ...T) []T
+```
+
+It takes a slice and a variable number of arguments x …T. It then returns a new slice containing all the elements from the given slice as well as the new elements.
+
+If the given slice doesn’t have sufficient capacity to accommodate new elements then a new underlying array is allocated with bigger capacity. All the elements from the underlying array of the existing slice are copied to this new array, and then the new elements are appended.
+
+However, if the slice has enough capacity to accommodate new elements, then the append() function re-uses its underlying array and appends new elements to the same array.
+
+Let’s see an example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	slice1 := []string{"Clojure", "Scala", "Elixir"}
+	slice2 := append(slice1, "Assembly", "Rust", "Go")
+	fmt.Printf("slice1 = %v, len = %d, cap = %d\n", slice1, len(slice1), cap(slice1))
+	fmt.Printf("slice2 = %v, len = %d, cap = %d\n", slice2, len(slice2), cap(slice2))
+	slice1[0] = "C++"
+	fmt.Println("\nslice1 = ", slice1)
+	fmt.Println("slice2 = ", slice2)
+	
+	// slice nil
+	var s []string
+
+	// Appending to a nil slice
+	s = append(s, "Java", "C", "Lisp", "Haskell")
+	fmt.Printf("\ns = %v, len = %d, cap = %d\n", s, len(s), cap(s))
+}
+```
+
+Output:
+```bash
+slice1 = [Clojure Scala Elixir], len = 3, cap = 3
+slice2 = [Clojure Scala Elixir Assembly Rust Go], len = 6, cap = 6
+
+slice1 =  [C++ Scala Elixir]
+slice2 =  [Clojure Scala Elixir Assembly Rust Go]
+
+s = [Java C Lisp Haskell], len = 4, cap = 4
+```
+
 ### Struct types
 
 A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-blank field names must be unique.
@@ -1631,6 +1806,62 @@ func main() {
 Output:
 ```bash
 {4 201}
+```
+
+Example Struct AWS Sqs Json
+```go
+type SqsJson struct {
+	Type      string `json:"type"`
+	MessageId string `json:"messageid"`
+	TopicArn  string `json:"topicarn"`
+	Message   string `json:"message"`
+	//Message          JsonMessage
+	Timestamp        string `json:"timestamp"`
+	SignatureVersion string `json:"signatureversion"`
+	Signature        string `json:"signature"`
+	SigningCertURL   string `json:"signingcerturl"`
+	UnsubscribeURL   string `json:"unsubscribeurl"`
+}
+
+type JsonMessage struct {
+	NotificationType string `json:"notificationType"`
+	Bounce           struct {
+		BounceType        string `json:"bounceType"`
+		BounceSubType     string `json:"bounceSubType"`
+		BouncedRecipients []struct {
+			EmailAddress   string `json:"emailAddress"`
+			Action         string `json:"action"`
+			Status         string `json:"status"`
+			DiagnosticCode string `json:"diagnosticCode"`
+		} `json:"bouncedRecipients"`
+		Timestamp    time.Time `json:"timestamp"`
+		FeedbackID   string    `json:"feedbackId"`
+		RemoteMtaIP  string    `json:"remoteMtaIp"`
+		ReportingMTA string    `json:"reportingMTA"`
+	} `json:"bounce"`
+
+	Mail struct {
+		Timestamp        time.Time `json:"timestamp"`
+		Source           string    `json:"source"`
+		SourceArn        string    `json:"sourceArn"`
+		SourceIP         string    `json:"sourceIp"`
+		SendingAccountID string    `json:"sendingAccountId"`
+		MessageID        string    `json:"messageId"`
+		Destination      []string  `json:"destination"`
+		HeadersTruncated bool      `json:"headersTruncated"`
+		Headers          []struct {
+			Name  string `json:"name"`
+			Value string `json:"value"`
+		} `json:"headers"`
+
+		CommonHeaders struct {
+			From    []string `json:"from"`
+			ReplyTo []string `json:"replyTo"`
+			To      []string `json:"to"`
+			Subject string   `json:"subject"`
+		} `json:"commonHeaders"`
+	} `json:"mail"`
+}
 ```
 
 ### Map types
