@@ -55,7 +55,7 @@ Soon below some channels that I participate and can find me online.
     - [Keywords](#keywords)
     - [Operators and punctuation](#operators-and-punctuation)
     - [Println Print](#println-print)
-    - [Bufio NewWriter](bufio-newWriter)
+    - [Bufio NewWriter](#bufio-newWriter)
 - [Types](#types)
    - [Numeric Types](#numeric-types)
    - [String types](#string-types)
