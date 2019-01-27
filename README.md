@@ -51,19 +51,21 @@ Soon below some channels that I participate and can find me online.
 ## Lab 02 Println and Types with Golang and For
 
 - [Introduction golang](#introduction-golang)
-- [Golang language](#golang-language)
-- [Keywords](#keywords)
-  - [Operators and punctuation](#operators-and-punctuation)
-  - [Println Print](#println-print)   
+  - [Golang language](#golang-language)
+    - [Keywords](#keywords)
+    - [Operators and punctuation](#operators-and-punctuation)
+    - [Println Print](#println-print)   
 - [Types](#types)
-  - [Pointer Types](#pointer-types)
-  - [Array Types](#array-types)
-  - [Slice Types](#slice-types)
-  - [Struct Types](#struct-types)
-  - [Map Types](#map-types)
-  - [Channel Types](#channel-types)
-  - [Blank identifier](#blank-identifier)
-  - [Interface Types](#interface-types)
+   - [Numeric Types](#numeric-types)
+   - [String types](#string-types)
+   - [Pointer Types](#pointer-types)
+   - [Array Types](#array-types)
+   - [Slice Types](#slice-types)
+   - [Struct Types](#struct-types)
+   - [Map Types](#map-types)
+   - [Channel Types](#channel-types)
+   - [Blank identifier](#blank-identifier)
+   - [Interface Types](#interface-types)
 	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
 	 - [Interface as type](#interface-as-type)
 - [For Break Range If else](#for-break-range-if-else)
@@ -1133,6 +1135,7 @@ The language predeclares certain type names. Others are introduced with type dec
 
 Each type T has an underlying type: If T is one of the predeclared boolean, numeric, or string types, or a type literal, the corresponding underlying type is T itself. Otherwise, T's underlying type is the underlying type of the type to which T refers in its type declaration. 
 
+Example:
 ```bash
 type (
     A1 = string
@@ -1149,30 +1152,6 @@ type (
 
 The underlying type of string, A1, A2, B1, and B2 is string. The underlying type of []B1, B3, and B4 is []B1. 
 
-#### Boolean Types
-
-A boolean type represents the set of Boolean truth values denoted by the predeclared constants true and false. The predeclared boolean type is bool; it is a defined type.
-
-```go
-package main
-
-import "fmt"
-
-func main() {
-
-  var Bool bool
-  fmt.Println(Bool)
-
-  Bool2 := true
-  fmt.Println(Bool2)
-}
-```
-
-Output:
-```bash
-false
-true
-```
 
 #### Numeric Types
 
@@ -1257,6 +1236,128 @@ Output:
 Glyph:             "日本語"
 UTF-8:             [e6 97 a5 e6 9c ac e8 aa 9e]
 Unicode codepoint: [U+65E5 U+672C U+8A9E]
+```
+#### Pointer types
+
+Struct fields can be accessed through a struct pointer.
+
+To access the field X of a struct when we have the struct pointer p we could write (*p).X. However, that notation is cumbersome, so the language permits us instead to write just p.X, without the explicit dereference.
+
+A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. The value of an uninitialized pointer is nil.
+
+```bash
+PointerType = "*" BaseType .
+BaseType    = Type .
+```
+
+```bash
+*Point
+*[4]int
+```
+
+Example:
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+  X int
+  Y int
+}
+
+func main() {
+  v := Vertex{1, 2}
+  p := &v
+  p.X = 1e9
+  fmt.Println(v)
+  fmt.Println(p.Y)
+}
+```
+Output:
+```bash
+{1000000000 2}
+2
+```
+For every type that is declared, either by you or the language itself, you get for free a complement pointer type you can use for sharing. There already exists a built-in type named int so there is a complement pointer type called *int.
+
+All pointer types have the same two characteristics. First, they start with the character *. Second, they all have the same memory size and representation, which is a 4 or 8 bytes that represent an address. On 32bit architectures (like the playground), pointers require 4 bytes of memory and on 64bit architectures (like your machine), they require 8 bytes of memory.
+
+Example:
+```go
+package main
+
+func main() {
+
+  var a int
+  inc := &a
+  *inc = 2
+  *inc++
+  println("inc:\tValue Of[", inc, "]\tAddr Of[", &inc, "]\tValue Points To[", *inc, "]")
+}
+```
+
+Output:
+```bash
+inc:  Value Of[ 0xc000036778 ]  Addr Of[ 0xc000036780 ]  Value Points To[ 3 ]
+```
+
+For an operand x of type T, the address operation &x generates a pointer of type *T to x. The operand must be addressable, that is, either a variable, pointer indirection, or slice indexing operation; or a field selector of an addressable struct operand; or an array indexing operation of an addressable array. As an exception to the addressability requirement, x may also be a (possibly parenthesized) composite literal. If the evaluation of x would cause a run-time panic, then the evaluation of &x does too.
+
+For an operand x of pointer type *T, the pointer indirection *x denotes the variable of type T pointed to by x. If x is nil, an attempt to evaluate *x will cause a run-time panic.
+
+```bash
+&x
+&a[f(2)]
+&Point{2, 3}
+*p
+*pf(x)
+
+var x *int = nil
+*x   // causes a run-time panic
+&*x  // causes a run-time panic
+```
+
+See the example below:
+```go
+package main
+
+import "fmt"
+
+func main() {
+  var a int = 100  /* actual variable declaration */
+  var pa *int      /* pointer variable declaration */
+  var pointer *int /* pointer variable declaration */
+
+  pa = &a /* store address of a in pointer variable*/
+
+  fmt.Printf("Address of a variable: %x\n", &a)
+
+  /* address stored in pointer variable */
+  fmt.Printf("Address stored in ip variable: %x\n", pa)
+
+  /* access the value using the pointer */
+  fmt.Printf("Value of *ip variable: %d\n", *pa)
+
+  /* succeeds if p is not nil */
+  if pa != nil {
+    fmt.Println("success is not nil")
+  }
+
+  /* succeeds if p is null */
+  if (pointer) == nil {
+    fmt.Println("success pointer is nil")
+  }
+}
+```
+
+Output:
+```bash
+Address of a variable: c0000160c8
+Address stored in ip variable: c0000160c8
+Value of *ip variable: 100
+success is not nil
+success pointer is nil
 ```
 
 #### Array types
@@ -1464,436 +1565,6 @@ Output:
 ```bash
 {4 201}
 ```
-#### Pointer types
-
-Struct fields can be accessed through a struct pointer.
-
-To access the field X of a struct when we have the struct pointer p we could write (*p).X. However, that notation is cumbersome, so the language permits us instead to write just p.X, without the explicit dereference.
-
-A pointer type denotes the set of all pointers to variables of a given type, called the base type of the pointer. The value of an uninitialized pointer is nil.
-
-```bash
-PointerType = "*" BaseType .
-BaseType    = Type .
-```
-
-```bash
-*Point
-*[4]int
-```
-
-Example:
-```go
-package main
-
-import "fmt"
-
-type Vertex struct {
-  X int
-  Y int
-}
-
-func main() {
-  v := Vertex{1, 2}
-  p := &v
-  p.X = 1e9
-  fmt.Println(v)
-  fmt.Println(p.Y)
-}
-```
-Output:
-```bash
-{1000000000 2}
-2
-```
-For every type that is declared, either by you or the language itself, you get for free a complement pointer type you can use for sharing. There already exists a built-in type named int so there is a complement pointer type called *int.
-
-All pointer types have the same two characteristics. First, they start with the character *. Second, they all have the same memory size and representation, which is a 4 or 8 bytes that represent an address. On 32bit architectures (like the playground), pointers require 4 bytes of memory and on 64bit architectures (like your machine), they require 8 bytes of memory.
-
-Example:
-```go
-package main
-
-func main() {
-
-  var a int
-  inc := &a
-  *inc = 2
-  *inc++
-  println("inc:\tValue Of[", inc, "]\tAddr Of[", &inc, "]\tValue Points To[", *inc, "]")
-}
-```
-
-Output:
-```bash
-inc:  Value Of[ 0xc000036778 ]  Addr Of[ 0xc000036780 ]  Value Points To[ 3 ]
-```
-
-For an operand x of type T, the address operation &x generates a pointer of type *T to x. The operand must be addressable, that is, either a variable, pointer indirection, or slice indexing operation; or a field selector of an addressable struct operand; or an array indexing operation of an addressable array. As an exception to the addressability requirement, x may also be a (possibly parenthesized) composite literal. If the evaluation of x would cause a run-time panic, then the evaluation of &x does too.
-
-For an operand x of pointer type *T, the pointer indirection *x denotes the variable of type T pointed to by x. If x is nil, an attempt to evaluate *x will cause a run-time panic.
-
-```bash
-&x
-&a[f(2)]
-&Point{2, 3}
-*p
-*pf(x)
-
-var x *int = nil
-*x   // causes a run-time panic
-&*x  // causes a run-time panic
-```
-
-See the example below:
-```go
-package main
-
-import "fmt"
-
-func main() {
-  var a int = 100  /* actual variable declaration */
-  var pa *int      /* pointer variable declaration */
-  var pointer *int /* pointer variable declaration */
-
-  pa = &a /* store address of a in pointer variable*/
-
-  fmt.Printf("Address of a variable: %x\n", &a)
-
-  /* address stored in pointer variable */
-  fmt.Printf("Address stored in ip variable: %x\n", pa)
-
-  /* access the value using the pointer */
-  fmt.Printf("Value of *ip variable: %d\n", *pa)
-
-  /* succeeds if p is not nil */
-  if pa != nil {
-    fmt.Println("success is not nil")
-  }
-
-  /* succeeds if p is null */
-  if (pointer) == nil {
-    fmt.Println("success pointer is nil")
-  }
-}
-```
-
-Output:
-```bash
-Address of a variable: c0000160c8
-Address stored in ip variable: c0000160c8
-Value of *ip variable: 100
-success is not nil
-success pointer is nil
-```
-
-#### Function types
-
-A function type denotes the set of all functions with the same parameter and result types. The value of an uninitialized variable of function type is nil.
-
-```bash
-FunctionType   = "func" Signature .
-Signature      = Parameters [ Result ] .
-Result         = Parameters | Type .
-Parameters     = "(" [ ParameterList [ "," ] ] ")" .
-ParameterList  = ParameterDecl { "," ParameterDecl } .
-ParameterDecl  = [ IdentifierList ] [ "..." ] Type .
-```
- Within a list of parameters or results, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item (parameter or result) of the specified type and all non-blank names in the signature must be unique. If absent, each type stands for one item of that type. Parameter and result lists are always parenthesized except that if there is exactly one unnamed result it may be written as an unparenthesized type.
-
-The final incoming parameter in a function signature may have a type prefixed with .... A function with such a parameter is called variadic and may be invoked with zero or more arguments for that parameter.
-
-```bash
-func()
-func(x int) int
-func(a, _ int, z float32) bool
-func(a, b int, z float32) (bool)
-func(prefix string, values ...int)
-func(a, b int, z float64, opt ...interface{}) (success bool)
-func(int, int, float64) (float64, *[]int)
-func(n int) func(p *T)
-```
-
-Example 1:
-```go
-package main
-
-func main() {
-
-}
-```
-Output:
-```bash
-
-```
-
-Example 2:
-```go
-package main
-
-import "fmt"
-
-func main() {
-
-  FaaS("Lambda")
-}
-
-func FaaS(n string) {
-  fmt.Println(n)
-}
-```
-
-Output:
-```bash
-Lambda
-```
-
-Example 3:
-```go
-package main
-
-import (
-  "fmt"
-  "math"
-)
-
-func compute(fn func(float64, float64) float64) float64 {
-  return fn(2, 3)
-}
-
-func main() {
-  hypot := func(x, y float64) float64 {
-    return math.Sqrt(x*x + y*y)
-  }
-  fmt.Println(hypot(4, 10))
-
-  fmt.Println(compute(hypot))
-  fmt.Println(compute(math.Pow))
-}
-```
-
-Output:
-```bash
-10.770329614269007
-3.605551275463989
-8
-```
-
-#### Interface types
-
-**An interface is two things:**
- - it is a set of methods
- - but it is also a type
-
-The __interface{} type__, the empty interface is the interface that has __no methods__
-
-Since there is no implements keyword, all types implement at least zero methods, and satisfying an interface is done automatically, all types satisfy the empty interface.
-That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value.
-
-Example:
-```go
-func DoSomething(v interface{}) {
-   // ...
-}
-
-var Msg interface{}
-
-type Stringer interface {
-    String() string
-}
-```
-----
-
-#### Here's an interface as a method
-
-An interface type specifies a method set called its interface. A variable of interface type can store a value of any type with a method set that is any superset of the interface. Such a type is said to implement the interface. The value of an uninitialized variable of interface type is nil.
-
-
-```bash
-InterfaceType      = "interface" "{" { MethodSpec ";" } "}" .
-MethodSpec         = MethodName Signature | InterfaceTypeName .
-MethodName         = identifier .
-InterfaceTypeName  = TypeName .
-```
-
-As with all method sets, in an interface type, each method must have a unique non-blank name.
-
-```go
-// A simple File interface
-interface {
-  Read(b Buffer) bool
-  Write(b Buffer) bool
-  Close()
-}
-```
-
-More than one type may implement an interface. For instance, if two types S1 and S2 have the method set
-
-```bash
-func (p T) Read(b Buffer) bool { return … }
-func (p T) Write(b Buffer) bool { return … }
-func (p T) Close() { … }
-```
-
-(where T stands for either S1 or S2) then the File interface is implemented by both S1 and S2, regardless of what other methods S1 and S2 may have or share.
-
-A type implements any interface comprising any subset of its methods and may therefore implement several distinct interfaces. For instance, all types implement the empty interface:
-
-```bash
-interface{}
-```
-
-Similarly, consider this interface specification, which appears within a type declaration to define an interface called Locker:
-
-```go
-type Locker interface {
-  Lock()
-  Unlock()
-}
-```
-
-If S1 and S2 also implement
-
-```bash
-func (p T) Lock() { … }
-func (p T) Unlock() { … }
-```
-
-they implement the Locker interface as well as the File interface.
-
-An interface T may use a (possibly qualified) interface type name E in place of a method specification. This is called embedding interface E in T; it adds all (exported and non-exported) methods of E to the interface T.
-
-```go
-type ReadWriter interface {
-  Read(b Buffer) bool
-  Write(b Buffer) bool
-}
-
-type File interface {
-  ReadWriter  // same as adding the methods of ReadWriter
-  Locker      // same as adding the methods of Locker
-  Close()
-}
-
-type LockedFile interface {
-  Locker
-  File        // illegal: Lock, Unlock not unique
-  Lock()      // illegal: Lock not unique
-}
-```
-
-An interface type T may not embed itself or any interface type that embeds T, recursively.
-```go
-// illegal: Bad cannot embed itself
-type Bad interface {
-  Bad
-}
-
-// illegal: Bad1 cannot embed itself using Bad2
-type Bad1 interface {
-  Bad2
-}
-type Bad2 interface {
-  Bad1
-}
-```
-
-Example: 
-```go
-package main
-
-import (
-  "fmt"
-)
-
-type R struct {
-  R string
-}
-
-type Iread interface {
-  Read() string
-}
-
-func (r *R) Read() string {
-  return fmt.Sprintf("Only: call Read")
-}
-
-func Call(ir Iread) string {
-  return fmt.Sprintf("Read: %s", ir.Read())
-}
-
-func main() {
-  var iread Iread
-  r := R{"hello interface"}
-  // A way to use Interface
-  iread = &r
-  fmt.Println(iread, r)
-  fmt.Println(iread.Read())
-
-  // Second way to access interface
-  r2 := R{"hello interface call"}
-  fmt.Println(Call(&r2))
-}
-```
-
-Output:
-```bash
-&{hello interface} {hello interface}
-Only: call Read
-Read: Only: call Read
-```
-####  Interface as type
-
-Interfaces as type __interface{}__ means you can put value of any type, including your own custom type. All types in Go satisfy an empty interface (interface{} is an empty interface).
-In your example, Msg field can have value of any type. 
-
-
-```go
-var val interface{} // element type of m is assignable to val
-``` 
-
-```go
-type Empty interface {
-    /* it has no methods */
-}
-
-// Because, Empty interface has no methods, 
-// following types satisfy the Empty interface
-var a Empty
-
-a = 60
-a = 10.5
-a = "Lambda Man"
-```
-
-Interfaces as types looks at another example below:
-```go
-package main
-
-import (
-  "fmt"
-)
-
-type MyStruct struct {
-  Msg interface{}
-}
-
-func main() {
-  b := MyStruct{}
-  // string
-  b.Msg = "5"
-  fmt.Printf("%#v %T \n", b.Msg, b.Msg) // Output: "5" string
-
-  // int
-  b.Msg = 5
-  fmt.Printf("%#v %T", b.Msg, b.Msg) //Output:  5 int
-
-  // map
-  b.Msg = map[string]string{"population": "500000", "language": "sueco"}
-  fmt.Printf("%#v %T", b.Msg, b.Msg) //Output:  5 int
-}
-```
-
 
 #### Map types
 
@@ -2072,122 +1743,6 @@ Output:
 100
 ```
 
-#### Properties of types and values
-
-Two types are either identical or different.
-A defined type is always different from any other type. Otherwise, two types are identical if their underlying type literals are structurally equivalent; that is, they have the same literal structure and corresponding components have identical types.
-
-Given the declarations 
-
-```go
-package main
-
-import "fmt"
-
-type (
-  A0 = []string
-  A1 = A0
-  A2 = struct{ a, b int }
-  A3 = int
-  A4 = func(A3, float64) *A0
-  A5 = func(x int, _ float64) *[]string
-)
-
-type (
-  B0 A0
-  B1 []string
-  B2 struct{ a, b int }
-  B3 struct{ a, c int }
-  B4 func(int, float64) *B0
-  B5 func(x int, y float64) *A1
-)
-
-type C0 = B0
-
-func main() {
-  var str C0
-  str = append(str, "@jeffotoni")
-  fmt.Println(str)
-}
-```
-
-Output:
-```bash
-types [@jeffotoni]
-```
-
-these types are identical:
-
-```bash
-A0, A1, and []string
-A2 and struct{ a, b int }
-A3 and int
-A4, func(int, float64) *[]string, and A5
-
-B0 and C0
-[]int and []int
-struct{ a, b *T5 } and struct{ a, b *T5 }
-func(x int, y float64) *[]string, func(int, float64) (result *[]string), and A5
-```
-
-B0 and B1 are different because they are new types created by distinct type definitions; func(int, float64) *B0 and func(x int, y float64) *[]string are different because B0 is different from []string.
-
-
-#### Predeclared identifiers
-
-The following identifiers are implicitly declared in the universe block:
-
-```bash
-Types:
-  bool byte complex64 complex128 error float32 float64
-  int int8 int16 int32 int64 rune string
-  uint uint8 uint16 uint32 uint64 uintptr
-
-Constants:
-  true false iota
-
-Zero value:
-  nil
-
-Functions:
-  append cap close complex copy delete imag len
-  make new panic print println real recover
-```
-
-#### Declarations and scope
-
-A declaration binds a non-blank identifier to a constant, type, variable, function, label, or package. Every identifier in a program must be declared. No identifier may be declared twice in the same block, and no identifier may be declared in both the file and package block.
-
-The blank identifier may be used like any other identifier in a declaration, but it does not introduce a binding and thus is not declared. In the package block, the identifier init may only be used for init function declarations, and like the blank identifier it does not introduce a new binding.
-
-```bash
-Declaration   = ConstDecl | TypeDecl | VarDecl .
-TopLevelDecl  = Declaration | FunctionDecl | MethodDecl .
-```
-
-The scope of a declared identifier is the extent of source text in which the identifier denotes the specified constant, type, variable, function, label, or package.
-
-Go is lexically scoped using blocks:
-
-```bash
-    The scope of a predeclared identifier is the universe block.
-    The scope of an identifier denoting a constant, type, variable, or function (but not method) declared at top level (outside any function) is the package block.
-    The scope of the package name of an imported package is the file block of the file containing the import declaration.
-    The scope of an identifier denoting a method receiver, function parameter, or result variable is the function body.
-    The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec (ShortVarDecl for short variable declarations) and ends at the end of the innermost containing block.
-    The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
-```
-
-An identifier declared in a block may be redeclared in an inner block. While the identifier of the inner declaration is in scope, it denotes the entity declared by the inner declaration.
-
-The package clause is not a declaration; the package name does not appear in any scope. Its purpose is to identify the files belonging to the same package and to specify the default package name for import declarations.
-
-
-#### Label scopes
-
-Labels are declared by labeled statements and are used in the **"break", "continue"**, and **"goto"** statements. It is illegal to define a label that is never used. In contrast to other identifiers, labels are not block scoped and do not conflict with identifiers that are not labels. The scope of a label is the body of the function in which it is declared and excludes the body of any nested function.
-
-
 #### Blank identifier
 
 The blank identifier is represented by the underscore character **_**. It serves as an anonymous placeholder instead of a regular (non-blank) identifier and has special meaning in declarations, as an operand, and in assignments.
@@ -2199,5 +1754,220 @@ func f() (int, string, error)
 
 // function return
 _, _, _ := f()
+```
+
+#### Interface types
+
+**An interface is two things:**
+ - it is a set of methods
+ - but it is also a type
+
+The __interface{} type__, the empty interface is the interface that has __no methods__
+
+Since there is no implements keyword, all types implement at least zero methods, and satisfying an interface is done automatically, all types satisfy the empty interface.
+That means that if you write a function that takes an interface{} value as a parameter, you can supply that function with any value.
+
+Example:
+```go
+func DoSomething(v interface{}) {
+   // ...
+}
+
+var Msg interface{}
+
+type Stringer interface {
+    String() string
+}
+```
+
+#### Here's an interface as a method
+
+An interface type specifies a method set called its interface. A variable of interface type can store a value of any type with a method set that is any superset of the interface. Such a type is said to implement the interface. The value of an uninitialized variable of interface type is nil.
+
+
+```bash
+InterfaceType      = "interface" "{" { MethodSpec ";" } "}" .
+MethodSpec         = MethodName Signature | InterfaceTypeName .
+MethodName         = identifier .
+InterfaceTypeName  = TypeName .
+```
+
+As with all method sets, in an interface type, each method must have a unique non-blank name.
+
+```go
+// A simple File interface
+interface {
+  Read(b Buffer) bool
+  Write(b Buffer) bool
+  Close()
+}
+```
+
+More than one type may implement an interface. For instance, if two types S1 and S2 have the method set
+
+```bash
+func (p T) Read(b Buffer) bool { return … }
+func (p T) Write(b Buffer) bool { return … }
+func (p T) Close() { … }
+```
+
+(where T stands for either S1 or S2) then the File interface is implemented by both S1 and S2, regardless of what other methods S1 and S2 may have or share.
+
+A type implements any interface comprising any subset of its methods and may therefore implement several distinct interfaces. For instance, all types implement the empty interface:
+
+```bash
+interface{}
+```
+
+Similarly, consider this interface specification, which appears within a type declaration to define an interface called Locker:
+
+```go
+type Locker interface {
+  Lock()
+  Unlock()
+}
+```
+
+If S1 and S2 also implement
+
+```bash
+func (p T) Lock() { … }
+func (p T) Unlock() { … }
+```
+
+they implement the Locker interface as well as the File interface.
+
+An interface T may use a (possibly qualified) interface type name E in place of a method specification. This is called embedding interface E in T; it adds all (exported and non-exported) methods of E to the interface T.
+
+```go
+type ReadWriter interface {
+  Read(b Buffer) bool
+  Write(b Buffer) bool
+}
+
+type File interface {
+  ReadWriter  // same as adding the methods of ReadWriter
+  Locker      // same as adding the methods of Locker
+  Close()
+}
+
+type LockedFile interface {
+  Locker
+  File        // illegal: Lock, Unlock not unique
+  Lock()      // illegal: Lock not unique
+}
+```
+
+An interface type T may not embed itself or any interface type that embeds T, recursively.
+```go
+// illegal: Bad cannot embed itself
+type Bad interface {
+  Bad
+}
+
+// illegal: Bad1 cannot embed itself using Bad2
+type Bad1 interface {
+  Bad2
+}
+type Bad2 interface {
+  Bad1
+}
+```
+
+Example: 
+```go
+package main
+
+import (
+  "fmt"
+)
+
+type R struct {
+  R string
+}
+
+type Iread interface {
+  Read() string
+}
+
+func (r *R) Read() string {
+  return fmt.Sprintf("Only: call Read")
+}
+
+func Call(ir Iread) string {
+  return fmt.Sprintf("Read: %s", ir.Read())
+}
+
+func main() {
+  var iread Iread
+  r := R{"hello interface"}
+  // A way to use Interface
+  iread = &r
+  fmt.Println(iread, r)
+  fmt.Println(iread.Read())
+
+  // Second way to access interface
+  r2 := R{"hello interface call"}
+  fmt.Println(Call(&r2))
+}
+```
+
+Output:
+```bash
+&{hello interface} {hello interface}
+Only: call Read
+Read: Only: call Read
+```
+
+####  Interface as type
+
+Interfaces as type __interface{}__ means you can put value of any type, including your own custom type. All types in Go satisfy an empty interface (interface{} is an empty interface).
+In your example, Msg field can have value of any type. 
+
+
+```go
+var val interface{} // element type of m is assignable to val
+``` 
+
+```go
+type Empty interface {
+    /* it has no methods */
+}
+
+// Because, Empty interface has no methods, 
+// following types satisfy the Empty interface
+var a Empty
+
+a = 60
+a = 10.5
+a = "Lambda Man"
+```
+
+Interfaces as types looks at another example below:
+```go
+package main
+
+import (
+  "fmt"
+)
+
+type MyStruct struct {
+  Msg interface{}
+}
+
+func main() {
+  b := MyStruct{}
+  // string
+  b.Msg = "5"
+  fmt.Printf("%#v %T \n", b.Msg, b.Msg) // Output: "5" string
+
+  // int
+  b.Msg = 5
+  fmt.Printf("%#v %T", b.Msg, b.Msg) //Output:  5 int
+
+  // map
+  b.Msg = map[string]string{"population": "500000", "language": "sueco"}
+  fmt.Printf("%#v %T", b.Msg, b.Msg) //Output:  5 int
+}
 ```
 
