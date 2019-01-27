@@ -2886,23 +2886,23 @@ package main
 
 import "fmt"
 
-func plusTwo() func(v int) int {
+func PlusX() func(v int) int {
     return func(v int) int {
         return v + 5
     }
 }
 
-func plusX(x int) func(v int) int {
+func plusXandY(x int) func(v int) int {
     return func(v int) int {
         return v + x
     }
 }
 
 func main() {
-    p := plusTwo()
+    p := PlusX()
     fmt.Printf("5+15: %d\n", p(15))
 
-    px := plusX(6)
+    px := plusXandY(6)
     fmt.Printf("6+10: %d\n", px(10))
 }
 ```
@@ -2915,7 +2915,102 @@ Output:
 
 ### Recursion
 
+Go supports recursive functions. Here’s a classic factorial example.
+
+A simple example:
+```go
+package main
+
+import "fmt"
+
+func fact(n int) int {
+	if n == 0 {
+		return 1
+	}
+	return n * fact(n-1)
+}
+
+func main() {
+	fmt.Println(fact(7))
+}
+```
+
+Output:
+```bash
+5040
+```
+
+Listing all subdirectories directories:
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+)
+
+// Listing our example directory
+// Listing our example directory recursively
+func main() {
+
+	// Capturing our path that is in the environment
+	gopath := os.Getenv("PWD")
+
+	// directory we want to list
+	gopath += "/examples"
+
+	// Making call in function
+	list := ListDir(gopath)
+
+	// listing the function return
+	for i, p := range list {
+		fmt.Printf("[%d:%s===%s]\n", i, path.Dir(p), path.Base(p))
+	}
+}
+
+// This function uses pkg filepath.Walk, it is
+// a recursive function, where it will go through
+// our directory and its subfolders.
+func ListDir(rootpath string) []string {
+
+	list := make([]string, 0)
+
+	// recursive call
+	// This function receives a function as parameter and after going through all levels it ends.
+	err := filepath.Walk(rootpath, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) != ".git" && filepath.Ext(path) != ".svn" {
+			list = append(list, path)
+		}
+		return nil
+	})
+	if err != nil {
+		fmt.Printf("walk error [%v]\n", err)
+	}
+	return list
+}
+```
+
+Output:
+```bash
+[0:$(pwd)/examples/bufio.writer===main.go]
+[1:$(pwd)/examples/error===error1.go]
+[2:$(pwd)/examples/error===error2.go]
+[3:$(pwd)/examples/error===error3.go]
+[4:$(pwd)/examples/error===error4.go]
+...
+...
+```
+
 ### Asynchronous Functions
+
+A goroutine is a lightweight thread of execution.
+
 
 ### Defer
 
