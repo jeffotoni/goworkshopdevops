@@ -7,7 +7,7 @@ The content and references used are from the [Golang Official Site](https://gola
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/gocompilation#installation)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
-Well that site here [Play Golang] (https://play.golang.org) we can play Golang online.
+Well that site here [Play Golang](https://play.golang.org) we can play Golang online.
 
 Soon below some channels that I participate and can find me online.
 
@@ -164,6 +164,7 @@ Soon below some channels that I participate and can find me online.
 
 
 ### Overview
+---
 
 Go is a powerful language when it comes to competition and high performance, with a clean and efficient architecture. It grows year after 
 year and every day the communities grow even more.
@@ -180,7 +181,7 @@ Problems involving competition, web applications, high performance applications,
 Is where language is increasingly becoming prominent in the market and in communities.
 
 ### Installation 
-
+---
 
 We will download the file, unpack it and install it in /usr/local/go, if we have golang already installed in the machine we will have to remove the existing one to leave our installation as unique.
 Let's create our directory in our workspace and test to see if everything went well
@@ -189,7 +190,7 @@ Let's create our directory in our workspace and test to see if everything went w
 
 ```bash
 $ sudo rm -rf /usr/local/go
-$ wget https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz
+$ wget https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
 ```
 
@@ -221,7 +222,7 @@ Let's run go version to see if everything is correct.
 
 ```bash
 $ go version
-go version go1.11.4 linux/amd64
+go version go1.11.5 linux/amd64
 ```
 
 Check that Go is installed correctly by setting up a workspace and building a simple program, as follows. 
@@ -235,7 +236,6 @@ Next, make the directory src/hello inside your workspace, and in that directory 
 Workspace is our place of work, where we will organize our directories with our projects. As shown above, until **Go version 1.11** we were forced to do everything under the Workspace. $GOPATH Down Projects.
 
 **Example hello**
-
 ```bash
 $ export GOPATH=$HOME/go
 $ mkdir $HOME/go
@@ -243,6 +243,7 @@ $ mkdir $HOME/go/src
 $ mkdir $HOME/go/src/hello
 $ vim $HOME/go/src/hello/hello.go
 ```
+
 ```bash
 $GOPATH/
   |-src
@@ -251,7 +252,6 @@ $GOPATH/
 ```
 
 **Example Project**
-
 ```bash
 $ export GOPATH=$HOME/go
 $ mkdir $HOME/go/src/project1
@@ -285,6 +285,7 @@ The $GOPATH environment variable tells the Go tool where your workspace is locat
 ```go
 $ go get github.com/user/project1
 ```
+
 The **go get** command fetches source repositories from the internet and places them in your workspace.
 Package paths matter to the Go tool. Using "github.com/..." means the tool knows how to fetch your repository. 
 
