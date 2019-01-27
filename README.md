@@ -112,23 +112,7 @@ Soon below some channels that I participate and can find me online.
 
 - [Exercise three](#Exercise-three)
 
-## Lab 04 Goroutine the power
-
-- [Goroutine](#)
-  - [introduction](#)
-    - [Channel](#)
-    - [Parallelism](#)
-    - [GOMAXPROCS](#)
-    - [WaitGroup](#)
-    - [Race Conditions](#)
-    - [Worker](#)
-    - [Context](#)
-    - [Ticker](#)
-    - [Singleton Connect Thread Safe](#)
-
-- [Exercise four](#Exercise-four)
-
-## Lab 05 Using Golang to create Command Line programs
+## Lab 04 Using Golang to create Command Line programs
 
 - [Golang Cli](#golang-cli)
   - [introduction](#)
@@ -146,7 +130,7 @@ Soon below some channels that I participate and can find me online.
 
 - [Exercise five](#Exercise-five)
 
-## Lab 06 building apis with net/http
+## Lab 05 building apis with net/http
 
 - [net/http Server](#)
   - [introduction](#)
@@ -178,6 +162,22 @@ Soon below some channels that I participate and can find me online.
 
 - [Exercise six](#Exercise-six)
 
+
+## Lab 06 Goroutine the power
+
+- [Goroutine](#)
+  - [introduction](#)
+    - [Channel](#)
+    - [Parallelism](#)
+    - [GOMAXPROCS](#)
+    - [WaitGroup](#)
+    - [Race Conditions](#)
+    - [Worker](#)
+    - [Context](#)
+    - [Ticker](#)
+    - [Singleton Connect Thread Safe](#)
+
+- [Exercise four](#Exercise-four)
 
 ### Overview
 ---
@@ -3394,11 +3394,94 @@ Output:
 
 ### Asynchronous Functions
 
-A goroutine is a lightweight thread of execution.
+In golang to perform asynchronous functions we use the keyword **"go"** it is responsible for putting the functions to be executed concurrently.
+A **"go"** statement starts the execution of a function call as an independent concurrent thread of control, or goroutine, within the same address space. 
 
+```go
+GoStmt = "go" Expression .
+```
+
+```go
+go Server()
+go func(ch chan<- bool) { for { sleep(10); ch <- true }} (c)
+```
+
+Example:
+```go
+
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+var r = rand.Intn(500)
+
+func pinger() {
+	time.Sleep(time.Duration(r) * time.Microsecond)
+	fmt.Println("pinger")
+}
+
+func ponger() {
+	time.Sleep(time.Duration(r) * time.Microsecond)
+	fmt.Println("ponger")
+}
+
+func printer() {
+	time.Sleep(time.Duration(r) * time.Microsecond)
+	fmt.Println("printer")
+}
+
+func main() {
+	// making functions
+	// calls asynchronously
+	go pinger()
+	go ponger()
+	go printer()
+
+	// Waiting to press any key to end
+	var input string
+	fmt.Scanln(&input)
+}
+```
+Output one:
+```bash
+ponger
+pinger
+printer
+```
+
+Output two:
+```bash
+pinger
+ponger
+printer
+```
 
 ### Defer
 
+A "defer" statement invokes a function whose execution is deferred to the moment the surrounding function returns, either because the surrounding function executed a return statement, reached the end of its function body, or because the corresponding goroutine is panicking. 
+
+```go
+DeferStmt = "defer" Expression .
+```
+
+The expression must be a function or method call; it cannot be parenthesized. Calls of built-in functions are restricted as for expression statements.
+
+Each time a "defer" statement executes, the function value and parameters to the call are evaluated as usual and saved anew but the actual function is not invoked. Instead, deferred functions are invoked immediately before the surrounding function returns, in the reverse order they were deferred. If a deferred function value evaluates to nil, execution panics when the function is invoked, not when the "defer" statement is executed. 
+
+Examples:
+```go
+defer unlock(l)
+defer myFunc()
+defer close(channel)
+defer fmt.Print(x)
+defer db.Close()
+defer f.Close()
+defer res.Body.Close()
+```
 
 ### Exercise one
 ---
