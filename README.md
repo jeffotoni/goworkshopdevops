@@ -1916,6 +1916,160 @@ Output:
 map[] map[] map[population:500000] map[population:500000] map[]
 ```
 
+A map is declared using the following syntax:
+```go
+var m map[KeyType]ValueType
+
+// For example, Here is how you can declare a map of string keys to int values
+var m map[string]int
+```
+
+The zero value of a map is nil. A nil map has no keys. Moreover, any attempt to add keys to a nil map will result in a runtime error.
+
+Let’s see an example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	// Required to initialize
+	// the map with values
+	var m map[string]int
+	fmt.Println(m)
+	if m == nil {
+		fmt.Println("is nil")
+	}
+	// Attempting to add keys
+	// to a nil map will result in a runtime error
+	//m["population"] = 500000
+	//fmt.Println(m)
+}
+```
+
+Output:
+```bash
+map[]
+is nil
+```
+
+You can initialize a map using the built-in make() function. You just need to pass the type of the map to the make() function as in the example below. The function will return an initialized and ready to use map.
+
+```go
+// Initializing a map using the built-in make() function
+var m = make(map[string]int)
+```
+
+Example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	// Required to initialize
+	// the map with values
+	var m = make(map[string]int)
+	fmt.Println(m)
+	if m == nil {
+		fmt.Println("is nil")
+	}
+	m["population"] = 500000
+	fmt.Println(m)
+}
+```
+Output:
+```bash
+map[]
+map[population:500000]
+```
+
+A map literal is a very convenient way to initialize a map with some data. You just need to pass the key-value pairs separated by colon inside curly braces.
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var m = map[string]string{
+		"Brasil": "Brasilia",
+		"EUA":    "Washington, D.c",
+		"Italy":  "Roma",
+		"France": "Paris",
+		"Japan":  "Toquio",
+	}
+
+	fmt.Println(m)
+}
+```
+
+Output:
+```bash
+map[Italy:Roma France:Paris Japan:Toquio Brasil:Brasilia EUA:Washington, D.c]
+```
+
+So you can check for the existence of a key in a map by using the following two-value assignment.
+The boolean variable ok will be true if the key exists, and false otherwise.
+
+```go
+value, ok := m[key]
+```
+
+Consider the following map for example:
+```go
+var C = map[string]string{
+		"Brasil": "Brasilia",
+		"EUA":    "Washington, D.c",
+		"Italy":  "Roma",
+		"France": "Paris",
+		"Japan":  "Toquio",
+	}
+```
+
+```go
+capital, ok := C["EUA"]  // "Washington, D.c", true
+```
+
+However, If you try to access a key that doesn’t exist, then the map will return an empty string "" (zero value of strings), and false
+
+```go
+capital, ok := C["África do Sul"]  // "", false
+```
+
+You can delete a key from a map using the built-in delete() function. The syntax looks like this.
+
+```go
+// Delete the `key` from the `map`
+delete(map, key)
+```
+Example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var country = map[string]string{
+		"Brasil": "Brasilia",
+		"EUA":    "Washington, D.c",
+		"Italy":  "Roma",
+		"France": "Paris",
+		"Japan":  "Toquio",
+	}
+	delete(country, "Japan")
+	delete(country, "Italy")
+	fmt.Println(country)
+}
+```
+
+Output:
+```bash
+map[Brasil:Brasilia EUA:Washington, D.c France:Paris]
+```
+
 ### Channel Types
 
 A channel provides a mechanism for concurrently executing functions to communicate by sending and receiving values of a specified element type. The value of an uninitialized channel is nil.
