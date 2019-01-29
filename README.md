@@ -3710,7 +3710,7 @@ Only data structures that can be represented as valid JSON will be encoded:
 
 	- Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
 
-- Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
+    - Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
 ```
 
 The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
@@ -3721,10 +3721,9 @@ The json package only accesses the exported fields of struct types (those that b
 Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
 Of course it helps when you know what you're doing, and it's very useful sometimes to find some more complex json.
 
-```bash
  - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
  - [Transform json to Go](https://transform.now.sh/json-to-go/)
  - [Json2struct](http://json2struct.mervine.net/)
- ```
+
 
 
