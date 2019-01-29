@@ -37,11 +37,11 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println("apilogin1 initialized")
-	fmt.Println(apilogin1)
+	//fmt.Println("apilogin1 initialized")
+	//fmt.Println(apilogin1)
 
-	fmt.Println("\njson.Marshal returning bytes")
-	fmt.Println(m)
+	//fmt.Println("\njson.Marshal returning bytes")
+	//fmt.Println(m)
 
 	fmt.Println("\njson.Marshal as string")
 	fmt.Println(string(m))

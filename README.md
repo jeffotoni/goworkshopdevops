@@ -2004,6 +2004,10 @@ type JsonMessage struct {
 }
 ```
 
+Exercise:
+Fill in the struct above, initialize the struct and fill in the fields, and make a fmt.Println to display the filled fields.
+To be more readable you can separate into each struct type struct.
+
 ### Map types
 
 A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.
@@ -3703,18 +3707,186 @@ b == []byte(`{"Name":"Lambda Man","Cpf":"033.343.434-89"}`)
 Only data structures that can be represented as valid JSON will be encoded:
 
 ```bash
-	- JSON objects only support strings as keys; to encode a Go map type it must be of 
-	  the form map[string]T (where T is any Go type supported by the json package).
-
-	- Channel, complex, and function types cannot be encoded.
-
-	- Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
-
-    - Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
+- JSON objects only support strings as keys; to encode a Go map type it must be of 
+  the form map[string]T (where T is any Go type supported by the json package).
+- Channel, complex, and function types cannot be encoded.
+- Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
+- Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
 ```
 
 The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
 
+In this example we work with pointers to reference the struct within another struct, and another point is that we declare the struct within the struct itself.
+With this we have different ways to initialize and fill the fields of our structs.
+Let's see how it works? Check out the example below.
+
+```go
+
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type Anddress struct {
+	City         string `json:"city"`
+	Neighborhood string `json:"neighborhood"`
+	Zipcode      string `json:"zipcode"`
+}
+
+type ApiLogin struct {
+	Name  string `json:"name"`
+	Cpf   string `json:"cpf"`
+	Login string `json:"login"`
+	Email string `json:"email"`
+	And1  *struct {
+		City string
+	}
+
+	And2 *Anddress
+}
+
+func main() {
+
+	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
+	m, err := json.Marshal(apilogin1)
+
+	if err != nil {
+		log.Println(err)
+	}
+	//fmt.Println("apilogin1 initialized")
+	//fmt.Println(apilogin1)
+
+	//fmt.Println("\njson.Marshal returning bytes")
+	//fmt.Println(m)
+
+	fmt.Println("\njson.Marshal as string")
+	fmt.Println(string(m))
+}
+```
+
+```bash
+json.Marshal as string
+{"name":"@jeffotoni","cpf":"093.393.334-34","login":"","email":"","And1":{"City":"BH"},"And2":{"city":"BH","neighborhood":"","zipcode":""}}
+```
+
+In this other example we take a short excerpt from the json of an AWS SES service, it notifies via Json the Bounces of the sent emails, we are going to check the completion of our fields in the struct and transform them into json.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+func main() {
+
+	type BouncedRecipients []struct {
+		EmailAddress string `json:"emailAddress"`
+		Action       string `json:"action"`
+		Status       string `json:"status"`
+		//DiagnosticCode string `json:"diagnosticCode"`
+	}
+
+	type Bounce struct {
+		BounceType string `json:"bounceType"`
+		//BounceSubType string    `json:"bounceSubType"`
+		//Timestamp     time.Time `json:"timestamp"`
+		BR BouncedRecipients
+	}
+
+	type JsonMessage struct {
+		NotificationType string `json:"notificationType"`
+		B                Bounce
+		From             []string `json:"from"`
+	}
+
+	l := &JsonMessage{NotificationType: "38733773737xxxx",
+		B: Bounce{BounceType: "bounce type",
+			BR: BouncedRecipients{
+				{"devops@g.com", "permanet", "error"}, {"lambdaman@g.com", "complaint", "success"}}},
+		From: []string{"from1@m.com", "from2@gm.com"}}
+
+	m, err := json.Marshal(l)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	//fmt.Println("\033[1;40mlinkFetcher initialized\033[0m")
+	//fmt.Println(l)
+
+	//fmt.Println("\n\033[1;42mjson.Marshal returning bytes\033[0m")
+	//fmt.Println(m)
+
+	fmt.Println("\n\033[1;41mjson.Marshal as string\033[0m")
+	fmt.Println(string(m))
+}
+```
+
+Output:
+```bash
+json.Marshal as string
+{"notificationType":"38733773737xxxx","B":{"bounceType":"bounce type","BR":[{"emailAddress":"devops@g.com","action":"permanet","status":"error"},{"emailAddress":"lambdaman@g.com","action":"complaint","status":"success"}]},"from":["from1@m.com","from2@gm.com"]}
+```
+
+In the example below there is an entire field in lowercase, this field the **json.Marshal** function **will not be** able to do marshal, because the field initializes with the lowercase letter **"myname"**, so it works the first letter has that is **"Myname"**
+Another legal point our struct is set to receive "N" values as an array of struct **v[]struct"**
+And inside the struct we have a string-type field **"[]string"**.
+too cool is not? Let's see how we do the initialization and fill in the values, look at the code below.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type linkResult []struct {
+	Body   string   `json:"body"`
+	Urls   []string `json:"urls"`
+	myname string   `json:"myname"`
+}
+
+func main() {
+
+	var ll = linkResult{
+		{
+			Body:   "The Go Programming Language",
+			Urls:   []string{"https://golang.org/pkg/", "https://golang.org/cmd/"},
+			myname: "lambda man",
+		},
+		{
+			Body:   "Package",
+			Urls:   []string{"https://golang.org/", "https://golang.org/cmd/", "https://golang.org/pkg/fmt/"},
+			myname: "go_br in action",
+		}}
+
+	m0, err := json.Marshal(ll)
+
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("linkFetcher initialized")
+	fmt.Println(ll)
+
+	fmt.Println("\njson.Marshal returning bytes")
+	fmt.Println(m0)
+
+	fmt.Println("\njson.Marshal as string")
+	fmt.Println(string(m0))
+}
+```
+
+Output:
+```bash
+```
 
 ### Links Json to Golang
 
