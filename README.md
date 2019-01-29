@@ -3665,8 +3665,6 @@ Package json implements encoding and decoding of JSON as defined in **RFC 7159**
 
 With the [json package](https://golang.org/pkg/encoding/json/) it's a snap to read and write **JSON** data from your Go programs.
 
-See **"JSON and Go"** for an introduction to this package: [Json in Go](https://golang.org/doc/articles/json_and_go.html)
-
 ### Json Marshal
 
 Encoding
@@ -3678,17 +3676,16 @@ func Marshal(v interface{}) ([]byte, error)
 Given the Go data structure, Message, 
 
 ```go
-type Message struct {
-    Name string
-    Body string
-    Time int64
+type ApiLogin struct {
+    Name  string `json:"name"`
+	Cpf   string `json:"cpf"`
 }
 ```
 
 and an instance of Message 
 
 ```go
-m := Message{"Alice", "Hello", 1294706395881547000}
+m := Message{"Jefferson", "033.343.434-89"}
 ```
 
 we can marshal a JSON-encoded version of m using json.Marshal: 
@@ -3697,22 +3694,24 @@ we can marshal a JSON-encoded version of m using json.Marshal:
 b, err := json.Marshal(m)
 ```
 
-
 If all is well, err will be nil and b will be a []byte containing this JSON data: 
 
 ```go
-b == []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
+b == []byte(`{"Name":"Lambda Man","Cpf":"033.343.434-89"}`)
 ```
 
 Only data structures that can be represented as valid JSON will be encoded:
 
-    - JSON objects only support strings as keys; to encode a Go map type it must be of the form map[string]T (where T is any Go type supported by the json package).
+```bash
+	- JSON objects only support strings as keys; to encode a Go map type it must be of the form map[string]T 
+	  (where T is any Go type supported by the json package).
 
-    - Channel, complex, and function types cannot be encoded.
+	- Channel, complex, and function types cannot be encoded.
 
-    - Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
+	- Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
 
-    - Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
+- Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
+```
 
 The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
 
@@ -3722,9 +3721,9 @@ Below I am making available some links to convert from Json to Struct in Golang,
 Of course it helps when you know what you're doing, and it's very useful sometimes to find some more complex json.
 
 ```bash
- - https://mholt.github.io/json-to-go/
- - https://transform.now.sh/json-to-go/
- - http://json2struct.mervine.net/
+ - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
+ - [Transform json to Go](https://transform.now.sh/json-to-go/)
+ - [Json2struct](http://json2struct.mervine.net/)
  ```
 
 

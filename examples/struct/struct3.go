@@ -43,15 +43,23 @@ func main() {
 	fmt.Println(apilogin2.And2)
 	fmt.Println(apilogin2.And2.City)
 
-	var apilogin3 ApiLogin
+	apilogin3 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
 	fmt.Println(apilogin3)
+	fmt.Println(apilogin3.Name)
+	fmt.Println(apilogin3.And1)
+	fmt.Println(apilogin3.And1.City)
+	fmt.Println(apilogin3.And2)
+	fmt.Println(apilogin3.And2.City)
 
-	apilogin4 := ApiLogin{}
+	var apilogin4 ApiLogin
 	fmt.Println(apilogin4)
 
-	apilogin5 := &ApiLogin{}
+	apilogin5 := ApiLogin{}
 	fmt.Println(apilogin5)
 
-	apilogin6 := new(ApiLogin)
+	apilogin6 := &ApiLogin{}
 	fmt.Println(apilogin6)
+
+	apilogin7 := new(ApiLogin)
+	fmt.Println(apilogin7)
 }
