@@ -3703,8 +3703,8 @@ b == []byte(`{"Name":"Lambda Man","Cpf":"033.343.434-89"}`)
 Only data structures that can be represented as valid JSON will be encoded:
 
 ```bash
-	- JSON objects only support strings as keys; to encode a Go map type it must be of the form map[string]T 
-	  (where T is any Go type supported by the json package).
+	- JSON objects only support strings as keys; to encode a Go map type it must be of 
+	  the form map[string]T (where T is any Go type supported by the json package).
 
 	- Channel, complex, and function types cannot be encoded.
 
@@ -3714,6 +3714,7 @@ Only data structures that can be represented as valid JSON will be encoded:
 ```
 
 The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
+
 
 ### Links Json to Golang
 
