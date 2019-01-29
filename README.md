@@ -73,6 +73,7 @@ Soon below some channels that I participate and can find me online.
    - [Interface Types](#interface-types)
 	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
 	 - [Interface as type](#interface-as-type)
+   - [Exercise one](#exercise-one)
 - [Control structures](#control-structures)
   - [Control](#control)
     - [Control Return](#control-return)
@@ -97,8 +98,6 @@ Soon below some channels that I participate and can find me online.
     - [Recursion](#recursion)
     - [Asynchronous Functions](#asynchronous-functions)
 - [Defer](#defer)
-
-- [Exercise one](#exercise-one)
 
 ## Lab 03 Json with Golang
 
@@ -1947,6 +1946,34 @@ BH
 &{    <nil> <nil>}
 ```
 
+The example below is to demonstrate the ease we have when we manipulate structs in Golang.
+We are initializing the struct with values and displaying on the screen.
+
+Take a look:
+```go
+package main
+
+import "fmt"
+
+type jsoninput []struct {
+	Data string `json:"data"`
+}
+
+func main() {
+
+	data := &jsoninput{{Data: "some data"}, {Data: "some more data"},
+		{Data: "some more data"}}
+	fmt.Println(data)
+
+	// output:
+	//  &[{some data} {some more data} {some more data}]
+}
+```
+
+```bash
+&[{some data} {some more data} {some more data}]
+```
+
 
 Example Struct AWS Sqs Json
 ```go
@@ -2003,10 +2030,6 @@ type JsonMessage struct {
 	} `json:"mail"`
 }
 ```
-
-Exercise:
-Fill in the struct above, initialize the struct and fill in the fields, and make a fmt.Println to display the filled fields.
-To be more readable you can separate into each struct type struct.
 
 ### Map types
 
@@ -2594,6 +2617,10 @@ func main() {
 }
 ```
 
+### Exercise one
+Exercise:
+Fill in the struct JsonMessage AWS above, initialize the struct and fill in the fields, and make a fmt.Println to display the filled fields.
+To be more readable you can separate into each struct type struct.
 
 ### Control structures
 ---
@@ -3654,8 +3681,6 @@ defer f.Close()
 defer res.Body.Close()
 ```
 
-### Exercise one
-
 ## Lab 03 Json with Golang
 
 ### Json
@@ -3681,8 +3706,8 @@ Given the Go data structure, Message,
 
 ```go
 type ApiLogin struct {
-    Name  string `json:"name"`
-	Cpf   string `json:"cpf"`
+   Name  string `json:"name"`
+   Cpf   string `json:"cpf"`
 }
 ```
 
@@ -3750,7 +3775,8 @@ type ApiLogin struct {
 
 func main() {
 
-	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
+	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34",
+		And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
 	m, err := json.Marshal(apilogin1)
 
 	if err != nil {
@@ -3769,7 +3795,8 @@ func main() {
 
 ```bash
 json.Marshal as string
-{"name":"@jeffotoni","cpf":"093.393.334-34","login":"","email":"","And1":{"City":"BH"},"And2":{"city":"BH","neighborhood":"","zipcode":""}}
+{"name":"@jeffotoni","cpf":"093.393.334-34","login":"","email":"",
+"And1":{"City":"BH"},"And2":{"city":"BH","neighborhood":"","zipcode":""}}
 ```
 
 In this other example we take a short excerpt from the json of an AWS SES service, it notifies via Json the Bounces of the sent emails, we are going to check the completion of our fields in the struct and transform them into json.
@@ -3831,7 +3858,10 @@ func main() {
 Output:
 ```bash
 json.Marshal as string
-{"notificationType":"38733773737xxxx","B":{"bounceType":"bounce type","BR":[{"emailAddress":"devops@g.com","action":"permanet","status":"error"},{"emailAddress":"lambdaman@g.com","action":"complaint","status":"success"}]},"from":["from1@m.com","from2@gm.com"]}
+{"notificationType":"38733773737xxxx","B":{"bounceType":"bounce type",
+"BR":[{"emailAddress":"devops@g.com","action":"permanet","status":"error"},
+{"emailAddress":"lambdaman@g.com","action":"complaint","status":"success"}]},
+"from":["from1@m.com","from2@gm.com"]}
 ```
 
 In the example below there is an entire field in lowercase, this field the **json.Marshal** function **will not be** able to do marshal, because the field initializes with the lowercase letter **"myname"**, so it works the first letter has that is **"Myname"**
@@ -3873,11 +3903,11 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println("linkFetcher initialized")
-	fmt.Println(ll)
+	//fmt.Println("linkFetcher initialized")
+	//fmt.Println(ll)
 
-	fmt.Println("\njson.Marshal returning bytes")
-	fmt.Println(m0)
+	//fmt.Println("\njson.Marshal returning bytes")
+	//fmt.Println(m0)
 
 	fmt.Println("\njson.Marshal as string")
 	fmt.Println(string(m0))
@@ -3886,6 +3916,11 @@ func main() {
 
 Output:
 ```bash
+json.Marshal as string
+[{"body":"The Go Programming Language","urls":["https://golang.org/pkg/",
+"https://golang.org/cmd/"]},
+{"body":"Package","urls":["https://golang.org/",
+"https://golang.org/cmd/","https://golang.org/pkg/fmt/"]}]
 ```
 
 ### Links Json to Golang

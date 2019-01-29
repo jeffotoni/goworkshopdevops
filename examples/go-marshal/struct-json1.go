@@ -31,7 +31,8 @@ type ApiLogin struct {
 
 func main() {
 
-	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
+	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34",
+		And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
 	m, err := json.Marshal(apilogin1)
 
 	if err != nil {
