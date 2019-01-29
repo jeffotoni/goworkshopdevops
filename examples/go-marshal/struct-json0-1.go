@@ -34,7 +34,7 @@ type Login struct {
 
 func main() {
 
-	l := Login{Login: "Austin", Email: "austin@go.com", Nick: "Aust", Level: 1000, LastEmail: "austin@gmail.com"}
+	l := Login{Login: "Austin", Email: "austin@go.com", Nick: "", Level: 1000, LastEmail: "austin@gmail.com"}
 	fmt.Println(l)
 
 	m, err := json.Marshal(l)

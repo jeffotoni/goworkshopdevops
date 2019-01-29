@@ -7,7 +7,7 @@ The content and references used are from the [Golang Official Site](https://gola
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
-Well that site here [Play Golang](https://play.golang.org) we can play Golang online.
+Well that site here [Play Golang](https://play.golang.org) or [Play Go Space](https://goplay.space/#ulT0tsK7H0Y) we can play Golang online.
 
 We have a very interesting link that we have been able to search for packages written in Golang  check out this link: [Go Doc](https://godoc.org/)
 
@@ -104,11 +104,9 @@ Soon below some channels that I participate and can find me online.
 
 - [Json](#Json)
   - [introduction](#)
-    - [Json marshal](#json-marshal)
-    - [Json Unmarshal](#json-unmarshal)
-    - [json Encode](#json-encode)
+    - [Json marshal Encode](#json-marshal)
+    - [Json Unmarshal Decode](#json-unmarshal)
     - [Links Json to Golang](#links-json-to-golang)
-    - [Json Decode](#json-decode)
 - [Parse Json](#Json)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
@@ -2034,6 +2032,10 @@ type JsonMessage struct {
 }
 ```
 
+Package structs contains various utilities functions to work with structs.
+
+[Struct Pkg](https://godoc.org/github.com/fatih/structs#pkg-examples)
+
 ### Map types
 
 A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.
@@ -3697,7 +3699,7 @@ Package json implements encoding and decoding of JSON as defined in **RFC 7159**
 
 With the [json package](https://golang.org/pkg/encoding/json/) it's a snap to read and write **JSON** data from your Go programs.
 
-### Json Marshal
+### Json Marshal Encode
 
 Marshal returns the JSON **encoding** of **v**.
 
@@ -3830,7 +3832,7 @@ type Login struct {
 func main() {
 
 	l := Login{Login: "Austin", Email: "austin@go.com", Nick: 
-	 "Aust", Level: 1000, LastEmail: "austin@gmail.com"}
+	 "", Level: 1000, LastEmail: "austin@gmail.com"}
 	fmt.Println(l)
 
 	m, err := json.Marshal(l)
@@ -3844,7 +3846,7 @@ func main() {
 Output:
 ```bash
 {Austin austin@go.com Aust 1000 austin@gmail.com}
-{"login":"Austin","email":"austin@go.com","Nick":"Aust","-":"austin@gmail.com"}
+{"login":"Austin","email":"austin@go.com","-":"austin@gmail.com"}
 ```
 
 Only data structures that can be represented as valid JSON will be encoded:
@@ -4002,7 +4004,11 @@ type linkResult []struct {
 }
 
 func main() {
-
+	
+	// creating our struct
+	// with some fields
+	// interesting as [] string
+	// and showing how to initialize them
 	var ll = linkResult{
 		{
 			Body:   "The Go Programming Language",
@@ -4040,6 +4046,176 @@ json.Marshal as string
 "https://golang.org/cmd/","https://golang.org/pkg/fmt/"]}]
 ```
 
+```go
+
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "log"
+)
+
+type crud struct {
+    Create   bool
+    Retrieve bool
+    Update   bool
+    Delete   bool
+}
+
+type crudWithDetail struct {
+    crud
+    Detail bool
+}
+
+type acceleration struct {
+    crudWithDetail
+    Participant crudWithDetail
+    Challenge   crudWithDetail
+}
+
+type acl struct {
+    User         crud
+    Acceleration acceleration
+}
+
+func main() {
+
+    // on this boot we show exactly how it would be using non-embedded structs but all separated and making type of each one of them
+    // all initialization is more friendly, although having nesting between structs is much better if we have built structs ie
+    // structs being declared directly inside structs what they call embedded.
+
+    // Example embedded strcut would
+    // type my struct {
+    //    M struct {
+    //       Name string
+    //   }
+    // }
+
+    j := acl{
+        User: crud{Create: true, Retrieve: false, Update: false, Delete: true},
+        Acceleration: acceleration{
+            Participant:    crudWithDetail{Detail: true, crud: crud{Create: false, Retrieve: false, Update: true, Delete: false}},
+            Challenge:      crudWithDetail{Detail: false, crud: crud{Create: true, Retrieve: true, Update: true, Delete: false}},
+            crudWithDetail: crudWithDetail{Detail: false, crud: crud{Create: true, Retrieve: false, Update: true, Delete: false}}},
+    }
+
+    m, err := json.Marshal(j)
+    if err != nil {
+        log.Println(err)
+    }
+
+    fmt.Println(string(m))
+}
+```
+
+Output:
+```bash
+{"User":{"Create":true,"Retrieve":false,"Update":false,"Delete":true},
+"Acceleration":{"Create":true,"Retrieve":false,"Update":true,"Delete":false,"Detail":false,
+"Participant":{"Create":false,"Retrieve":false,"Update":true,"Delete":false,"Detail":true},
+"Challenge":{"Create":true,"Retrieve":true,"Update":true,"Delete":false,"Detail":false}}}
+```
+
+Let's now present 3 ways to declare a map [string] interfaces {} inside a struct and generate a json of it all after initializing our struct.
+
+Take a look at the example below:
+```go
+
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// create type map
+type body map[string]interface{}
+
+// struct Message
+type Message struct {
+	Subject  string                 `json:"subject"`
+	TimeSent int64                  `json:"sent"`
+	Body     body                   `json:"body"`  // embedded => Body of the type map[string]interface{}
+	Body2    map[string]interface{} `json:"body2"` // Body of the type map[string]interface{}
+	Status   string                 `json:"status"`
+}
+
+func main() {
+
+	// our interface map body
+	// This map can be dynamic,
+	// create types as needed, because the interface{}
+	// is for this purpose, it creates dynamic types.
+	b := body{
+		"Data": body{
+			"login":  "jeffotoni",
+			"level":  1000,
+			"create": true,
+		}, "Anddress": body{
+			"City": "Jersey City",
+			"Zip":  "34.566-333",
+			"Fone": body{
+				"fone1": "87-77047345",
+				"fone2": "83-93483838",
+			},
+		},
+	}
+
+	// create type
+	type out map[string]interface{}
+
+	// a way to initialize the struct
+	// and the map contained within the struct
+	s := &Message{
+		Subject:  "Test Struct to Map",
+		TimeSent: 345,
+		Body:     b,
+		Body2:    out{"Instance": "c5.xlarge", "vCpu": "4", "Ecu": "16", "Mem": "8"},
+		Status:   "success",
+	}
+	fmt.Println(s)
+
+	// Another way to implement is to generate
+	// the map interface {} inside the initialization
+	// of the struture.
+	s2 := &Message{
+		Subject:  "Test Struct to Map",
+		TimeSent: 345,
+		Body:     b,
+		Body2:    map[string]interface{}{"Instance": "c5.xlarge", "vCpu": "4", "Ecu": "16", "Mem": "8"},
+		Status:   "success",
+	}
+	fmt.Println(s2)
+
+	// converting everything to Json
+	m, err := json.Marshal(s2)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// sending json to the screen
+	fmt.Println("##### json")
+	fmt.Println(string(m))
+}
+``` 
+
+Output:
+```bash
+&{Test Struct to Map 345 map[Data:map[level:1000 create:true login:jeffotoni] 
+Anddress:map[City:Jersey City Zip:34.566-333 
+Fone:map[fone1:87-77047345 fone2:83-93483838]]] 
+map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
+&{Test Struct to Map 345 map[Data:map[login:jeffotoni level:1000 create:true] 
+Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] 
+map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
+##### json
+{"subject":"Test Struct to Map","sent":345,"body":{"Anddress":{"City":"Jersey City","Fone":
+{"fone1":"87-77047345","fone2":"83-93483838"},"Zip":"34.566-333"},"Data":
+{"create":true,"level":1000,"login":"jeffotoni"}},"body2":
+{"Ecu":"16","Instance":"c5.xlarge","Mem":"8","vCpu":"4"},"status":"success"}
+```
+
 ### Links Json to Golang
 
 Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
@@ -4050,7 +4226,7 @@ Of course it helps when you know what you're doing, and it's very useful sometim
  - [Json2struct](http://json2struct.mervine.net/)
 
 
-### Json Decode
+### Json Unmarshal Decode
 
 
 

@@ -11,6 +11,10 @@ import (
 	"log"
 )
 
+// creating our struct
+// with some fields
+// interesting as [] string
+// and showing how to initialize them
 type linkResult []struct {
 	Body   string   `json:"body"`
 	Urls   []string `json:"urls"`
