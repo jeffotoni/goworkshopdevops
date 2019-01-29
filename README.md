@@ -98,20 +98,21 @@ Soon below some channels that I participate and can find me online.
     - [Recursion](#recursion)
     - [Asynchronous Functions](#asynchronous-functions)
 - [Defer](#defer)
+- [Exercise two](#exercise-two)
 
 ## Lab 03 Json with Golang
 
 - [Json](#Json)
   - [introduction](#)
-    - [Json marshal](#jsonmarshal)
-    - [Json Unmarshal](#jsonunmarshal)
-    - [json Encode](#jsonencode)
-    - [Json Decode](#jsondecode)
+    - [Json marshal](#json-marshal)
+    - [Json Unmarshal](#json-unmarshal)
+    - [json Encode](#json-encode)
+    - [Links Json to Golang](#links-json-to-golang)
+    - [Json Decode](#json-decode)
 - [Parse Json](#Json)
-  - [introduction](#)
-    - [Toml](#jsontoml)
-    - [Yaml](#jsonyaml)
-    - [Gcfg](#jsongcfg)
+    - [Json Toml](#json-toml)
+    - [Json Yaml](#json-yaml)
+    - [Json-Gcfg](#json-gcfg)
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 
@@ -129,13 +130,8 @@ Soon below some channels that I participate and can find me online.
     - [ListenAndServeTLS](#)
     - [Server.Shutdown](#)
     - [Middleware](#)
-- [net/http Server Pages](#)
-  - [introduction](#)
-    - [http.FileServer](#)
-    - [http.NotFound](#)
-    - [Disable http.FileServer](#)
-    - [http.Dir](#)
-    - [http.StripPrefix](#)     
+- [Exercise five](#Exercise-five)
+
 - [net/http Client](#)
   - [introduction](#)
     - [http.Transport](#)
@@ -144,9 +140,16 @@ Soon below some channels that I participate and can find me online.
     - [http,Post](#)
     - [http.NewRequest](#)
     - [Context.WithCancel](#)
-
 - [Exercise six](#Exercise-six)
 
+- [net/http Server Pages](#)
+  - [introduction](#)
+    - [http.FileServer](#)
+    - [http.NotFound](#)
+    - [Disable http.FileServer](#)
+    - [http.Dir](#)
+    - [http.StripPrefix](#)    
+- [Exercise seven](#Exercise-seven)
 
 ## Lab 05 Using Golang to create Command Line programs
 
@@ -3696,7 +3699,9 @@ With the [json package](https://golang.org/pkg/encoding/json/) it's a snap to re
 
 ### Json Marshal
 
-Encoding
+Marshal returns the JSON **encoding** of **v**.
+
+Marshal traverses the value v recursively. If an encountered value implements the Marshaler interface and is not a nil pointer, Marshal calls its MarshalJSON method to produce JSON. If no MarshalJSON method is present but the value implements encoding.TextMarshaler instead, Marshal calls its MarshalText method and encodes the result as a JSON string.
 
 ```go
 func Marshal(v interface{}) ([]byte, error)
@@ -3714,7 +3719,7 @@ type ApiLogin struct {
 and an instance of Message 
 
 ```go
-m := Message{"Jefferson", "033.343.434-89"}
+m := ApiLogin{"Jefferson", "033.343.434-89"}
 ```
 
 we can marshal a JSON-encoded version of m using json.Marshal: 
@@ -3727,6 +3732,119 @@ If all is well, err will be nil and b will be a []byte containing this JSON data
 
 ```go
 b == []byte(`{"Name":"Lambda Man","Cpf":"033.343.434-89"}`)
+```
+
+Check out the complete code:
+```go
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type ApiLogin struct {
+	Name string `json:"name"`
+	Cpf  string `json:"cpf"`
+}
+
+func main() {
+
+	a := ApiLogin{"Jefferson", "033.343.434-89"}
+	fmt.Println(a)
+
+	m, err := json.Marshal(a)
+	if err != nil {
+		log.Println(err)
+	}
+	// show bytes
+	fmt.Println(m)
+
+	// show string json
+	fmt.Println(string(m))
+}
+```
+
+Output:
+```bash
+{Jefferson 033.343.434-89}
+[123 34 110 97 109 101 34 58 34 74 101 102 102 
+101 114 115 111 110 34 44 34 99 112 102 34 58 
+34 48 51 51 46 51 52 51 46 52 51 52 45 56 57 34 125]
+{"name":"Jefferson","cpf":"033.343.434-89"}
+```
+
+The "omitempty" option specifies that the field should be omitted from the encoding if the field has an empty value, defined as false, 0, a nil pointer, a nil interface value, and any empty array, slice, map, or string. 
+
+```go
+// Field appears in JSON as key "login".
+Login string `json:"login"`
+
+// Field appears in JSON as key "email" and
+// the field is omitted from the object if its value is empty,
+// as defined above.
+Email string `json:"email,omitempty"`
+
+// Field appears in JSON as key "nick" (the default), but
+// the field is skipped if empty.
+// Note the leading comma.
+Nick string `json:",omitempty"`
+
+// Field is ignored by this package.
+Level int `json:"-"`
+
+// Field appears in JSON as key "-".
+LastEmail string `json:"-,"`
+```
+Look at the example below:
+```go
+
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type Login struct {
+	// Field appears in JSON as key "login".
+	Login string `json:"login"`
+
+	// Field appears in JSON as key "email" and
+	// the field is omitted from the object if its value is empty,
+	// as defined above.
+	Email string `json:"email,omitempty"`
+
+	// Field appears in JSON as key "nick" (the default), but
+	// the field is skipped if empty.
+	// Note the leading comma.
+	Nick string `json:",omitempty"`
+
+	// Field is ignored by this package.
+	Level int `json:"-"`
+
+	// Field appears in JSON as key "-".
+	LastEmail string `json:"-,"`
+}
+
+func main() {
+
+	l := Login{Login: "Austin", Email: "austin@go.com", Nick: 
+	 "Aust", Level: 1000, LastEmail: "austin@gmail.com"}
+	fmt.Println(l)
+
+	m, err := json.Marshal(l)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(string(m))
+}
+```
+Output:
+```bash
+{Austin austin@go.com Aust 1000 austin@gmail.com}
+{"login":"Austin","email":"austin@go.com","Nick":"Aust","-":"austin@gmail.com"}
 ```
 
 Only data structures that can be represented as valid JSON will be encoded:
@@ -3746,7 +3864,6 @@ With this we have different ways to initialize and fill the fields of our struct
 Let's see how it works? Check out the example below.
 
 ```go
-
 package main
 
 import (
@@ -3931,6 +4048,10 @@ Of course it helps when you know what you're doing, and it's very useful sometim
  - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
  - [Transform json to Go](https://transform.now.sh/json-to-go/)
  - [Json2struct](http://json2struct.mervine.net/)
+
+
+### Json Decode
+
 
 
 
