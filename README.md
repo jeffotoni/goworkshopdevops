@@ -9,6 +9,10 @@ which is a compilation of all Golang language and can be checked here [jeffotoni
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
 Well that site here [Play Golang](https://play.golang.org) we can play Golang online.
 
+We have a very interesting link that we have been able to search for packages written in Golang  check out this link: [Go Doc](https://godoc.org/)
+
+We have this link that presents us as a manual all libs developed in Golang [Dev Docs](https://devdocs.io/go/)
+
 Soon below some channels that I participate and can find me online.
 
 ### Telegram:
@@ -109,7 +113,7 @@ Soon below some channels that I participate and can find me online.
     - [Toml](#jsontoml)
     - [Yaml](#jsonyaml)
     - [Gcfg](#jsongcfg)
-
+- [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 
 ## Lab 04 building apis with net/http
@@ -3665,7 +3669,6 @@ See **"JSON and Go"** for an introduction to this package: [Json in Go](https://
 
 ### Json Marshal
 
-
 Encoding
 
 ```go
@@ -3713,15 +3716,15 @@ Only data structures that can be represented as valid JSON will be encoded:
 
 The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
 
+### Links Json to Golang
 
+Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
+Of course it helps when you know what you're doing, and it's very useful sometimes to find some more complex json.
 
-    - [Json Unmarshal](#jsonunmarshal)
-    - [json Encode](#jsonencode)
-    - [Json Decode](#jsondecode)
+```bash
+ - https://mholt.github.io/json-to-go/
+ - https://transform.now.sh/json-to-go/
+ - http://json2struct.mervine.net/
+ ```
 
-- [Parse Json](#Json)
-  - [introduction](#)
-    - [Toml](#jsontoml)
-    - [Yaml](#jsonyaml)
-    - [Gcfg](#jsongcfg)
 
