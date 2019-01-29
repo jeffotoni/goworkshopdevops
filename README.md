@@ -112,25 +112,7 @@ Soon below some channels that I participate and can find me online.
 
 - [Exercise three](#Exercise-three)
 
-## Lab 04 Using Golang to create Command Line programs
-
-- [Golang Cli](#golang-cli)
-  - [introduction](#)
-    - [Go flag types](#go-flag-types)
-    - [Go flag Parse](go-flag-parse)
-    - [Go flag PrintDefaults](go-flag-printDefaults)
-    - [Os Args](#os-args)
-    - [func init](#func-init)
-    - [Go exec Command](#go-exec-command)
-    - [Stdout](#stdout)
-    - [Stdin](#stdin)
-    - [New Scanner and Scan](#new-scanner-and-scan)
-    - [Parse Url](#parse-url)
-    - [Parse Yaml](#parse-yaml)
-
-- [Exercise five](#Exercise-five)
-
-## Lab 05 building apis with net/http
+## Lab 04 building apis with net/http
 
 - [net/http Server](#)
   - [introduction](#)
@@ -162,6 +144,27 @@ Soon below some channels that I participate and can find me online.
 
 - [Exercise six](#Exercise-six)
 
+
+## Lab 05 Using Golang to create Command Line programs
+
+- [Golang Cli](#golang-cli)
+  - [introduction](#)
+  	- [Environment Variables](#environment-variables)
+  	- [Open and Read File](#open-write-file)
+  	- [Write File](#write-file)
+  	- [New Scanner and Scan](#new-scanner-and-scan)
+  	- [Stdout](#stdout)
+    - [Stdin](#stdin)
+    - [Go flag types](#go-flag-types)
+    - [Go flag Parse](go-flag-parse)
+    - [Go flag PrintDefaults](go-flag-printDefaults)
+    - [Os Args](#os-args)
+    - [func init](#func-init)
+    - [Go exec Command](#go-exec-command)
+    - [Parse Url](#parse-url)
+    - [Parse Yaml](#parse-yaml)
+
+- [Exercise five](#Exercise-five)
 
 ## Lab 06 Goroutine the power
 
@@ -1743,7 +1746,7 @@ s = [Java C Lisp Haskell], len = 4, cap = 4
 
 A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-blank field names must be unique.
 
-```bash
+```go
 StructType    = "struct" "{" { FieldDecl ";" } "}" .
 FieldDecl     = (IdentifierList Type | EmbeddedField) [ Tag ] .
 EmbeddedField = [ "*" ] TypeName .
@@ -1764,7 +1767,7 @@ struct {
 
 A field declared with a type but no explicit field name is called an embedded field. An embedded field must be specified as a type name T or as a pointer to a non-interface type name *T, and T itself may not be a pointer type. The unqualified type name acts as the field name.
 
-```bash
+```go
 // A struct with four embedded fields of types T1, *T2, P.T3 and *P.T4
 struct {
   T1        // field name is T1
@@ -1777,7 +1780,7 @@ struct {
 
 The following declaration is illegal because field names must be unique in a struct type:
 
-```bash
+```go
 struct {
   T     // conflicts with embedded field *T and *P.T
   *T    // conflicts with embedded field T and *P.T
@@ -1849,6 +1852,97 @@ Output:
 ```bash
 {"WeightKg":23,"size":{"Height":0}}
 ```
+
+In this example we have a struct "ApiLogin" and inside it we have And1 \*struct", ie, referencing a pointer from another struct, beautiful is not.
+To initialize and access the "And1" field, we have to use the "&" operator and create the struct at its initialization because it has not been defined yet so it would look like this: **"And1: & struct {City string} {City: "BH"}"**
+```go
+type ApiLogin struct {
+	And1  *struct {
+		City string
+	}
+}
+```
+
+In this example we only time the pointer of a struct already defined above.
+To access it we do not need to create it again, just refer to it with "&" and this way "And2: &Anddress{}", very nice, right?
+```go
+type ApiLogin struct {
+	And2 *Anddress
+}
+```
+
+The example below is a way to display various forms of initialization using struct.
+```go
+package main
+
+import "fmt"
+
+type Anddress struct {
+	City         string `json:"city"`
+	Neighborhood string `json:"neighborhood"`
+	Zipcode      string `json:"zipcode"`
+}
+
+type ApiLogin struct {
+	Name  string `json:"name"`
+	Cpf   string `json:"cpf"`
+	Login string `json:"login"`
+	Email string `json:"email"`
+	And1  *struct {
+		City string
+	}
+
+	And2 *Anddress
+}
+
+func main() {
+
+	// different ways to inizialize a struct
+	//
+	//
+
+	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}}
+	fmt.Println(apilogin1)
+	fmt.Println(apilogin1.Name)
+	fmt.Println(apilogin1.And1)
+	fmt.Println(apilogin1.And1.City)
+
+	apilogin2 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And2: &Anddress{City: "BH"}}
+	fmt.Println(apilogin2)
+	fmt.Println(apilogin2.Name)
+	fmt.Println(apilogin2.And2)
+	fmt.Println(apilogin2.And2.City)
+
+	var apilogin3 ApiLogin
+	fmt.Println(apilogin3)
+
+	apilogin4 := ApiLogin{}
+	fmt.Println(apilogin4)
+
+	apilogin5 := &ApiLogin{}
+	fmt.Println(apilogin5)
+
+	apilogin6 := new(ApiLogin)
+	fmt.Println(apilogin6)
+}
+```
+
+Output:
+```bash
+&{@jeffotoni 093.393.334-34   0xc00000e1e0 <nil>}
+@jeffotoni
+&{BH}
+BH
+&{@jeffotoni 093.393.334-34   <nil> 0xc000060150}
+@jeffotoni
+&{BH  }
+BH
+{    <nil> <nil>}
+{    <nil> <nil>}
+&{    <nil> <nil>}
+&{    <nil> <nil>}
+```
+
 
 Example Struct AWS Sqs Json
 ```go
@@ -1940,17 +2034,44 @@ package main
 
 import "fmt"
 
+type linkResult struct {
+	body string
+	urls []string
+}
+
+type linkFetcher map[string]*linkResult
+
 func main() {
-  // Required to initialize
-  // the map with values
-  var m1 map[string]int
-  var m2 = make(map[string]int)
-  var m3 = map[string]int{"population": 500000}
-  var m4 = m3
-  var m5 map[string]string
-  /* create a map*/
-  m5 = make(map[string]string)
-  fmt.Println(m1, m2, m3, m4, m5)
+	// Required to initialize
+	// the map with values
+	var m1 map[string]int
+	var m2 = make(map[string]int)
+	var m3 = map[string]int{"population": 500000}
+	var m4 = m3
+	var m5 map[string]string
+	/* create a map*/
+	m5 = make(map[string]string)
+	fmt.Println(m1, m2, m3, m4, m5)
+
+	var l = linkFetcher{
+		"https://golang.org/": &linkResult{
+			"The Go Programming Language",
+			[]string{
+				"https://golang.org/pkg/",
+				"https://golang.org/cmd/",
+			},
+		},
+		"https://golang.org/pkg/": &linkResult{
+			"Packages",
+			[]string{
+				"https://golang.org/",
+				"https://golang.org/cmd/",
+				"https://golang.org/pkg/fmt/",
+				"https://golang.org/pkg/os/",
+			},
+		}}
+
+	fmt.Println(l)
 }
 ```
 Output:
@@ -3527,16 +3648,80 @@ defer res.Body.Close()
 
 ### Exercise one
 
-## Lab 01 Install and commands Golang
+## Lab 03 Json with Golang
 
-- [Json](#Json)
-  - [introduction](#)
-    - [Json marshal](#jsonmarshal)
+### Json
+---
+
+Package json implements encoding and decoding of JSON as defined in **RFC 7159**. The mapping between JSON and Go values is described in the documentation for the **Marshal** and **Unmarshal** functions.
+
+### introduction
+
+**JSON** (JavaScript Object Notation) is a simple data interchange format. Syntactically it resembles the objects and lists of JavaScript. It is most commonly used for communication between web back-ends and JavaScript programs running in the browser, but it is used in many other places, too. Its home page, json.org, provides a wonderfully clear and concise definition of the standard. 
+
+With the [json package](https://golang.org/pkg/encoding/json/) it's a snap to read and write **JSON** data from your Go programs.
+
+See **"JSON and Go"** for an introduction to this package: [Json in Go](https://golang.org/doc/articles/json_and_go.html)
+
+### Json Marshal
+
+
+Encoding
+
+```go
+func Marshal(v interface{}) ([]byte, error)
+```
+
+Given the Go data structure, Message, 
+
+```go
+type Message struct {
+    Name string
+    Body string
+    Time int64
+}
+```
+
+and an instance of Message 
+
+```go
+m := Message{"Alice", "Hello", 1294706395881547000}
+```
+
+we can marshal a JSON-encoded version of m using json.Marshal: 
+
+```go
+b, err := json.Marshal(m)
+```
+
+
+If all is well, err will be nil and b will be a []byte containing this JSON data: 
+
+```go
+b == []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
+```
+
+Only data structures that can be represented as valid JSON will be encoded:
+
+    - JSON objects only support strings as keys; to encode a Go map type it must be of the form map[string]T (where T is any Go type supported by the json package).
+
+    - Channel, complex, and function types cannot be encoded.
+
+    - Cyclic data structures are not supported; they will cause Marshal to go into an infinite loop.
+
+    - Pointers will be encoded as the values they point to (or 'null' if the pointer is nil).
+
+The json package only accesses the exported fields of struct types (those that begin with an uppercase letter). Therefore only the the exported fields of a struct will be present in the JSON output. 
+
+
+
     - [Json Unmarshal](#jsonunmarshal)
     - [json Encode](#jsonencode)
     - [Json Decode](#jsondecode)
+
 - [Parse Json](#Json)
   - [introduction](#)
     - [Toml](#jsontoml)
     - [Yaml](#jsonyaml)
     - [Gcfg](#jsongcfg)
+
