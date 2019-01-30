@@ -39,9 +39,9 @@ func main() {
     m7, _ := json.Marshal(map[string]string{"twitter": "@jeffotoni"})
     fmt.Println(string(m7))
 
-    m8, _ := json.Marshal(map[string]interface{}{"instagram": "jeffotoni", "langs": struct{ g string }{g: "gophers"}})
+    m8, _ := json.Marshal(map[string]interface{}{"instagram": "jeffotoni", "langs": struct{ G string }{G: "gophers"}})
     fmt.Println(string(m8))
 
-    m9, _ := json.Marshal(map[string]struct{ l string }{})
+    m9, _ := json.Marshal(map[string]struct{ L string }{"jeff": {L: "@Ricardo Maraschini"}})
     fmt.Println(string(m9))
 }

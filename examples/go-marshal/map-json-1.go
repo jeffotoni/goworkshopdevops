@@ -69,7 +69,8 @@ func main() {
 	fmt.Println(s2)
 
 	// converting everything to Json
-	m, err := json.Marshal(s2)
+	//m, err := json.Marshal(s2)
+	m, err := json.MarshalIndent(s2, "", "\t")
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -129,10 +129,11 @@ Soon below some channels that I participate and can find me online.
     - [Json marshal Encode](#json-marshal-encode)
     - [json MarshalIndent](#json-marshalIndent)
     - [Option Omitempty](#option-omitempty)
+    - [Initialized collections of data](#initialized-collections-of-data)
+    - [Json NewEncoder](#json-newencoder)
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
-    - [Json Encoder](#json-encoder)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Reading the JSON File](#reading-the-json-file)
@@ -4364,10 +4365,28 @@ func main() {
 Output:
 ```bash
 json.Marshal as string
-{"notificationType":"38733773737xxxx","B":{"bounceType":"bounce type",
-"BR":[{"emailAddress":"devops@g.com","action":"permanet","status":"error"},
-{"emailAddress":"lambdaman@g.com","action":"complaint","status":"success"}]},
-"from":["from1@m.com","from2@gm.com"]}
+{
+	"notificationType": "38733773737xxxx",
+	"B": {
+		"bounceType": "bounce type",
+		"BR": [
+			{
+				"emailAddress": "devops@g.com",
+				"action": "permanet",
+				"status": "error"
+			},
+			{
+				"emailAddress": "lambdaman@g.com",
+				"action": "complaint",
+				"status": "success"
+			}
+		]
+	},
+	"from": [
+		"from1@m.com",
+		"from2@gm.com"
+	]
+}
 ```
 
 In the example below there is an entire field in lowercase, this field the **json.Marshal** function **will not be** able to do marshal, because the field initializes with the lowercase letter **"myname"**, so it works the first letter has that is **"Myname"**
@@ -4408,7 +4427,8 @@ func main() {
 			myname: "go_br in action",
 		}}
 
-	m0, err := json.Marshal(ll)
+	//m0, err := json.Marshal(ll)
+	m0, err := json.MarshalIndent(ll, "", "\t")
 
 	if err != nil {
 		log.Println(err)
@@ -4426,15 +4446,33 @@ func main() {
 
 Output:
 ```bash
+linkFetcher initialized
+[{The Go Programming Language [https://golang.org/pkg/ https://golang.org/cmd/] lambda man} {Package [https://golang.org/ https://golang.org/cmd/ https://golang.org/pkg/fmt/] go_br in action}]
+
+json.Marshal returning bytes
+[91 10 9 123 10 9 9 34 98 111 100 121 34 58 32 34 84 104 101 32 71 111 32 80 114 111 103 114 97 109 109 105 110 103 32 76 97 110 103 117 97 103 101 34 44 10 9 9 34 117 114 108 115 34 58 32 91 10 9 9 9 34 104 116 116 112 115 58 47 47 103 111 108 97 110 103 46 111 114 103 47 112 107 103 47 34 44 10 9 9 9 34 104 116 116 112 115 58 47 47 103 111 108 97 110 103 46 111 114 103 47 99 109 100 47 34 10 9 9 93 10 9 125 44 10 9 123 10 9 9 34 98 111 100 121 34 58 32 34 80 97 99 107 97 103 101 34 44 10 9 9 34 117 114 108 115 34 58 32 91 10 9 9 9 34 104 116 116 112 115 58 47 47 103 111 108 97 110 103 46 111 114 103 47 34 44 10 9 9 9 34 104 116 116 112 115 58 47 47 103 111 108 97 110 103 46 111 114 103 47 99 109 100 47 34 44 10 9 9 9 34 104 116 116 112 115 58 47 47 103 111 108 97 110 103 46 111 114 103 47 112 107 103 47 102 109 116 47 34 10 9 9 93 10 9 125 10 93]
+
 json.Marshal as string
-[{"body":"The Go Programming Language","urls":["https://golang.org/pkg/",
-"https://golang.org/cmd/"]},
-{"body":"Package","urls":["https://golang.org/",
-"https://golang.org/cmd/","https://golang.org/pkg/fmt/"]}]
+[
+	{
+		"body": "The Go Programming Language",
+		"urls": [
+			"https://golang.org/pkg/",
+			"https://golang.org/cmd/"
+		]
+	},
+	{
+		"body": "Package",
+		"urls": [
+			"https://golang.org/",
+			"https://golang.org/cmd/",
+			"https://golang.org/pkg/fmt/"
+		]
+	}
+]
 ```
 
 ```go
-
 package main
 
 import (
@@ -4487,21 +4525,45 @@ func main() {
             crudWithDetail: crudWithDetail{Detail: false, crud: crud{Create: true, Retrieve: false, Update: true, Delete: false}}},
     }
 
-    m, err := json.Marshal(j)
+    json, err := json.MarshalIndent(j, "", "\t")
     if err != nil {
         log.Println(err)
     }
-
-    fmt.Println(string(m))
+    fmt.Println(string(json))
 }
 ```
 
 Output:
 ```bash
-{"User":{"Create":true,"Retrieve":false,"Update":false,"Delete":true},
-"Acceleration":{"Create":true,"Retrieve":false,"Update":true,"Delete":false,"Detail":false,
-"Participant":{"Create":false,"Retrieve":false,"Update":true,"Delete":false,"Detail":true},
-"Challenge":{"Create":true,"Retrieve":true,"Update":true,"Delete":false,"Detail":false}}}
+{
+	"User": {
+		"Create": true,
+		"Retrieve": false,
+		"Update": false,
+		"Delete": true
+	},
+	"Acceleration": {
+		"Create": true,
+		"Retrieve": false,
+		"Update": true,
+		"Delete": false,
+		"Detail": false,
+		"Participant": {
+			"Create": false,
+			"Retrieve": false,
+			"Update": true,
+			"Delete": false,
+			"Detail": true
+		},
+		"Challenge": {
+			"Create": true,
+			"Retrieve": true,
+			"Update": true,
+			"Delete": false,
+			"Detail": false
+		}
+	}
+}
 ```
 
 Let's now present 3 ways to declare a map [string] interfaces {} inside a struct and generate a json of it all after initializing our struct.
@@ -4589,18 +4651,143 @@ func main() {
 
 Output:
 ```bash
-&{Test Struct to Map 345 map[Data:map[level:1000 create:true login:jeffotoni] 
-Anddress:map[City:Jersey City Zip:34.566-333 
-Fone:map[fone1:87-77047345 fone2:83-93483838]]] 
-map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
-&{Test Struct to Map 345 map[Data:map[login:jeffotoni level:1000 create:true] 
-Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] 
-map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
+&{Test Struct to Map 345 map[Data:map[create:true login:jeffotoni level:1000] Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
+&{Test Struct to Map 345 map[Data:map[login:jeffotoni level:1000 create:true] Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Ecu:16 Mem:8 Instance:c5.xlarge vCpu:4] success}
 ##### json
-{"subject":"Test Struct to Map","sent":345,"body":{"Anddress":{"City":"Jersey City","Fone":
-{"fone1":"87-77047345","fone2":"83-93483838"},"Zip":"34.566-333"},"Data":
-{"create":true,"level":1000,"login":"jeffotoni"}},"body2":
-{"Ecu":"16","Instance":"c5.xlarge","Mem":"8","vCpu":"4"},"status":"success"}
+{
+	"subject": "Test Struct to Map",
+	"sent": 345,
+	"body": {
+		"Anddress": {
+			"City": "Jersey City",
+			"Fone": {
+				"fone1": "87-77047345",
+				"fone2": "83-93483838"
+			},
+			"Zip": "34.566-333"
+		},
+		"Data": {
+			"create": true,
+			"level": 1000,
+			"login": "jeffotoni"
+		}
+	},
+	"body2": {
+		"Ecu": "16",
+		"Instance": "c5.xlarge",
+		"Mem": "8",
+		"vCpu": "4"
+	},
+	"status": "success"
+}
+```
+
+### Initialized collections of data
+
+Some ways to anonymously declare and initialize types and collections of types in marshal to transform into Json.
+
+Take a look at the example below:
+```go
+func main() {
+
+    // let's try something simple
+    // to understand what's
+    // really going on
+    m, _ := json.Marshal(false)
+    fmt.Println(m)         // show as bytes
+    fmt.Println(string(m)) // show as string
+
+    m2, _ := json.Marshal(-1)
+    fmt.Println(string(m2))
+
+    m3, _ := json.Marshal(0)
+    fmt.Println(string(m3))
+
+    m4, _ := json.Marshal(102.3)
+    fmt.Println(string(m4))
+
+    m5, _ := json.Marshal("DevOpsBH")
+    fmt.Println(string(m5))
+
+    // For this to occur we need to pass a collection
+    // with fields, something like a struct, a slice,
+    // maps, interfaces {} Let's see below an example
+    m6, _ := json.Marshal([...]string{"Elixir", "Scala"})
+    fmt.Println(string(m6))
+
+    m7, _ := json.Marshal(map[string]string{"twitter": "@jeffotoni"})
+    fmt.Println(string(m7))
+
+    m8, _ := json.Marshal(map[string]interface{}{"instagram": "jeffotoni", "langs": struct{ G string }{G: "gophers"}})
+    fmt.Println(string(m8))
+
+    m9, _ := json.Marshal(map[string]struct{ L string }{"jeff": {L: "@Ricardo Maraschini"}})
+    fmt.Println(string(m9))
+}
+```
+
+Output:
+```bash
+```
+### Json NewEncoder
+
+NewEncoder returns a new encoder that writes to w. 
+
+```go
+func NewEncoder(w io.Writer) *Encoder
+```
+
+With this function we can implement our own custom Marshal function
+
+Check out the example below:
+```go
+
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+)
+
+const (
+    empty = ""
+    tab   = "\t"
+)
+
+func main() {
+
+    //json, err := MyJson(map[string]string{"twitter": "@jeffotoni"})
+    json, err := MyJson(map[string]interface{}{"instagram": "jeffotoni", "langs": struct{ G string }{G: "gophers"}})
+
+    if err != nil {
+        fmt.Println(err)
+    }
+
+    fmt.Println(json)
+}
+
+func MyJson(data interface{}) (string, error) {
+    buffer := new(bytes.Buffer)
+    encoder := json.NewEncoder(buffer)
+    encoder.SetIndent(empty, tab)
+    // encode...
+    err := encoder.Encode(data)
+    if err != nil {
+        return empty, err
+    }
+    return buffer.String(), nil
+}
+```
+
+Output:
+```
+{
+	"instagram": "jeffotoni",
+	"langs": {
+		"G": "gophers"
+	}
+}
 ```
 
 ### Json Unmarshal Decode
@@ -5110,7 +5297,7 @@ Rust
 ```
 
 In other words, we get a string of bytes that is a Json and fill in the values of the struct with those elements.
-Using the json.Unmarshal function, funtastic it.
+Using the json.Unmarshal function, Fantastic it.
 In other words, Json has to be compatible with the struct that is our model.
 
 

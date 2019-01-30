@@ -51,8 +51,10 @@ func main() {
 	fmt.Println(string(s))
 
 	// improving output for json format viewing
-	json, err := json.MarshalIndent(j, "", "\t")
+	json, err := json.MarshalIndent(a, "", "\t")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println(string(json))
 }

@@ -39,7 +39,8 @@ func main() {
 				{"devops@g.com", "permanet", "error"}, {"lambdaman@g.com", "complaint", "success"}}},
 		From: []string{"from1@m.com", "from2@gm.com"}}
 
-	m, err := json.Marshal(l)
+	//m, err := json.Marshal(l)
+	m, err := json.MarshalIndent(l, "", "\t")
 
 	if err != nil {
 		log.Println(err)

@@ -54,12 +54,11 @@ func main() {
             crudWithDetail: crudWithDetail{Detail: false, crud: crud{Create: true, Retrieve: false, Update: true, Delete: false}}},
     }
 
-    m, err := json.Marshal(j)
-    if err != nil {
-        log.Println(err)
-    }
-
-    fmt.Println(string(m))
+    // m, err := json.Marshal(j)
+    // if err != nil {
+    //     log.Println(err)
+    // }
+    //fmt.Println(string(m))
 
     // improving output for json format viewing
     // var prettyJSON bytes.Buffer

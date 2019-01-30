@@ -35,7 +35,8 @@ func main() {
 			myname: "go_br in action",
 		}}
 
-	m0, err := json.Marshal(ll)
+	//m0, err := json.Marshal(ll)
+	m0, err := json.MarshalIndent(ll, "", "\t")
 
 	if err != nil {
 		log.Println(err)
