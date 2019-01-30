@@ -24,6 +24,8 @@ func main() {
 	}
 
 	var langs []Lang
+
+	// convert Json to Struct
 	err := json.Unmarshal(jsonBlob, &langs)
 	if err != nil {
 		fmt.Println("error:", err)

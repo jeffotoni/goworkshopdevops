@@ -130,6 +130,7 @@ Soon below some channels that I participate and can find me online.
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
+    - [Json Unmarshal Structs](#json-unmarshal-structs)
 - [Parse Json](#Json)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
@@ -4576,7 +4577,9 @@ map[string]interface{}, for JSON objects
 nil for JSON null
 ```
 
+All of the content below has been described and created examples using unmarshal with interfaces {} which is one of the most complex ways of handling a value that we do not know the type they can be born dynamically, and for this we need to understand a little more how interfaces { } and how to do type assertions in Go.
 
+Soon after we will return in unmarshal using structs.
 
 ### Generic JSON with interface{} and assertion
 
@@ -4900,6 +4903,67 @@ val2 is string str
 val3 is float64 4
 CountKey1 is float64 2
 ```
+
+### Json Unmarshal Structs
+
+We saw the most complex part of using Unmarshal in dynamic composites using interfaces {} and had to make assertions to capture the values.
+Now let's use Unmarshal in structures, in this scenario the structure is something static, it has to be always predefined.
+
+When we develop our API, we will realize that we will have to do Unmarshal and Marshal all the time of receiving and sending information using json.
+
+So if we get angry at Unmarshal, Marshal, Interfaces {} and Structs, our APIs will be a little tricky to develop.
+
+Let's take a look at the code below that represents exactly the way we use Unmarshal with Structs.
+
+Example:
+```go
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+
+	// byte with json
+	var jsonBlob = []byte(`[
+	{"Name": "Golang", "Level": "10"},
+	{"Name": "Rust",    "Level": "7"}
+]`)
+
+	// struct that is our model
+	type Lang struct {
+		Name  string
+		Level string
+	}
+
+	var langs []Lang
+
+	// convert Json to Struct
+	err := json.Unmarshal(jsonBlob, &langs)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+
+	fmt.Printf("\n%+v", langs)
+	fmt.Printf("\n%+v", langs[0].Name)
+	fmt.Printf("\n%+v", langs[0].Level)
+	fmt.Printf("\n%+v", langs[1].Name)
+	fmt.Printf("\n%+v", langs[1].Level)
+}
+```
+
+Output:
+```bash
+[{Name:Golang Level:10} {Name:Rust Level:7}]
+Golang
+10
+Rust
+7
+```
+
+In other words, we get a string of bytes that is a Json and fill in the values of the struct with those elements.
+Using the json.Unmarshal function, funtastic it.
+In other words, Json has to be compatible with the struct that is our model.
 
 
 ### Links Json to Golang
