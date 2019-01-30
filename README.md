@@ -4763,7 +4763,100 @@ main.A
 main.B
 ```
 
-This is very powerful, we managed to sweep our entire struct using asserts and reflect, we got the name of the struct, name of the fields, their values, their tags, this feature is used to do Parse in Files, like Yaml, Tomy, Json etc ......
+This is very powerful, we managed to sweep our entire struct using asserts and reflect, we got the name of the struct, name of the fields, their values, their tags, this feature is used to do Parse in Files, like Yaml, Toml, Json etc ......
+
+Let's take another example when using Unmarshal in Interfaces{}
+Example:
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+	// map more interface
+	input := map[string]interface{}{
+		"Key1": []string{"some", "key"},
+		"key3": nil,
+		"val":  2,
+		"val2": "str",
+		"val3": 4,
+	}
+
+	fmt.Println(input)
+	for key, value := range input {
+		slice, ok := value.([]string)
+		if ok {
+			input["Count"+key] = len(slice)
+		}
+	}
+	fmt.Println(input)
+
+	// Encode to Json
+	m, err := json.Marshal(input)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// convert byte to string
+	fmt.Println(string(m))
+
+	// interface empty
+	var f interface{}
+
+	// Decode json
+	if err := json.Unmarshal(m, &f); err != nil {
+		fmt.Println(err)
+	}
+
+	// show screen
+	fmt.Println(f)
+
+	fmt.Println("### loop interface")
+	m2 := f.(map[string]interface{})
+	loopI(m2)
+}
+
+// loop in interface
+func loopI(m2 map[string]interface{}) {
+	for k, v := range m2 {
+
+		// assert interface
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "is string", vv)
+		case float64:
+			fmt.Println(k, "is float64", vv)
+		case []interface{}:
+			fmt.Println(k, "is an array:")
+			for i, u := range vv {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(k, "is of a type I don't know how to handle")
+		}
+	}
+}
+```
+
+Output:
+```bash
+map[key3:<nil> Key1:[some key] val:2 val2:str val3:4]
+map[key3:<nil> Key1:[some key] val:2 val2:str val3:4 CountKey1:2]
+{"CountKey1":2,"Key1":["some","key"],"key3":null,"val":2,"val2":"str","val3":4}
+map[CountKey1:2 Key1:[some key] key3:<nil> val:2 val2:str val3:4]
+### loop interface
+Key1 is an array:
+0 some
+1 key
+key3 is of a type I don't know how to handle
+val is float64 2
+val2 is string str
+val3 is float64 4
+CountKey1 is float64 2
+```
 
 
 ### Links Json to Golang
