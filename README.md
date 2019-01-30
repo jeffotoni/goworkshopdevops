@@ -1,3 +1,11 @@
+<h2 align="center">
+  <br />
+  <img src="https://github.com/jeffotoni/gocompilation/blob/master/golang-compilation.png" alt="logo" width="350" />
+  <br />
+  <br />
+  <br />
+</h2>
+
 # DevOps BootCamp
 ---
 
