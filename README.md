@@ -128,7 +128,8 @@ Soon below some channels that I participate and can find me online.
   - [introduction](#)
     - [Json marshal Encode](#json-marshal-encode)
     - [Json Unmarshal Decode](#json-unmarshal-decode)
-    - [Links Json to Golang](#links-json-to-golang)
+    - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
+    - [Dynamic type](#dynamic-type)
 - [Parse Json](#Json)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
@@ -4537,16 +4538,6 @@ map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
 {"Ecu":"16","Instance":"c5.xlarge","Mem":"8","vCpu":"4"},"status":"success"}
 ```
 
-### Links Json to Golang
-
-Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
-Of course it helps when you know what you're doing, and it's very useful sometimes to find some more complex json.
-
- - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
- - [Transform json to Go](https://transform.now.sh/json-to-go/)
- - [Json2struct](http://json2struct.mervine.net/)
-
-
 ### Json Unmarshal Decode
 
 Unmarshal parses the JSON-encoded data and stores the result in the value pointed to by v. If v is nil or not a pointer, Unmarshal returns an "InvalidUnmarshalError".
@@ -4574,10 +4565,8 @@ var f interface{}
 err := json.Unmarshal(b, &f)
 ```
 
-Example complete:
-
-
 To unmarshal JSON into an interface value, Unmarshal stores one of these in the interface value:
+
 ```go
 bool, for JSON booleans
 float64, for JSON numbers
@@ -4587,12 +4576,9 @@ map[string]interface{}, for JSON objects
 nil for JSON null
 ```
 
-Confira
 
 
-
-
-### Generic JSON with interface{}
+### Generic JSON with interface{} and assertion
 
 The interface{} (empty interface) type describes an interface with zero methods. Every Go type implements at least zero methods and therefore satisfies the empty interface.
 
@@ -4626,6 +4612,12 @@ case string:
 default:
     // i isn't one of the types above
 }
+```
+
+Syntax of type assertion is defined as:
+
+```go
+PrimaryExpression.(Type)
 ```
 
 At this point the Go value in f would be a map whose keys are strings and whose values are themselves stored as empty interface values: 
@@ -4671,4 +4663,114 @@ In this way you can work with unknown JSON data while still enjoying the benefit
 
 See full code below:
 ```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+
+	b := []byte(`{"Name":"DevOps","Age":10,"Company":["Google","Aws"]}`)
+
+	var f interface{}
+	if err := json.Unmarshal(b, &f); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(f)
+
+	m := f.(map[string]interface{})
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "is string", vv)
+		case float64:
+			fmt.Println(k, "is float64", vv)
+		case []interface{}:
+			fmt.Println(k, "is an array:")
+			for i, u := range vv {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(k, "is of a type I don't know how to handle")
+		}
+	}
+	//fmt.Println()
+}
 ```
+
+```bash
+map[Name:DevOps Age:10 Company:[Google Aws]]
+Name is string DevOps
+Age is float64 10
+Company is an array:
+0 Google
+1 Aws
+```
+
+When we work with empty interfaces, we have to do asserts, so we can use them and treat them correctly, because in Golang everything is static and typed, if we do not assert we will not be able to capture the values of types that are in the interface that can be any type.
+
+Check the code below:
+```go
+	case string:
+	// ..
+	case float64:
+	// ..
+	case [] interface {}:
+	// ..
+	case int:
+	// ..
+	case bool:
+	// ..
+	case map[string]interface{}:
+```
+
+### Dynamic type
+
+Besides static type that all variables have (it’s a type from variable’s declaration), variables of interface type also have a dynamic type. It’s a type of value currently set in interface type variable. Over the course of program execution variable of interface type has the same static type but its dynamic type can change as different values implementing desired interface will be assigned:
+
+Check out the example:
+```go
+package main
+
+import "fmt"
+
+type I interface {
+	comeon()
+}
+
+type A struct{}
+
+func (a A) comeon() {}
+
+type B struct{}
+
+func (b B) comeon() {}
+
+func main() {
+	var i I
+	i = A{} // dynamic type of i is A
+	fmt.Printf("%T\n", i.(A))
+	i = B{} // dynamic type of i is B
+	fmt.Printf("%T\n", i.(B))
+}
+```
+
+```bash
+main.A
+main.B
+```
+
+This is very powerful, we managed to sweep our entire struct using asserts and reflect, we got the name of the struct, name of the fields, their values, their tags, this feature is used to do Parse in Files, like Yaml, Tomy, Json etc ......
+
+
+### Links Json to Golang
+
+Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
+Of course it helps when you know what you're doing, and it's very useful sometimes to find some more complex json.
+
+ - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
+ - [Transform json to Go](https://transform.now.sh/json-to-go/)
+ - [Json2struct](http://json2struct.mervine.net/)
