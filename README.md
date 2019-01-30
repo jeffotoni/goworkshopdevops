@@ -68,6 +68,7 @@ Soon below some channels that I participate and can find me online.
    - [Slice Types](#slice-types)
    - [Struct Types](#struct-types)
    - [Map Types](#map-types)
+   - [Map literals continued](#map-literals-continued)
    - [Channel Types](#channel-types)
    - [Blank identifier](#blank-identifier)
    - [Interface Types](#interface-types)
@@ -2031,10 +2032,102 @@ type JsonMessage struct {
 	} `json:"mail"`
 }
 ```
+When the subject is struct we have several possibilities to deal with and work with this feature in Golang, it is practically embedded in everything we will build in Golang, Structs is something powerful in Go to manipulate data and send data all the time between channels using goroutine, be it in queues, database recordings, json and database reads, GraphQL, REST API, SOAP etc ...
 
-Package structs contains various utilities functions to work with structs.
+Below is a lib that works directly with struct, converting to Maps.
+I do not use it in production but for our course it is interesting to analyze.
 
-[Struct Pkg](https://godoc.org/github.com/fatih/structs#pkg-examples)
+Here are some examples to play with.
+
+We know that the more native we are in Golang it will be a good option, but at times we will need some libs to help us.
+
+Archived project. No maintenance.
+
+This project is not maintained anymore and is archived. Feel free to fork and make your own changes if needed. For more detail read my blog post: Taking an indefinite sabbatical from my projects
+
+Structs contains various utilities to work with Go (Golang) structs. It was initially used by me to convert a struct into a map[string]interface{}. With time I've added other utilities for structs. It's basically a high level package based on primitives from the reflect package. Feel free to add new functions or improve the existing code.
+Install
+
+Install
+```go
+go get github.com/fatih/structs
+```
+
+To test low rotate the code below
+```go
+
+type Server struct {
+	Name        string `json:"name,omitempty"`
+	ID          int
+	Enabled     bool
+	Users       []string // not exported
+	http.Server          // embedded
+}
+
+func main() {
+
+	// Create a new struct type:
+
+	server := &Server{
+		Name:    "gopher",
+		ID:      12345678,
+		Users:   []string{"jeffotoni", "pike", "dennis", "ken"},
+		Enabled: true,
+	}
+
+	// struct
+	fmt.Println(server)
+
+	// create struct fatih
+	s := structs.New(server)
+	m := s.Map() // Get a map[string]interface{}
+	fmt.Println(m)
+
+	v := s.Values() // Get a []interface{}
+	fmt.Println(v)
+
+	f := s.Fields() // Get a []*Field
+	fmt.Println(f)
+
+	n := s.Names() // Get a []string
+	fmt.Println(n)
+
+	name := s.Field("Name") // Get a *Field based on the given field name
+
+	// Get the underlying value,  value => "gopher"
+	value := name.Value().(string)
+	fmt.Println(value)
+
+	tagValue := name.Tag("json")
+	fmt.Println(tagValue)
+
+	f1, ok := s.FieldOk("Name") // Get a *Field based on the given field name
+	fmt.Println(f1, ok)
+
+	n2 := s.Name() // Get the struct name
+	fmt.Println(n2)
+
+	h := s.HasZero() // Check if any field is uninitialized
+	fmt.Println(h)
+}
+```
+
+Output:
+```bash
+&{gopher 12345678 true [jeffotoni pike dennis ken] 
+{ <nil> <nil> 0s 0s 0s 0s 0 map[] <nil> <nil> 0 0 {{0 0} 0} <nil> {0 0} map[] map[] <nil> []}}
+map[Server:map[TLSConfig:<nil> ReadHeaderTimeout:0s IdleTimeout:0s Addr: Handler:<nil> 
+]MaxHeaderBytes:0 TLSNextProto:map[] ConnState:<nil> ErrorLog:<nil> ReadTimeout:0s WriteTimeout:0s] 
+Name:gopher ID:12345678 Enabled:true Users:[jeffotoni pike dennis ken]]
+[gopher 12345678 true [jeffotoni pike dennis ken]  <nil> <nil> 0s 0s 0s 0s 0 map[] <nil> <nil>]
+[0xc000106000 0xc000106090 0xc000106120 0xc0001061b0 0xc000106240]
+[Name ID Enabled Users Server]
+gopher
+name,omitempty
+&{{0x626180 0xc0000f6000 408} {Name  0x626180 json:"name,omitempty" 0 [0] false} structs} true
+Server
+true
+```
 
 ### Map types
 
@@ -2267,6 +2360,35 @@ func main() {
 Output:
 ```bash
 map[Brasil:Brasilia EUA:Washington, D.c France:Paris]
+```
+
+### Map literals continued
+ 
+ If the top-level type is just a type name, you can omit it from the elements of the literal. 
+
+```go
+package main
+
+import "fmt"
+
+type Login struct {
+	User, Login, Email string
+}
+
+// passing a struct as parameter
+// for our struct map
+var m = map[string]Login{
+	"jeffotoni": {"jeffotoni", "jeff", "jeff@gm.com"},
+	"Google":    {"root", "super", "google@gm.com"},
+}
+
+func main() {
+	fmt.Println(m)
+}
+```go
+
+```bash
+map[jeffotoni:{jeffotoni jeff jeff@gm.com} Google:{root super google@gm.com}]
 ```
 
 ### Channel Types
