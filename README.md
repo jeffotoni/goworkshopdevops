@@ -2,7 +2,6 @@
 ---
 
 ## Golang Workshop DevOps 
----
 
 Workshop material for **8 hours** using **Golang**
 
