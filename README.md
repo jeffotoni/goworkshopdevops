@@ -1,6 +1,6 @@
 <h2 align="center">
   <br />
-  <img src="https://github.com/jeffotoni/gocompilation/blob/master/golang-compilation.png" alt="logo" width="350" />
+  <img src="https://github.com/jeffotoni/gocompilation/blob/master/golang-compilation.png" alt="logo" width="600" />
   <br />
   <br />
   <br />
@@ -9,7 +9,7 @@
 # DevOps BootCamp
 ---
 
-## Golang Workshop DevOps 
+# Golang Workshop DevOps 
 
 Workshop material for **8 hours** using **Golang**
 
