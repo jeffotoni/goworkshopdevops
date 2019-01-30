@@ -2278,6 +2278,8 @@ map[]
 map[population:500000]
 ```
 
+### Map literals continued
+
 A map literal is a very convenient way to initialize a map with some data. You just need to pass the key-value pairs separated by colon inside curly braces.
 
 ```go
@@ -2361,11 +2363,8 @@ Output:
 ```bash
 map[Brasil:Brasilia EUA:Washington, D.c France:Paris]
 ```
-
-### Map literals continued
  
- If the top-level type is just a type name, you can omit it from the elements of the literal. 
-
+If the top-level type is just a type name, you can omit it from the elements of the literal. 
 ```go
 package main
 
