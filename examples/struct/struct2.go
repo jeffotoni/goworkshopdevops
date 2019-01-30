@@ -5,7 +5,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -32,6 +31,7 @@ func main() {
 		WeightKg: 23,
 		Size:     D{20, 60},
 	}
-	b, _ := json.Marshal(d)
-	fmt.Println(string(b))
+	//b, _ := json.Marshal(d)
+	//fmt.Println(string(b))
+	fmt.Println(d)
 }
