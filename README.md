@@ -8,7 +8,7 @@
 
 # DevOps BootCamp
 
-#### Workshop material for **8 hours** using **Golang**
+##### Workshop material for **8 hours** using **Golang**
 
 # Golang Workshop DevOps 
 ---
