@@ -4614,7 +4614,50 @@ default:
 }
 ```
 
-Syntax of type assertion is defined as:
+Check out all the code below:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var i interface{}
+	fmt.Println(i)
+
+	i = "DevOps BH"
+	fmt.Println(i)
+
+	i = 2019
+	fmt.Println(i)
+
+	i = 9.5
+	fmt.Println(i)
+
+	i = [...]string{"Pike", "Jeffotoni", "Thompson", "Griesemer"}
+	fmt.Println(i)
+
+	i = map[string]interface{}{"Lang": []string{"Go", "Rust", "Scala", "Elixir"}}
+	fmt.Println(i)
+
+	//struct{ City string }{City: "BH"}
+	i = map[struct{ L string }]interface{}{{L: "Lang"}: []string{"Go", "Rust", "Scala", "Elixir"}}
+	fmt.Println(i)
+}
+```
+
+Output:
+```bash
+<nil>
+DevOps BH
+2019
+9.5
+[Pike Jeffotoni Thompson Griesemer]
+map[Lang:[Go Rust Scala Elixir]]
+map[{Lang}:[Go Rust Scala Elixir]]
+```
+It is noticed that the interface created accepted all the types that was passed to it, was created dynamically.
+
+**Syntax of type assertion is defined as:** 
 
 ```go
 PrimaryExpression.(Type)
