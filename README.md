@@ -1,4 +1,8 @@
-# Golang Workshop DevOps
+# DevOps BootCamp
+---
+
+## Golang Workshop DevOps 
+---
 
 Workshop material for **8 hours** using **Golang**
 
@@ -7,7 +11,7 @@ The content and references used are from the [Golang Official Site](https://gola
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
-Well that site here [Play Golang](https://play.golang.org) or [Play Go Space](https://goplay.space/#ulT0tsK7H0Y) we can play Golang online.
+Well that site here [Play Golang](https://play.golang.org/p/ayud1GTDJ0G) or [Play Go Space](https://goplay.space/#ayud1GTDJ0G) we can play Golang online.
 
 We have a very interesting link that we have been able to search for packages written in Golang  check out this link: [Go Doc](https://godoc.org/)
 
