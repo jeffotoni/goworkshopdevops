@@ -8,12 +8,19 @@
 
 # DevOps BootCamp
 
-##### Workshop material for **8 hours** using **Golang**
+Material for **8 hours** Practical Immersion **with Golang**
+This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
 
 # Golang Workshop DevOps 
 ---
 
-This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
+All content aims at the basic level of the student many practical examples were made with details richness to make life easier than it is initiating.
+If you know little and almost nothing programming will not be problem every manual was made to level starting to advanced.
+All the difficulties I had when I started trying to contemplate this material.
+We will try to improve the material all the time so we can have a reference when it comes to Go.
+
+I hope you all enjoy it and can serve as a base for learning and help several possible Gophers.
+
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
 
