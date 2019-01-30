@@ -4617,6 +4617,90 @@ default:
 }
 ```
 
+The code below was perfect for us to understand, and to know how we make insertions using Golang.
+
+Example:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var i interface{} = "DevOpsBh"
+
+	s := i.(string)
+	fmt.Println(s)
+
+	s, ok := i.(string)
+	fmt.Println(s, ok)
+
+	f, ok := i.(float64)
+	fmt.Println(f, ok)
+
+	// f = i.(float64) // panic
+	// fmt.Println(f)
+}
+```
+
+Output:
+```bash
+DevOpsBh
+DevOpsBh true
+0 false
+```
+
+**Type switches**
+
+A type switch is a construct that permits several type assertions in series.
+A type switch is like a regular switch statement, but the cases in a type switch specify types (not values), and those values are compared against the type of the value held by the given interface value.
+
+```bash
+switch v := i.(type) {
+case T:
+    // here v has type T
+case S:
+    // here v has type S
+default:
+    // no match; here v has the same type as i
+}
+```
+The declaration in a type switch has the same syntax as a type assertion i.(T), but the specific type T is replaced with the keyword type. 
+
+Check out the code below:
+```go
+package main
+
+import "fmt"
+
+func doInterface(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+}
+
+func main() {
+	doInterface(33)
+	doInterface("DevOpsBH")
+	doInterface("Lambda")
+	doInterface(true)
+}
+```
+
+Output:
+```bash
+Twice 33 is 66
+"DevOpsBH" is 8 bytes long
+"Lambda" is 6 bytes long
+I don't know about type bool!
+```
+
+The code below will initialize the interface causing it to receive several different types.
+
 Check out all the code below:
 ```go
 package main
