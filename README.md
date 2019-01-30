@@ -85,6 +85,7 @@ Soon below some channels that I participate and can find me online.
    - [Array Types](#array-types)
    - [Slice Types](#slice-types)
    - [Struct Types](#struct-types)
+   - [Fatih Structs to Map](#fatih-structs-to-map)
    - [Map Types](#map-types)
    - [Map literals continued](#map-literals-continued)
    - [Channel Types](#channel-types)
@@ -2050,28 +2051,25 @@ type JsonMessage struct {
 	} `json:"mail"`
 }
 ```
+
 When the subject is struct we have several possibilities to deal with and work with this feature in Golang, it is practically embedded in everything we will build in Golang, Structs is something powerful in Go to manipulate data and send data all the time between channels using goroutine, be it in queues, database recordings, json and database reads, GraphQL, REST API, SOAP etc ...
+
+
+### Fatih Structs to Map
 
 Below is a lib that works directly with struct, converting to Maps.
 I do not use it in production but for our course it is interesting to analyze.
-
-Here are some examples to play with.
-
 We know that the more native we are in Golang it will be a good option, but at times we will need some libs to help us.
-
-Archived project. No maintenance.
-
-This project is not maintained anymore and is archived. Feel free to fork and make your own changes if needed. For more detail read my blog post: Taking an indefinite sabbatical from my projects
+This project is not maintained anymore and is archived. Feel free to fork and make your own changes if needed.
 
 Structs contains various utilities to work with Go (Golang) structs. It was initially used by me to convert a struct into a map[string]interface{}. With time I've added other utilities for structs. It's basically a high level package based on primitives from the reflect package. Feel free to add new functions or improve the existing code.
-Install
 
 Install
 ```go
 go get github.com/fatih/structs
 ```
 
-To test low rotate the code below
+To test low rotate the code below:
 ```go
 
 type Server struct {
