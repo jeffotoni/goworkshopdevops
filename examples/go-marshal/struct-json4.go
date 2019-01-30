@@ -60,4 +60,20 @@ func main() {
     }
 
     fmt.Println(string(m))
+
+    // improving output for json format viewing
+    // var prettyJSON bytes.Buffer
+    // err = json.Indent(&prettyJSON, m, "", "\t")
+    // if err != nil {
+    //     log.Println("JSON parse error: ", err)
+    // }
+    // fmt.Println(string(prettyJSON.Bytes()))
+
+    // improving output for json format viewing
+    json, err := json.MarshalIndent(j, "", "\t")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(string(json))
 }

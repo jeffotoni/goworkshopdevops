@@ -127,6 +127,8 @@ Soon below some channels that I participate and can find me online.
 - [Json](#Json)
   - [introduction](#)
     - [Json marshal Encode](#json-marshal-encode)
+    - [json MarshalIndent](#json-marshalIndent)
+    - [Option Omitempty](#option-omitempty)
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
@@ -4102,6 +4104,51 @@ Output:
 {"name":"Jefferson","cpf":"033.343.434-89"}
 ```
 
+### json MarshalIndent
+
+MarshalIndent is like Marshal but applies Indent to format the output. Each JSON element in the output will begin on a new line beginning with prefix followed by one or more copies of indent according to the indentation nesting. 
+
+```go
+func MarshalIndent(v interface{}, prefix, indent string) ([]byte, error)
+```
+
+Example:
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type ApiLogin struct {
+	Name string `json:"name"`
+	Cpf  string `json:"cpf"`
+}
+
+func main() {
+
+	a := ApiLogin{"Jefferson", "033.343.434-89"}
+	// improving output for json format viewing
+	json, err := json.MarshalIndent(a, "", "\t")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(json))
+}
+```
+
+Output:
+```bash
+{
+	"name": "Jefferson",
+	"cpf": "033.343.434-89"
+}
+```
+
+### Option Omitempty
+
 The "omitempty" option specifies that the field should be omitted from the encoding if the field has an empty value, defined as false, 0, a nil pointer, a nil interface value, and any empty array, slice, map, or string. 
 
 ```go
@@ -4223,7 +4270,8 @@ func main() {
 
 	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34",
 		And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
-	m, err := json.Marshal(apilogin1)
+	//m, err := json.Marshal(apilogin1)
+	m, err := json.MarshalIndent(apilogin1, "", "\t")
 
 	if err != nil {
 		log.Println(err)
@@ -4241,8 +4289,20 @@ func main() {
 
 ```bash
 json.Marshal as string
-{"name":"@jeffotoni","cpf":"093.393.334-34","login":"","email":"",
-"And1":{"City":"BH"},"And2":{"city":"BH","neighborhood":"","zipcode":""}}
+{
+	"name": "@jeffotoni",
+	"cpf": "093.393.334-34",
+	"login": "",
+	"email": "",
+	"And1": {
+		"City": "BH"
+	},
+	"And2": {
+		"city": "BH",
+		"neighborhood": "",
+		"zipcode": ""
+	}
+}
 ```
 
 In this other example we take a short excerpt from the json of an AWS SES service, it notifies via Json the Bounces of the sent emails, we are going to check the completion of our fields in the struct and transform them into json.

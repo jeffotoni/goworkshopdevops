@@ -7,6 +7,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 /** version struct
@@ -48,4 +49,10 @@ func main() {
 
 	s, _ := json.Marshal(a)
 	fmt.Println(string(s))
+
+	// improving output for json format viewing
+	json, err := json.MarshalIndent(j, "", "\t")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

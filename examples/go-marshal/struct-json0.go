@@ -30,4 +30,10 @@ func main() {
 
 	// show string json
 	fmt.Println(string(m))
+
+	// improving output for json format viewing
+	json, err := json.MarshalIndent(a, "", "\t")
+	if err != nil {
+		log.Fatal(err)
+	}
 }

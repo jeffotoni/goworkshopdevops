@@ -33,7 +33,9 @@ func main() {
 
 	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34",
 		And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
-	m, err := json.Marshal(apilogin1)
+	//m, err := json.Marshal(apilogin1)
+	// improving output for json format viewing
+	m, err := json.MarshalIndent(apilogin1, "", "\t")
 
 	if err != nil {
 		log.Println(err)
