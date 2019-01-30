@@ -7,11 +7,11 @@
 </h2>
 
 # DevOps BootCamp
----
+
+#### Workshop material for **8 hours** using **Golang**
 
 # Golang Workshop DevOps 
-
-Workshop material for **8 hours** using **Golang**
+---
 
 This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
