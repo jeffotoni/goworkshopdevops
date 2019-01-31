@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -21,4 +22,9 @@ func main() {
 	fmt.Println("Successfully Opened users.json")
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
+
+	// reading archive content
+	stringValue, _ := ioutil.ReadAll(jsonFile)
+
+	fmt.Println(stringValue)
 }

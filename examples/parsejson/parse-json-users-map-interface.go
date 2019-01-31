@@ -14,68 +14,84 @@ import (
 
 func main() {
 
+	// We can use the ioutil.ReadFile which would already
+	// return bytes and we would not need to use two functions
+	// ioutil.ReadFile("./user-only.json")
+
 	// Open our jsonFile
 	jsonFile, err := os.Open("./user-only.json")
 
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println("Successfully Opened users.json")
 
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
+	// reading archive content
 	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// defining the interface map that will receive
+	// the file and the format is dynamic
 	var result map[string]interface{}
+
+	// the syntax below is also allowed
+	//var result = make(map[string]interface{})
+
+	// let's now run our Unmarshal and convert to objects
 	json.Unmarshal([]byte(byteValue), &result)
-	//fmt.Println(result)
+
+	// Let's access the interface on our map
 	obj := result["users"]
-	//objData := obj.(map[string]interface{})
-	objData := obj.([]interface{})
 
-	//fmt.Println(objData)
-	for k, v := range objData {
+	// Here completely changes from the
+	// previous example we now have an [] interface,
+	// ie an array of interfaces a slice.
+	objInterface := obj.([]interface{})
 
-		fmt.Println("k:", k, "v:", v)
-		val := reflect.ValueOf(v)
+	// Now as we have multiple users,
+	// we'll loop through to fetch them
+	// and access each user's key
+	// and value in the slice
+	for line, keyOne := range objInterface {
+
+		fmt.Println("#### line ", line)
+
+		// ValueOf returns a new Value initialized
+		// to the concrete value stored in the interface i.
+		val := reflect.ValueOf(keyOne)
+
+		// A Kind represents the
+		// specific kind of type
+		// that a Type represents.
 		if val.Kind() == reflect.Map {
-			for _, e := range val.MapKeys() {
-				v := val.MapIndex(e)
-				switch t := v.Interface().(type) {
+
+			// Loop the map
+			for _, key := range val.MapKeys() {
+
+				// Index of Map
+				v := val.MapIndex(key)
+
+				// get the value of type Interface
+				switch value := v.Interface().(type) {
+
+				// v.Interface().(type)
+				// here test the types
 				case int:
-					fmt.Println(e, t)
+					fmt.Println(key, value)
 				case float64:
-					fmt.Println(e, t)
+					fmt.Println(key, value)
 				case string:
-					fmt.Println(e, t)
+					fmt.Println(key, value)
 				case bool:
-					fmt.Println(e, t)
+					fmt.Println(key, value)
 				default:
 					fmt.Println("not found")
 				}
 			}
 		}
 	}
-
-	// fmt.Println(objData["name"].(string))
-	// fmt.Println(objData["type"].(string))
-	// fmt.Println(objData["age"].(float64))
-
-	//var v string
-	//IUsers := result["users"]
-	//fmt.Println(result["users"].(string))
-
-	// for Key, value := range result {
-	// 	fmt.Println("Key: ", Key, "Value:", value)
-
-	// 	val := reflect.ValueOf(args)
-	// 	fmt.Println(val.Kind())
-	// }
-
-	// fmt.Println("#######")
-	// val := reflect.ValueOf(IUsers)
-	// fmt.Println("Value: ", val)
-	// fmt.Println("Kind: ", val.Kind())
-	// fmt.Println("Type: ", reflect.TypeOf(IUsers).Elem())
 }

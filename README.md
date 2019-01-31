@@ -139,7 +139,7 @@ Soon below some channels that I participate and can find me online.
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
-	- [Parsing with Map and Interface or []interface{}](#parsing-with-map-and-interface-or-interface{})
+	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
     - [Json-Gcfg](#json-gcfg)
@@ -5697,7 +5697,7 @@ Facebook Url: https://facebook.com/jeffotoni
 Twitter Url: https://twitter.com/jeffotoni
 Instagram Url: https://instagram.com/jeffotoni
 ```
-### Parsing with Map and Interface or []interface{}
+### Parsing with Map and Interface
 
 Sometimes, going through the process of creating structs for everything can be somewhat time consuming and overly verbose for the problems you are trying to solve. In this instance, we can use standard interfaces{} in order to read in any JSON data:
 
@@ -5718,6 +5718,97 @@ When we read json and do the parse, there are several boring points we have to d
 Our Unmarshal received **var result map[string]interface{}** to be able to play all the data in an interface map so we have something dynamic without having to define the fields the interface makes the magic of accepting any type.
 In this example we have no problem in directly accessing the map fields, in json format we have the keys and values and ready we can direct access.
 
+Check the code below:
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
+
+func main() {
+
+	// Open our jsonFile
+	byteJson, err := ioutil.ReadFile("./user-only-0.json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// show screen
+	fmt.Println("Successfully Opened users.json")
+
+	// defining the interface map that will receive
+	// the file and the format is dynamic
+	var result = make(map[string]interface{})
+
+	// let's now run our Unmarshal and convert to objects
+	json.Unmarshal(byteJson, &result)
+
+	// show all
+	fmt.Println(result)
+
+	// how is a map I can do exactly
+	// the syntax below
+	val, ok := result["name"].(string)
+	fmt.Println(val, ok)
+
+	// type string
+	fmt.Println(result["name"].(string))
+
+	// type string
+	fmt.Println(result["city"].(string))
+
+	// type float64
+	fmt.Println(result["age"].(float64))
+}
+```
+
+Output:
+```bash
+Successfully Opened users.json
+map[age:3 name:Devopsbh city:Belo Horizonte]
+Devopsbh true
+Devopsbh
+Belo Horizonte
+3
+```
+
+Now let's complicate our Json file a bit, let's put an Array of users and let's see how we should proceed to access the keys and values of this Json.
+
+```json
+{
+  "users":
+  [
+    {
+    "name" : "Andre Almar",
+    "type" : "knowledge",
+    "age" : 25,
+    "nick": "@andrealmar"
+    },
+    {
+    "name" : "Jefferson",
+    "type" : "knowledge",
+    "age" : 160,
+    "nick": "@jeffotoni"
+    },
+    {
+    "name" : "Ieso Dias",
+    "type" : "knowledge",
+    "age" : 23,
+    "nick": "@iesodias"
+    }
+  ]
+}
+```
+
+Now our file is an Array of values, let's see how we do it to access the keys and values of our new Json.
+
+Let's take a look at the code:
 ```go
 package main
 
@@ -5726,12 +5817,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 )
 
 func main() {
 
+	// We can use the ioutil.ReadFile which would already
+	// return bytes and we would not need to use two functions
+	// ioutil.ReadFile("./user-only.json")
+
 	// Open our jsonFile
-	jsonFile, err := os.Open("./user-only-0.json")
+	jsonFile, err := os.Open("./user-only.json")
 
 	// if we os.Open returns an error then handle it
 	if err != nil {
@@ -5750,85 +5846,433 @@ func main() {
 	// the file and the format is dynamic
 	var result map[string]interface{}
 
+	// the syntax below is also allowed
+	//var result = make(map[string]interface{})
+
 	// let's now run our Unmarshal and convert to objects
 	json.Unmarshal([]byte(byteValue), &result)
 
-	fmt.Println(result)
-	fmt.Println(result["name"].(string))
-	fmt.Println(result["city"].(string))
-	fmt.Println(result["age"].(float64))
-}
-```
+	// Let's access the interface on our map
+	obj := result["users"]
 
-Output:
-```bash
-map[name:Devopsbh type:knowledge age:3]
-Devopsbh
-Belo Horizonte,
-3
-```
+	// Here completely changes from the
+	// previous example we now have an [] interface,
+	// ie an array of interfaces a slice.
+	objInterface := obj.([]interface{})
 
-Now let's complicate our Json file a bit, let's put an Array of users and let's see how we should proceed to access the keys and values of this Json.
+	// Now as we have multiple users,
+	// we'll loop through to fetch them
+	// and access each user's key
+	// and value in the slice
+	for line, keyOne := range objInterface {
 
+		fmt.Println("#### line ", line)
 
-```go
-package main
+		// ValueOf returns a new Value initialized
+		// to the concrete value stored in the interface i.
+		val := reflect.ValueOf(keyOne)
 
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"reflect"
-)
+		// A Kind represents the
+		// specific kind of type
+		// that a Type represents.
+		if val.Kind() == reflect.Map {
 
-func main() {
+			// Loop the map
+			for _, key := range val.MapKeys() {
 
-	// Open our jsonFile
-	jsonFile, err := os.Open("./users.json")
+				// Index of Map
+				v := val.MapIndex(key)
 
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
+				// get the value of type Interface
+				switch value := v.Interface().(type) {
+
+				// v.Interface().(type)
+				// here test the types
+				case int:
+					fmt.Println(key, value)
+				case float64:
+					fmt.Println(key, value)
+				case string:
+					fmt.Println(key, value)
+				case bool:
+					fmt.Println(key, value)
+				default:
+					fmt.Println("not found")
+				}
+			}
+		}
 	}
-	fmt.Println("Successfully Opened users.json")
-
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var result map[string]interface{}
-	json.Unmarshal([]byte(byteValue), &result)
-
-	//var v string
-	IUsers := result
-
-	//for Key, IUsers := range result {
-	//fmt.Println("Key: ", Key)
-	val := reflect.ValueOf(IUsers)
-	fmt.Println("VALUE = ", val)
-	fmt.Println("KIND = ", val.Kind())
-	fmt.Println("Type =", reflect.TypeOf(IUsers).Elem())
 }
 ```
 
 Output:
 ```bash
 Successfully Opened users.json
-VALUE =  map[users:[map[name:Devopsbh type:Reader age:29 social:map[facebook:https://facebook.com/devopsbh twitter:https://twitter.com/devopsbh instagram:https://instagram.com/devopsbh]] map[type:Author age:160 social:map[facebook:https://facebook.com/jeffotoni twitter:https://twitter.com/jeffotoni instagram:https://instagram.com/jeffotoni] name:Jefferson]]]
-KIND =  map
-Type = interface {}
+k: 0 v: map[name:Andre Almar city:Sao Paulo age:25 nick:@andrealmar]
+name Andre Almar
+city Sao Paulo
+age 25
+nick @andrealmar
+k: 1 v: map[name:Jefferson city:Belo Horizonte age:160 nick:@jeffotoni]
+name Jefferson
+city Belo Horizonte
+age 160
+nick @jeffotoni
+k: 2 v: map[age:23 nick:@iesodias name:Ieso Dias city:Mato Grosso]
+name Ieso Dias
+city Mato Grosso
+age 23
+nick @iesodias
 ```
 
-The big disadvantage of using parse in interface is that we have to treat the types and scan the elements so that we can capture the fields and values of each type that we do not know what they are, for this we do a **reflect.Valueof(interface{}).kind()** to start and we know which type this has that is in a for to scan the entire byte string generated by Unmarshal.
+**What if I have a recursion in Json?**
+
+```json
+{
+  "users":
+  [
+    {
+      "name" : "Joelson",
+      "city" : "Porto Alegre",
+      "age" : 39,
+      "social" : {
+        "facebook" : "https://facebook.com/joelson",
+        "twitter" : "https://twitter.com/joelson",
+        "instagram" : "https://instagram.com/joelson"
+      },
+      "fone" : {
+        "cell" : "5531987387246",
+        "resid1" : "55314565678",
+        "job" : "55314785679"
+      }
+    },
+    {
+      "name" : "Jefferson",
+      "city" : "Belo Horizonte",
+      "age" : 160,
+      "social" : {
+        "facebook" : "https://facebook.com/jeffotoni",
+        "twitter" : "https://twitter.com/jeffotoni",
+        "instagram" : "https://instagram.com/jeffotoni"
+      },
+      "fone" : {
+        "cell" : "5531987387246",
+        "resid1" : "55314565678",
+        "job" : "55314785679"
+      }
+    }
+  ]
+}
+```
+
+```go
+
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"reflect"
+)
+
+func main() {
+
+	// Open our jsonFile
+	byteJson, err := ioutil.ReadFile("./users.json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// show screen
+	fmt.Println("Successfully Opened users.json")
+
+	// defining the interface map that will receive
+	// the file and the format is dynamic
+	var result = make(map[string]interface{})
+
+	// let's now run our Unmarshal and convert to objects
+	json.Unmarshal(byteJson, &result)
+
+	obj := result["users"]
+
+	// get []interface
+	objData := obj.([]interface{})
+
+	// recursive
+	DecodeMapVetInterface(objData)
+}
+
+func DecodeMapVetInterface(objData []interface{}) {
+	//fmt.Println(objData)
+	for line, v := range objData {
+
+		fmt.Println("#### line: ", line)
+
+		// ValueOf returns a new Value initialized
+		// to the concrete value stored in the interface i.
+		val := reflect.ValueOf(v)
+
+		// A Kind represents the
+		// specific kind of type
+		// that a Type represents.
+		if val.Kind() == reflect.Map {
+
+			// Loop the map
+			for _, key := range val.MapKeys() {
+
+				fmt.Println("..............................................")
+
+				// Index
+				v := val.MapIndex(key)
+				switch iv := v.Interface().(type) {
+
+				// v.Interface().(type)
+				// here test the types
+				case int:
+					fmt.Println(key, iv)
+				case float64:
+					fmt.Println(key, iv)
+				case string:
+					fmt.Println(key, iv)
+				case bool:
+					fmt.Println(key, iv)
+				default:
+					fmt.Println(key)
+					DecodeMapInterface(iv)
+				}
+			}
+		}
+	}
+}
+
+func DecodeMapInterface(v interface{}) {
+	val := reflect.ValueOf(v)
+	if val.Kind() == reflect.Map {
+		for _, e := range val.MapKeys() {
+			v := val.MapIndex(e)
+			switch t := v.Interface().(type) {
+			case int:
+				fmt.Println(e, t)
+			case float64:
+				fmt.Println(e, t)
+			case string:
+				fmt.Println(e, t)
+			case bool:
+				fmt.Println(e, t)
+			default:
+				fmt.Println("not found!")
+			}
+		}
+	}
+}
+```
+
+Output:
+```bash
+Successfully Opened users.json
+#### line:  0
+..............................................
+name Joelson
+..............................................
+city Porto Alegre
+..............................................
+age 39
+..............................................
+social
+facebook https://facebook.com/joelson
+twitter https://twitter.com/joelson
+instagram https://instagram.com/joelson
+..............................................
+fone
+cell 5531987387246
+resid1 55314565678
+job 55314785679
+#### line:  1
+..............................................
+name Jefferson
+..............................................
+city Belo Horizonte
+..............................................
+age 160
+..............................................
+social
+instagram https://instagram.com/jeffotoni
+facebook https://facebook.com/jeffotoni
+twitter https://twitter.com/jeffotoni
+..............................................
+fone
+cell 5531987387246
+resid1 55314565678
+job 55314785679
+```
+
+We were able to recursively list our Json, with several layers.
+But every Json file will have to be handled, structures change as needed, so this recursion will only work for this file template.
+
+Let's take another example, with a new json with several layers.
+
+Let's take a look at the code below:
+```json
+{
+"payload": 
+  [
+    {
+        "products": {
+            "house": {
+                "rectangular bed": {
+                    "price": 99.33,
+                    "weight": 44
+                },
+                "Corner table": {
+                    "price": 100.00,
+                    "weight": 400
+                }
+            },
+            "car": {
+                "bmw": {
+                    "price": 400.000,
+                    "weight": 2000
+                },
+                "jaguar": {
+                    "price": 600.000,
+                    "weight": 3000
+                }
+            },
+            "robotics": {
+                "arduino circuit board": {
+                    "price": 3000,
+                    "weight": 140
+                },
+                "proximity sensor...": {
+                    "price": 100,
+                    "weight": 34
+                },
+                "temperature sensor": {
+                    "price": 344,
+                    "weight": 55
+                }
+            }
+        }
+    }
+  ]
+}
+```
+
+Complete code:
+```go
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
+
+func main() {
+
+	// open file json
+	data, err := ioutil.ReadFile("./payload.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// make map interface
+	payload := make(map[string]interface{})
+
+	// Unmarshal data
+	err = json.Unmarshal(data, &payload)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// call recursive
+	recursivMap(payload)
+}
+
+// recursive Map
+func recursivMap(payload map[string]interface{}) {
+	for k, v := range payload {
+		//fmt.Printf("%v %T: %v\n", k, v, v)
+		switch v.(type) {
+		case []interface{}:
+			recursivSlice(v.([]interface{}))
+		case map[string]interface{}:
+			//fmt.Printf("%v %T: %v\n", k, v, v)
+			fmt.Println("----------------------")
+			fmt.Printf("%v\n", k)
+			recursivMap(v.(map[string]interface{}))
+
+		default:
+			fmt.Printf("%v=%v\n", k, v)
+		}
+	}
+}
+
+// recursive Slice
+func recursivSlice(pauload []interface{}) {
+	for _, v := range pauload {
+		switch v.(type) {
+		case []interface{}:
+			recursivSlice(v.([]interface{}))
+		case map[string]interface{}:
+			recursivMap(v.(map[string]interface{}))
+		}
+	}
+}
+```
+
+Output:
+```bash
+----------------------
+products
+----------------------
+house
+----------------------
+rectangular bed
+price=99.33
+weight=44
+----------------------
+Corner table
+price=100
+weight=400
+----------------------
+car
+----------------------
+bmw
+price=400
+weight=2000
+----------------------
+jaguar
+price=600
+weight=3000
+----------------------
+robotics
+----------------------
+arduino circuit board
+price=3000
+weight=140
+----------------------
+proximity sensor...
+price=100
+weight=34
+----------------------
+temperature sensor
+price=344
+weight=55
+```
+
+Now, we did something totally recursive, presenting all the keys and values from our Json file.
 
 
-
-	- [Unmarshalling our JSON](#)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
     - [Json-Gcfg](#json-gcfg)
+    
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 

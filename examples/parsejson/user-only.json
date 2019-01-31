@@ -3,19 +3,19 @@
   [
     {
     "name" : "Andre Almar",
-    "type" : "knowledge",
+    "city" : "Sao Paulo",
     "age" : 25,
     "nick": "@andrealmar"
     },
     {
     "name" : "Jefferson",
-    "type" : "knowledge",
+    "city" : "Belo Horizonte",
     "age" : 160,
     "nick": "@jeffotoni"
     },
     {
     "name" : "Ieso Dias",
-    "type" : "knowledge",
+    "city" : "Mato Grosso",
     "age" : 23,
     "nick": "@iesodias"
     }

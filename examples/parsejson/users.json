@@ -2,23 +2,33 @@
   "users":
   [
     {
-      "name" : "Devopsbh",
-      "type" : "knowledge",
-      "age" : 29,
+      "name" : "Joelson",
+      "city" : "Porto Alegre",
+      "age" : 39,
       "social" : {
-        "facebook" : "https://facebook.com/devopsbh",
-        "twitter" : "https://twitter.com/devopsbh",
-        "instagram" : "https://instagram.com/devopsbh"
+        "facebook" : "https://facebook.com/joelson",
+        "twitter" : "https://twitter.com/joelson",
+        "instagram" : "https://instagram.com/joelson"
+      },
+      "fone" : {
+        "cell" : "5531987387246",
+        "resid1" : "55314565678",
+        "job" : "55314785679"
       }
     },
     {
       "name" : "Jefferson",
-      "type" : "Author",
+      "city" : "Belo Horizonte",
       "age" : 160,
       "social" : {
         "facebook" : "https://facebook.com/jeffotoni",
         "twitter" : "https://twitter.com/jeffotoni",
         "instagram" : "https://instagram.com/jeffotoni"
+      },
+      "fone" : {
+        "cell" : "5531987387246",
+        "resid1" : "55314565678",
+        "job" : "55314785679"
       }
     }
   ]
