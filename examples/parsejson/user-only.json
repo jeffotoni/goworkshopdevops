@@ -1,0 +1,23 @@
+{
+  "users":
+  [
+    {
+    "name" : "Andre Almar",
+    "type" : "knowledge",
+    "age" : 25,
+    "nick": "@andrealmar"
+    },
+    {
+    "name" : "Jefferson",
+    "type" : "knowledge",
+    "age" : 160,
+    "nick": "@jeffotoni"
+    },
+    {
+    "name" : "Ieso Dias",
+    "type" : "knowledge",
+    "age" : 23,
+    "nick": "@iesodias"
+    }
+  ]
+}

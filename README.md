@@ -11,7 +11,7 @@
 Material for **8 hours** Practical Immersion **with Golang**
 This is a material in Golang to be presented **"face-to-face"** in a **"hand in hand"** Workshop that will be done in 8 hours.
 
-# Golang Workshop DevOps 
+# Golang Workshop DevOps
 ---
 
 All content aims at the basic level of the student many practical examples were made with details richness to make life easier than it is initiating.
@@ -134,11 +134,12 @@ Soon below some channels that I participate and can find me online.
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
+    - [What is reflection?](#what-is-reflection?)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Reading the JSON File](#reading-the-json-file)
-	- [Parsing with Structs](#)
-	- [Unmarshalling our JSON](#)
+	- [Parsing with Structs](#parsing-with-structs)
+	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
     - [Json-Gcfg](#json-gcfg)
@@ -4789,6 +4790,8 @@ Output:
 	}
 }
 ```
+The above example shows the use of the json.NewEncoder () function. Encode () to transform the data collection into JSON, very cool, right?
+
 
 ### Json Unmarshal Decode
 
@@ -5144,6 +5147,12 @@ main.A
 main.B
 ```
 
+### What is reflection?
+
+Reflection is the ability of a program to inspect its variables and values at run time and find their type. You might not understand what this means but that's alright. You will get a clear understanding of reflection by the end of this section, so stay with me.
+
+Reflection is a very powerful and advanced concept in Go and it should be used with care. It is very difficult to write clear and maintainable code using reflection. It should be avoided wherever possible and should be used only when absolutely necessary.
+
 This is very powerful, we managed to sweep our entire struct using asserts and reflect, we got the name of the struct, name of the fields, their values, their tags, this feature is used to do Parse in Files, like Yaml, Toml, Json etc ......
 
 Let's take another example when using Unmarshal in Interfaces{}
@@ -5300,6 +5309,528 @@ In other words, we get a string of bytes that is a Json and fill in the values o
 Using the json.Unmarshal function, Fantastic it.
 In other words, Json has to be compatible with the struct that is our model.
 
+### MarshalJSON and UnmarshalJSON
+
+There is the possibility of customizing the native method of Marshal and Unmarshal, that is to override with other functionalities without changing their behavior as a whole, but to increase in the already existing method.
+Very cool this feature, I do not need to rewrite the whole method in yes add a behavior.
+
+First we create our struct with the fields we want to add the new rule as the example below:
+
+```go
+type Email struct {
+Email string
+}
+```
+
+Soon after the initialization of my struct where it feeds the information will receive this struct as parameter as the example below:
+
+```go
+a: = struct {
+Login string
+Email
+Time Time
+}
+```
+
+Ready now we simply implement our method always with the name **MarshalJSON** referencing this struct that we created **"Email"**.
+
+```go
+func (and Email) MarshalJSON () ([] byte, error) {
+return [] byte (fmt.Sprintf (`"% s "`, checkEmail (e.Email))), nil
+}
+```
+
+The checkEmail function is a regular expression that we created to validate the email.
+Ready when running the Marshal function it will icorporate this method that you implemented.
+See the example below with the complete code.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"regexp"
+	"time"
+)
+
+type Email struct {
+	Email string
+}
+
+type Time struct {
+	time.Time
+}
+
+// layout
+const layout = "2006-01-02"
+
+var regxmail = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+func (t Time) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, t.Time.Format(layout))), nil
+}
+
+func (e Email) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, checkEmail(e.Email))), nil
+}
+
+func checkEmail(email string) string {
+	if regxmail.MatchString(email) {
+		return email
+	} else {
+		return "-invalid-"
+	}
+}
+
+func main() {
+	a := struct {
+		Login string
+		Email Email
+		Time  Time
+	}{
+		Login: "devops",
+		Email: Email{"jeffotoni-go.com"},
+		Time:  Time{time.Now()},
+	}
+
+	fmt.Println(a)
+	json, err := json.MarshalIndent(a, "", "\t")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(string(json))
+}
+```
+
+Output:
+```bash
+{devops {jeffotoni-go.com} 2019-01-30 22:41:00.506602023 -0200 -02 m=+0.000508436}
+{
+	"Login": "devops",
+	"Email": "-invalid-",
+	"Time": "2019-01-30"
+}
+```
+
+The Unmarshal version is a little more complex, since we will need to scan the received structures. The email was added in a string map, to scan the field and add the functionality to validate the email.
+
+Check out the complete code below.
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"regexp"
+	"strings"
+	"time"
+)
+
+type Email struct {
+	Email string
+}
+
+type Time struct {
+	time.Time
+}
+
+// layout
+const layout = "2006-01-02"
+
+// regex to email
+var regxmail = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+func (t *Time) UnmarshalJSON(b []byte) (err error) {
+	if b[0] == '"' && b[len(b)-1] == '"' {
+		b = b[1 : len(b)-1]
+	}
+	if string(b) == `null` {
+		*t = Time{}
+		return
+	}
+	t.Time, err = time.Parse(layout, string(b))
+	return
+}
+
+// Unmarshal Json
+func (t *Email) UnmarshalJSON(b []byte) (err error) {
+	if b[0] == '"' && b[len(b)-1] == '"' {
+		b = b[1 : len(b)-1]
+	}
+	if string(b) == `null` {
+		return
+	}
+	var stuff map[string]string
+	err = json.Unmarshal(b, &stuff)
+	if err != nil {
+		return err
+	}
+	for key, value := range stuff {
+		if strings.ToLower(key) == "email" {
+			t.Email = checkEmail(value)
+		}
+	}
+	return nil
+}
+
+func checkEmail(email string) string {
+	if regxmail.MatchString(email) {
+		return email
+	} else {
+		return "-invalid-"
+	}
+}
+
+func main() {
+	a := struct {
+		Login string
+		Email Email
+		Time  Time
+	}{}
+
+	b := []byte(`{"Login":"devops","Email":{"Email":"devops-go.com"},"Time":"2019-01-30"}`)
+	err := json.Unmarshal(b, &a)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(a)
+}
+```
+
+Output:
+```bash
+{devops {-invalid-} 2019-01-30 00:00:00 +0000 UTC}
+```
+
+### Parse Json
+---
+
+###  Reading and Parsing a JSON File
+
+Let's do parse in Json file, there are several libs to do this, let's create our own, simple to understand the whole process and of course get mad at Parse.
+
+The file below is saved in the folder **parsejson** and we will create our parse within this directory.
+
+```json
+{
+  "users": [
+    {
+      "name" : "Devopsbh",
+      "type" : "Reader",
+      "age" : 29,
+      "social" : {
+        "facebook" : "https://facebook.com/devopsbh",
+        "twitter" : "https://twitter.com/devopsbh",
+        "instagram" : "https://instagram.com/devopsbh"
+      }
+    },
+    {
+      "name" : "Jefferson",
+      "type" : "Author",
+      "age" : 160,
+      "social" : {
+        "facebook" : "https://facebook.com/jeffotoni",
+        "twitter" : "https://twitter.com/jeffotoni"
+        "instagram" : "https://instagram.com/jeffotoni"
+      }
+    }
+  ]
+}
+```
+
+We'll be using the packages in order to open up our users.json file from our filesystem. Once we have opened the file, we'll defer the closing of the file to the end of the function so that we can work with the data inside of it.
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	//fmt.Println(os.Getwd())
+	// Open our jsonFile
+	jsonFile, err := os.Open("./users.json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Successfully Opened users.json")
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+}
+```
+
+### Parsing with Structs	
+
+We have a few options when it comes to parsing the JSON that is contained within our users.json file. We could either unmarshal the JSON using a set of predefined structs, or we could unmarshal the JSON using a map[string]interface{} to parse our JSON into strings mapped against arbitrary data types.
+
+If you know the structure that you are expecting then I would recommend going down the verbose route and defining your structs like so:
+
+```go
+package main
+
+func main() {
+	// Users struct which contains
+	// an array of users
+	type Users struct {
+		Users []User `json:"users"`
+	}
+
+	// Social struct which contains a
+	// list of links
+	type Social struct {
+		Facebook string `json:"facebook"`
+		Twitter  string `json:"twitter"`
+		Instagram  string `json:"instagram"`
+	}
+
+	// User struct which contains a name
+	// a type and a list of social links
+	type User struct {
+		Name   string `json:"name"`
+		Type   string `json:"type"`
+		Age    int    `json:"Age"`
+		Social Social `json:"social"`
+	}
+}
+```
+
+Once we have these in place, we can use them to unmarshal our JSON.
+Unmarshalling our JSON - Once we’ve used the os.Open function to read our file into memory, we then have to convert it toa byte array using ioutil.ReadAll. Once it’s in a byte array we can pass it to our json.Unmarshal() method.
+
+Remember if the json file is a wrong comma, it will not convert the file to json format that has it right.
+Now you can check the code below.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"strconv"
+)
+
+// Users struct which contains
+// an array of users
+type Users struct {
+	Users []User `json:"users"`
+}
+
+// Social struct which contains a
+// list of links
+type Social struct {
+	Facebook  string `json:"facebook"`
+	Twitter   string `json:"twitter"`
+	Instagram string `json:"instagram"`
+}
+
+// User struct which contains a name
+// a type and a list of social links
+type User struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+	Age    int    `json:"Age"`
+	Social Social `json:"social"`
+}
+
+func main() {
+
+	//fmt.Println(os.Getwd())
+	// Open our jsonFile
+	jsonFile, err := os.Open("./users.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer jsonFile.Close()
+
+	// read our opened xmlFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// show json
+	fmt.Println(string(byteValue))
+
+	// we initialize our Users array
+	var users Users
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'users' which we defined above
+	json.Unmarshal(byteValue, &users)
+
+	fmt.Println(users)
+
+	// we iterate through every user within our users array and
+	// print out the user Type, their name, and their facebook url
+	// as just an example
+	for i := 0; i < len(users.Users); i++ {
+		fmt.Println("User Type: " + users.Users[i].Type)
+		fmt.Println("User Age: " + strconv.Itoa(users.Users[i].Age))
+		fmt.Println("User Name: " + users.Users[i].Name)
+		fmt.Println("Facebook Url: " + users.Users[i].Social.Facebook)
+		fmt.Println("Twitter Url: " + users.Users[i].Social.Twitter)
+		fmt.Println("Instagram Url: " + users.Users[i].Social.Instagram)
+	}
+}
+```
+
+Output:
+```bash
+{[{Devopsbh Reader 29 {https://facebook.com/devopsbh https://twitter.com/devopsbh https://instagram.com/devopsbh}} {Jefferson Author 160 {https://facebook.com/jeffotoni https://twitter.com/jeffotoni https://instagram.com/jeffotoni}}]}
+User Type: Reader
+User Age: 29
+User Name: Devopsbh
+Facebook Url: https://facebook.com/devopsbh
+Twitter Url: https://twitter.com/devopsbh
+Instagram Url: https://instagram.com/devopsbh
+User Type: Author
+User Age: 160
+User Name: Jefferson
+Facebook Url: https://facebook.com/jeffotoni
+Twitter Url: https://twitter.com/jeffotoni
+Instagram Url: https://instagram.com/jeffotoni
+```
+### Parsing with Map and Interface or []interface{}
+
+Sometimes, going through the process of creating structs for everything can be somewhat time consuming and overly verbose for the problems you are trying to solve. In this instance, we can use standard interfaces{} in order to read in any JSON data:
+
+Format Json Example:
+
+```json
+{
+  "name" : "Devopsbh",
+  "city" : "Belo Horizonte",
+  "age" : 29
+}
+```
+
+**How can we do Unmarshal in this file and access the fields?**
+
+When we read json and do the parse, there are several boring points we have to deal with, and an excellent strategy is to divide to conquer. The above example is an arrayless json with no complexity, a json in its simplest possible format.
+
+Our Unmarshal received **var result map[string]interface{}** to be able to play all the data in an interface map so we have something dynamic without having to define the fields the interface makes the magic of accepting any type.
+In this example we have no problem in directly accessing the map fields, in json format we have the keys and values and ready we can direct access.
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+)
+
+func main() {
+
+	// Open our jsonFile
+	jsonFile, err := os.Open("./user-only-0.json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Successfully Opened users.json")
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	// reading archive content
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// defining the interface map that will receive
+	// the file and the format is dynamic
+	var result map[string]interface{}
+
+	// let's now run our Unmarshal and convert to objects
+	json.Unmarshal([]byte(byteValue), &result)
+
+	fmt.Println(result)
+	fmt.Println(result["name"].(string))
+	fmt.Println(result["city"].(string))
+	fmt.Println(result["age"].(float64))
+}
+```
+
+Output:
+```bash
+map[name:Devopsbh type:knowledge age:3]
+Devopsbh
+Belo Horizonte,
+3
+```
+
+Now let's complicate our Json file a bit, let's put an Array of users and let's see how we should proceed to access the keys and values of this Json.
+
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"reflect"
+)
+
+func main() {
+
+	// Open our jsonFile
+	jsonFile, err := os.Open("./users.json")
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Successfully Opened users.json")
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var result map[string]interface{}
+	json.Unmarshal([]byte(byteValue), &result)
+
+	//var v string
+	IUsers := result
+
+	//for Key, IUsers := range result {
+	//fmt.Println("Key: ", Key)
+	val := reflect.ValueOf(IUsers)
+	fmt.Println("VALUE = ", val)
+	fmt.Println("KIND = ", val.Kind())
+	fmt.Println("Type =", reflect.TypeOf(IUsers).Elem())
+}
+```
+
+Output:
+```bash
+Successfully Opened users.json
+VALUE =  map[users:[map[name:Devopsbh type:Reader age:29 social:map[facebook:https://facebook.com/devopsbh twitter:https://twitter.com/devopsbh instagram:https://instagram.com/devopsbh]] map[type:Author age:160 social:map[facebook:https://facebook.com/jeffotoni twitter:https://twitter.com/jeffotoni instagram:https://instagram.com/jeffotoni] name:Jefferson]]]
+KIND =  map
+Type = interface {}
+```
+
+The big disadvantage of using parse in interface is that we have to treat the types and scan the elements so that we can capture the fields and values of each type that we do not know what they are, for this we do a **reflect.Valueof(interface{}).kind()** to start and we know which type this has that is in a for to scan the entire byte string generated by Unmarshal.
+
+
+
+	- [Unmarshalling our JSON](#)
+    - [Json Toml](#json-toml)
+    - [Json Yaml](#json-yaml)
+    - [Json-Gcfg](#json-gcfg)
+- [Links Json to Golang](#links-json-to-golang)
+- [Exercise three](#Exercise-three)
 
 ### Links Json to Golang
 

@@ -1,0 +1,25 @@
+{
+  "users":
+  [
+    {
+      "name" : "Devopsbh",
+      "type" : "knowledge",
+      "age" : 29,
+      "social" : {
+        "facebook" : "https://facebook.com/devopsbh",
+        "twitter" : "https://twitter.com/devopsbh",
+        "instagram" : "https://instagram.com/devopsbh"
+      }
+    },
+    {
+      "name" : "Jefferson",
+      "type" : "Author",
+      "age" : 160,
+      "social" : {
+        "facebook" : "https://facebook.com/jeffotoni",
+        "twitter" : "https://twitter.com/jeffotoni",
+        "instagram" : "https://instagram.com/jeffotoni"
+      }
+    }
+  ]
+}
