@@ -5206,7 +5206,7 @@ main.A
 main.B
 ```
 
-### What is reflection?
+### What is reflection
 
 Reflection is the ability of a program to inspect its variables and values at run time and find their type. You might not understand what this means but that's alright. You will get a clear understanding of reflection by the end of this section, so stay with me.
 
