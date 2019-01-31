@@ -134,7 +134,7 @@ Soon below some channels that I participate and can find me online.
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
-    - [What is reflection?](#what-is-reflection-?)
+    - [What is reflection](#what-is-reflection)
     - [Making reflect with struct](#making-reflect-with-struct)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
@@ -5213,6 +5213,62 @@ Reflection is the ability of a program to inspect its variables and values at ru
 Reflection is a very powerful and advanced concept in Go and it should be used with care. It is very difficult to write clear and maintainable code using reflection. It should be avoided wherever possible and should be used only when absolutely necessary.
 
 This is very powerful, we managed to sweep our entire struct using asserts and reflect, we got the name of the struct, name of the fields, their values, their tags, this feature is used to do Parse in Files, like Yaml, Toml, Json etc ......
+
+
+Check the code below:
+```go
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+
+	b := []byte(`{"Name":"Pike Hob","Age":56,"Parents":["Denis","James"]}`)
+	var f interface{}
+	_ = json.Unmarshal(b, &f)
+
+	m := f.(map[string]interface{})
+
+	// a way to initialize a map interface
+	////////////////////////////////////////
+
+	// f = map[string]interface{}{
+	// 	"Name": "Wednesday",
+	// 	"Age":  6,
+	// 	"Parents": []interface{}{
+	// 		"Torvalds",
+	// 		"Mark Zuckerberg",
+	// 	},
+	// }
+	/////////////////////////////////////
+
+	for k, v := range m {
+		switch vv := v.(type) {
+		case string:
+			fmt.Println(k, "|is string|", vv)
+		case float64:
+			fmt.Println(k, "|is float64|", vv)
+		case []interface{}:
+			fmt.Println(k, "|is an array|")
+			for i, u := range vv {
+				fmt.Println(i, u)
+			}
+		default:
+			fmt.Println(k, "is of a type I don't know how to handle")
+		}
+	}
+}
+```
+
+Output:
+```bash
+Age |is float64| 56
+Parents |is an array|
+0 Denis
+1 James
+Name |is string| Pike Hob
+```
 
 Let's take another example when using Unmarshal in Interfaces{}
 Example:
