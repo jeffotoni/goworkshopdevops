@@ -8,17 +8,29 @@ import "fmt"
 import "reflect"
 
 func main() {
-	data := []string{"one", "two", "three", "for", "five"}
-	test(data)
-	moredata := []int{1, 2, 3, 4, 5}
-	test(moredata)
+
+	// slice dinamic
+	slice := []string{"C", "C++", "Fortram", "Cobol"}
+	dump_slice(slice)
+
+	// slice int
+	dataint := []int{1, 2, 3}
+	dump_slice(dataint)
 }
 
-func test(t interface{}) {
+// dump interfaces
+func dump_slice(t interface{}) {
+
+	// type kind only slice
 	switch reflect.TypeOf(t).Kind() {
+
+	// slice
 	case reflect.Slice:
+
+		// return interface
 		s := reflect.ValueOf(t)
 
+		// loop in type
 		for i := 0; i < s.Len(); i++ {
 			fmt.Println(s.Index(i))
 		}

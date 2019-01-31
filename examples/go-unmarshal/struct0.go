@@ -11,15 +11,23 @@ import (
 )
 
 type jsoninput []struct {
-	Data string `json:"data"`
+	Name string `json:"name"`
 }
 
 func main() {
-	resp := `[{"data":"some data"}, {"data":"some more data"}]`
 
+	// json in memory
+	resp := `[{"name":"Andre"},{"name":"Pike"}]`
+
+	// initialization struct
 	data := &jsoninput{}
+
+	// Unmarshal in bytes
 	_ = json.Unmarshal([]byte(resp), data)
+
+	// loop to see the values in the fields
+	// loop in struct
 	for _, value := range *data {
-		fmt.Println(value.Data)
+		fmt.Println(value.Name)
 	}
 }

@@ -134,7 +134,8 @@ Soon below some channels that I participate and can find me online.
     - [Json Unmarshal Decode](#json-unmarshal-decode)
     - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic type](#dynamic-type)
-    - [What is reflection?](#what-is-reflection?)
+    - [What is reflection?](#what-is-reflection-?)
+    - [Making reflect with struct](#making-reflect-with-struct)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Reading the JSON File](#reading-the-json-file)
@@ -2136,6 +2137,64 @@ func main() {
 
 ```bash
 &[{some data} {some more data} {some more data}]
+```
+
+In our example below is another way to make array of struct, we made the statement at the time of initializing our struct, this causes that the struct does not get caught in only accepting array of struct.
+We did append in the fields and the magic happens.
+
+Let's take a look at the complete code:
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type User struct {
+	FirstName string `tag_name:"firstname"`
+	LastName  string `tag_name:"lastname"`
+	Age       int    `tag_name:"age"`
+}
+
+func main() {
+	// create instance
+	// slice struct
+	users := []*User{}
+
+	user := new(User)
+	user.FirstName = "Jefferson"
+	user.LastName = "otoni"
+	user.Age = 350
+	users = append(users, user)
+
+	user = new(User)
+	user.FirstName = "Pike"
+	user.LastName = "Hob"
+	user.Age = 55
+	users = append(users, user)
+
+	fmt.Println(users)
+
+	for k, v := range users {
+		fmt.Println(k, v)
+		fmt.Println(v.FirstName)
+		fmt.Println(v.LastName)
+		fmt.Println(v.Age)
+	}
+}
+```
+
+Output:
+```bash
+[0xc000060150 0xc000060180]
+0 &{Jefferson otoni 350}
+Jefferson
+otoni
+350
+1 &{Pike Hob 55}
+Pike
+Hob
+55
 ```
 
 Example Struct AWS Sqs Json
@@ -5248,6 +5307,380 @@ val3 is float64 4
 CountKey1 is float64 2
 ```
 
+### Making reflect with struct
+
+The example below clearly shows how we would do a reflect in a struct in a simple way.
+We were able to sweep the struct at element level, we get the Struct Name, the Field Name the field types, the tags in the fields and their values when they are filled. Phew, a lot of cool stuff there.
+
+Let's see the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"reflect"
+)
+
+type User struct {
+	FirstName string `tag_name:"firstname"`
+	LastName  string `tag_name:"lastname"`
+	Age       int    `tag_name:"age"`
+}
+
+func (f *User) reflect() {
+
+	// slice the element of struct
+	val := reflect.ValueOf(f).Elem()
+
+	// loop in elemnts of struct
+	for i := 0; i < val.NumField(); i++ {
+
+		// value of interface
+		valueField := val.Field(i)
+
+		// object of struct
+		typeField := val.Type().Field(i)
+
+		// tag of field
+		tag := typeField.Tag
+		fmt.Printf("Field Name: %s,\t Field Value: %v,\t Tag Value: %s\n", typeField.Name, valueField.Interface(), tag.Get("tag_name"))
+	}
+}
+
+func main() {
+
+	f := &User{
+		FirstName: "Jefferson",
+		LastName:  "Otoni",
+		Age:       350,
+	}
+
+	f.reflect()
+}
+```
+
+Output:
+```bash
+Field Name: FirstName,	 Field Value: Jefferson,	 Tag Value: firstname
+Field Name: LastName,	 Field Value: Otoni,	 Tag Value: lastname
+Field Name: Age,	 Field Value: 350,	 Tag Value: age
+```
+
+Let's see how we would do an array dump using reflect.
+
+Check out the complete code below:
+```go
+package main
+
+import (
+	"fmt"
+	"reflect"
+)
+
+func dump_interface_array(args interface{}) {
+
+	// getting the interface
+	val := reflect.ValueOf(args)
+
+	// test the type
+	if val.Kind() == reflect.Array {
+		fmt.Println("len = ", val.Len())
+		for i := 0; i < val.Len(); i++ {
+			e := val.Index(i)
+			switch e.Kind() {
+			case reflect.Int:
+				fmt.Printf("%v, ", e.Int())
+			case reflect.Float32:
+				fallthrough
+			case reflect.Float64:
+				fmt.Printf("%v, ", e.Float())
+			case reflect.String:
+				fmt.Printf("%v, ", e.String())
+			default:
+				panic(fmt.Sprintf("invalid Kind: %v", e.Kind()))
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func main() {
+
+	// array int
+	int_ary := [4]int{1, 2, 3, 4}
+
+	// array float
+	float32_ary := [4]float32{1.1, 2.2, 3.3, 4.4}
+
+	// array float
+	float64_ary := [4]float64{1.1, 2.2, 3.3, 4.4}
+
+	// array string
+	string_ary := [...]string{"Scala", "Elixir", "Lisp", "Clojure"}
+
+	dump_interface_array(int_ary)
+	dump_interface_array(float32_ary)
+	dump_interface_array(float64_ary)
+	dump_interface_array(string_ary)
+}
+```
+
+Output:
+```bash
+len =  4
+1, 2, 3, 4,
+len =  4
+1.100000023841858, 2.200000047683716, 3.299999952316284, 4.400000095367432, 
+len =  4
+1.1, 2.2, 3.3, 4.4, 
+len =  4
+Scala, Elixir, Lisp, Clojure, 
+```
+
+Another way to sweep dynamic slices, cool, let's check.
+
+Look at the complete code:
+```go
+package main
+
+import "fmt"
+import "reflect"
+
+func main() {
+
+	// slice dinamic
+	slice := []string{"C", "C++", "Fortram", "Cobol"}
+	dump_slice(slice)
+
+	// slice int
+	dataint := []int{1, 2, 3}
+	dump_slice(dataint)
+}
+
+// dump interfaces
+func dump_slice(t interface{}) {
+
+	// type kind only slice
+	switch reflect.TypeOf(t).Kind() {
+
+	// slice
+	case reflect.Slice:
+
+		// return interface
+		s := reflect.ValueOf(t)
+
+		// loop in type
+		for i := 0; i < s.Len(); i++ {
+			fmt.Println(s.Index(i))
+		}
+	}
+}
+```
+
+Output:
+```bash
+C
+C++
+Fortram
+Cobol
+1
+2
+3
+```
+
+Below we have an example doing some types of reflect, simple but for us to have a good idea of reflect power.
+
+Let's see the complete code below:
+```go
+package main
+
+import (
+    "fmt"
+    "reflect"
+)
+
+func main() {
+
+    // map interface
+    Schema := map[string]interface{}{}
+
+    // let's fill in the fields
+    Schema["int"] = 10
+    Schema["string"] = "this is a string and map with interface"
+    Schema["bool"] = false
+    Schema["sliceString"] = [...]string{"C", "C++", "Lisp"}
+
+    // interface
+    val := reflect.ValueOf(Schema)
+
+    // all data
+    fmt.Println("Schema", val)
+
+    // type
+    fmt.Println("Type = ", val.Kind())
+
+    // kind type == reflect map
+    if val.Kind() == reflect.Map {
+        for _, key := range val.MapKeys() {
+            v := val.MapIndex(key)
+
+            // kind type, interface type
+            switch value := v.Interface().(type) {
+
+            // testing types
+            case int:
+                fmt.Println(key, value)
+            case string:
+                fmt.Println(key, value)
+            case bool:
+                fmt.Println(key, value)
+
+            // case map[string]string:
+
+            // case []interface{}:
+
+            // case map[string]interface{}:
+
+            default:
+                val2 := reflect.ValueOf(Schema["sliceString"])
+                // type array
+                if val2.Kind() == reflect.Array {
+                    //fmt.Println("len = ", val2.Len())
+
+                    // loop array
+                    for i := 0; i < val2.Len(); i++ {
+                        // index key
+                        e := val2.Index(i)
+
+                        // kind type
+                        switch e.Kind() {
+
+                        // case types
+                        case reflect.String:
+                            fmt.Printf("%v, ", e.String())
+
+                        //default
+                        default:
+                            panic(fmt.Sprintf("invalid Kind: %v", e.Kind()))
+                        }
+                    }
+                    fmt.Println()
+                }
+            }
+        }
+    }
+}
+```
+
+Output:
+```bash
+Schema map[int:10 string:this is a string and map with interface bool:false sliceString:[C C++ Lisp]]
+Type =  map
+int 10
+string this is a string and map with interface
+bool false
+C, C++, Lisp,
+```
+
+Now let's complicate it a bit, let's do a reflect read of a struct and transform it into a map.
+Inside the struct we put a map of interfaces just to see how it would look.
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"net/url"
+	"reflect"
+	"strconv"
+)
+
+type address map[string]interface{}
+
+type User struct {
+	Login   string  `json:"login"`
+	Email   string  `json:"email"`
+	Status  string  `json:"status"`
+	Address address `json:"address"`
+}
+
+func main() {
+
+	a := address{
+		"Anddress": address{
+			"City": "Belo Horizonte",
+			"Zip":  "34.566-333",
+			"Fone": address{
+				"fone1": "87-77047345",
+				"fone2": "83-93483838",
+			},
+		},
+	}
+
+	user := User{
+		Login:   "jeffotoni",
+		Email:   "jeffotoni@gm.com",
+		Status:  "alive",
+		Address: a,
+	}
+
+	urlValues := structToMap(&user)
+	fmt.Println(urlValues)
+}
+
+// convert struct to map
+func structToMap(i interface{}) (values url.Values) {
+	values = url.Values{}
+	iVal := reflect.ValueOf(i).Elem()
+	typ := iVal.Type()
+	for i := 0; i < iVal.NumField(); i++ {
+		f := iVal.Field(i)
+		// You ca use tags here...
+		// tag := typ.Field(i).Tag.Get("tagname")
+		// Convert each type into a string for the url.Values string map
+		var v string
+		switch f.Interface().(type) {
+		case int, int8, int16, int32, int64:
+			v = strconv.FormatInt(f.Int(), 10)
+		case uint, uint8, uint16, uint32, uint64:
+			v = strconv.FormatUint(f.Uint(), 10)
+		case float32:
+			v = strconv.FormatFloat(f.Float(), 'f', 4, 32)
+		case float64:
+			v = strconv.FormatFloat(f.Float(), 'f', 4, 64)
+		case []byte:
+			v = string(f.Bytes())
+		case string:
+			v = f.String()
+
+		default:
+
+			switch f.Kind() {
+			// map
+			case reflect.Map:
+				for _, key := range f.MapKeys() {
+					strct := f.MapIndex(key)
+					//fmt.Println(key.Interface(), strct.Interface())
+					v = fmt.Sprintf("%v %v", key.Interface(), strct.Interface())
+
+				}
+			}
+		}
+
+		values.Set(typ.Field(i).Name, v)
+	}
+	return
+}
+```
+
+Output:
+```bash
+map[Login:[jeffotoni] Email:[jeffotoni@gm.com] Status:[alive] 
+Address:[Anddress map[City:Belo Horizonte Zip:34.566-333 
+Fone:map[fone1:87-77047345 fone2:83-93483838]]]]
+```
+
 ### Json Unmarshal Structs
 
 We saw the most complex part of using Unmarshal in dynamic composites using interfaces {} and had to make assertions to capture the values.
@@ -5258,6 +5691,45 @@ When we develop our API, we will realize that we will have to do Unmarshal and M
 So if we get angry at Unmarshal, Marshal, Interfaces {} and Structs, our APIs will be a little tricky to develop.
 
 Let's take a look at the code below that represents exactly the way we use Unmarshal with Structs.
+
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type jsoninput []struct {
+	Name string `json:"name"`
+}
+
+func main() {
+
+	// json in memory
+	// this is an array of values
+	resp := `[{"name":"Andre"},{"name":"Pike"}]`
+
+	// initialization struct
+	data := &jsoninput{}
+
+	// Unmarshal in bytes
+	_ = json.Unmarshal([]byte(resp), data)
+
+	// loop to see the values in the fields
+	// loop in struct
+	for _, value := range *data {
+		fmt.Println(value.Name)
+	}
+}
+```
+
+Output:
+```bash
+Andre
+Pike
+```
 
 Example:
 ```go
@@ -6272,7 +6744,7 @@ Now, we did something totally recursive, presenting all the keys and values from
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
     - [Json-Gcfg](#json-gcfg)
-    
+
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 

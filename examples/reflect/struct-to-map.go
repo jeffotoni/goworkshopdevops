@@ -1,3 +1,7 @@
+// Go in action
+// @jeffotoni
+// 2019-01-29
+
 package main
 
 import (
