@@ -139,7 +139,7 @@ Soon below some channels that I participate and can find me online.
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
-	- [Parsing with Map and Interface or []interface{}](#parsing-with-map-and-interface-or-[]-interface{})
+	- [Parsing with Map and Interface or []interface{}](#parsing-with-map-and-interface-or-interface{})
     - [Json Toml](#json-toml)
     - [Json Yaml](#json-yaml)
     - [Json-Gcfg](#json-gcfg)
