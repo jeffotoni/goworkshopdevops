@@ -1,5 +1,5 @@
 <h2 align="center">
-  <br />
+  <br/>
   <img src="https://github.com/jeffotoni/gocompilation/blob/master/golang-compilation.png" alt="logo" width="670" />
   <br />
   <br />
