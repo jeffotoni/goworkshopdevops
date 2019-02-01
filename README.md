@@ -113,7 +113,7 @@ Soon below some channels that I participate and can find me online.
     - [fmt Errorf](#fmt-errorf)
 - [Functions](#functions)
   - [Introduction Function](#introduction-function)
-    - [Return multiple values](#return-multiple) 
+    - [Return Multiple Values](#return-multiple) 
     - [Variadic Functions](#variadic-functions) 
     - [functions as a parameter](#functions-as-a-parameter) 
     - [Closures](#closures)
