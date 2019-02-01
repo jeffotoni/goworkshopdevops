@@ -1,0 +1,43 @@
+# This is a TOML document example.
+
+version = "1.0"
+
+[info]
+description = "this is an example of yaml file to server an ssh server or multiple servers to do ssh automating services on server"
+
+# Config server
+[server1]
+host = "127.0.0.1"
+port = 22
+user = "ubuntu"
+
+# type file or env
+type = "env"
+
+# when it is by file
+file = "key_1.pem"
+
+# type key
+env = "KEY_AWS"
+
+[server2]
+host = "127.0.0.10"
+port = 22
+user = "ubuntu"
+
+# type file or env
+type = "env"
+
+# when it is by file
+file = "key_1.pem"
+
+# type key
+env = "KEY_AWS"
+
+[clients]
+ping = "ok"
+data = [ ["amazon", "google"], [1, 2] ]
+hosts = [
+  "aws",
+  "cloud"
+]

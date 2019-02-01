@@ -141,9 +141,8 @@ Soon below some channels that I participate and can find me online.
 	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
-    - [Json Toml](#json-toml)
-    - [Json Yaml](#json-yaml)
-    - [Json-Gcfg](#json-gcfg)
+	- [Parsing in yaml format using Go](#json-yaml)
+    
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 
@@ -6797,9 +6796,232 @@ weight=55
 Now, we did something totally recursive, presenting all the keys and values from our Json file.
 
 
-    - [Json Toml](#json-toml)
-    - [Json Yaml](#json-yaml)
-    - [Json-Gcfg](#json-gcfg)
+### Parsing in yaml format using Go
+
+After this bunch of information we learn how to do parse with reflection using Go we are ready to create our own libs to parse in files. Reflection is very powerful and has several features and applicabilities, existing libs use reflection to parse files in json, toml, yaml or gcfg formats.
+
+Let's see in practice the lib gopkg.in/yaml.v2, and let's parse a file in Yaml format.
+
+We have to install the lib on our local machine and to do this just use the command below.
+```bash
+$ go get -u gopkg.in/yaml.v2
+```
+
+Check out the complete code below
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+
+	yaml "gopkg.in/yaml.v2"
+)
+
+type ServersSsh struct {
+	Version string `yaml:"version"`
+
+	Info struct {
+		Description string `yaml:"description"`
+	}
+
+	Server1 struct {
+		Host    string `yaml:"host"`
+		Port    string `yaml:"port"`
+		User    string `yaml:"user"`
+		FilePem string `yaml:"filepem"`
+		KeyAws  string `yaml:"keyaws"`
+	}
+
+	Server2 struct {
+		Host    string `yaml:"host"`
+		Port    string `yaml:"port"`
+		User    string `yaml:"user"`
+		FilePem string `yaml:"filepem"`
+		KeyAws  string `yaml:"keyaws"`
+	}
+}
+
+// Our config case has no structure created
+// the system will dynamically create
+var YamlMemory = `
+`
+
+// func main
+func main() {
+
+	var yamlByte []byte
+	var Yaml ServersSsh
+	var err error
+
+	// local
+	file := "server.yaml"
+
+	// test exist
+	if !FileExist(file) {
+		fmt.Println(file + " not exist!")
+		return
+	}
+
+	if yamlByte, err = ioutil.ReadFile(file); err != nil {
+		log.Println("Error: ", err)
+	}
+
+	// Unmarshal receives the file in a byte format and assigns the values passed to the fields in the structure.
+	// If there is an error it displays an error message on the screen informing the error
+	if err := yaml.Unmarshal(yamlByte, &Yaml); err != nil {
+		log.Println("Error", err)
+	}
+
+	fmt.Println("Version: ", Yaml.Version)
+	fmt.Println("Description: ", Yaml.Info.Description)
+	fmt.Println("Server1.Host: ", Yaml.Server1.Host)
+	fmt.Println("Server2.Host: ", Yaml.Server2.Host)
+}
+
+func FileExist(name string) bool {
+	//if _, err := os.Stat(name); os.IsNotExist(err) {
+	if stat, err := os.Stat(name); err == nil && !stat.IsDir() {
+		return true
+	}
+	return false
+}
+```
+
+Output:
+```bash
+Version:  1.0
+Description:  this is an example of yaml file to server an ssh server or multiple servers to do ssh automating services on server
+Server1.Host:  127.0.0.1
+Server2.Host:  127.0.0.10
+```
+
+### Parsing in Toml format using Go
+
+Now let's parse Toml files, there are several libs that do this, we will use github.com/BurntSushi/toml to do our parses.
+
+The cool thing is that we have seen what the libs are doing behind the scenes, now to use the libs is very easy and all our understanding of struct, maps helped to unmask what happens behind the scenes.
+
+We will install the package so that everything goes right.
+```bash
+$ go get github.com/BurntSushi/toml
+```
+
+Try the toml validator:
+```bash
+$ go get github.com/BurntSushi/toml/cmd/tomlv
+$ tomlv server.toml
+```
+
+Let's face it, check out the full code below.
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/BurntSushi/toml"
+)
+
+type ConfToml struct {
+	Version string
+	Info    Info
+	Server1 Server1
+	Server2 Server2
+	Clients Clients
+}
+
+// Info from config file
+type Info struct {
+	Description string
+}
+
+// Server1
+type Server1 struct {
+	Host    string
+	Port    int64
+	User    string
+	FilePem string
+	KeyAws  string
+}
+
+// Server2
+type Server2 struct {
+	Host    string
+	Port    int64
+	User    string
+	FilePem string
+	KeyAws  string
+}
+
+// info from clients file
+type Clients struct {
+	Ping  string
+	Data  [][]interface{} // very beautiful
+	Hosts []string
+}
+
+func main() {
+
+	var Toml ConfToml
+
+	file := "server.toml"
+
+	if !FileExist(file) {
+		fmt.Println(file + " not exist!")
+		return
+	}
+
+	if _, err := toml.DecodeFile(file, &Toml); err != nil {
+		log.Fatal(err)
+	}
+
+	// config data
+	fmt.Println("version:", Toml.Version)
+	fmt.Println("Info.Description: ", Toml.Info.Description)
+	fmt.Println("Server1.Host: ", Toml.Server1.Host)
+	fmt.Println("Server2.Host:", Toml.Server2.Host)
+
+	fmt.Println(Toml.Clients.Data)
+	fmt.Println(Toml.Clients.Data[0])
+	fmt.Println(Toml.Clients.Data[0][0])
+	fmt.Println(Toml.Clients.Data[0][1])
+
+	fmt.Println(Toml.Clients.Hosts)
+	fmt.Println(Toml.Clients.Hosts[0])
+	fmt.Println(Toml.Clients.Hosts[1])
+}
+
+func FileExist(name string) bool {
+	//if _, err := os.Stat(name); os.IsNotExist(err) {
+	if stat, err := os.Stat(name); err == nil && !stat.IsDir() {
+		return true
+	}
+	return false
+}
+```
+
+
+Output:
+```bash
+version: 1.0
+Info.Description:  this is an example of yaml file to server an ssh server or multiple servers to do ssh automating services on server
+Server1.Host:  127.0.0.1
+Server2.Host: 127.0.0.10
+[[amazon google] [1 2]]
+[amazon google]
+amazon
+google
+[aws cloud]
+aws
+cloud
+```
+
+
 
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
