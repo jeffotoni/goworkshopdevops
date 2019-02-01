@@ -37,11 +37,11 @@ Soon below some channels that I participate and can find me online.
    - [gobr](https://t.me/go_br)
 ### Slack: 
    - [gophers.slack.com](https://gophers.slack.com)
-      - brazil
-      - brasil
-      - general
-      - go-kit
-      - gotimefm
+      - Brazil
+      - Brasil
+      - General
+      - Go-kit
+      - Gotimefm
       
 ## Lab 01 Install and Commands Golang
 
