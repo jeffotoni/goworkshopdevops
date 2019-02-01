@@ -43,7 +43,7 @@ Soon below some channels that I participate and can find me online.
       - go-kit
       - gotimefm
       
-## Lab 01 Install and commands Golang
+## Lab 01 Install and Commands Golang
 
 - [Overview](#overview)
 - [Introduction Installation](#introduction-installation)
@@ -65,18 +65,18 @@ Soon below some channels that I participate and can find me online.
     - [Bufio NewWriter](#bufio-newWriter)
     - [Func Main](#func-main)
 - [Go commands](#go-commands)
-   - [go commands introduction](#go-commands-introduction)
-   - [go run](#go-run) 
-   - [go build](#go-build)
-   - [go install](#go-install)
-   - [go get](#go-get)
-   - [go mod](#go-mod)
-   - [go mod init](#go-mod-init)
-   - [go mod vendor](#go-mod-vendor)
+   - [Go commands introduction](#go-commands-introduction)
+   - [Go run](#go-run) 
+   - [Go build](#go-build)
+   - [Go install](#go-install)
+   - [Go get](#go-get)
+   - [Go mod](#go-mod)
+   - [Go mod init](#go-mod-init)
+   - [Go mod vendor](#go-mod-vendor)
    - [GO111MODULE](#go111module)
-   - [go test](#go-test)
+   - [Go test](#go-test)
 
-## Lab 02 The golang types
+## Lab 02 The Golang Types
 
 - [Types](#types)
    - [Numeric Types](#numeric-types)
@@ -91,12 +91,12 @@ Soon below some channels that I participate and can find me online.
    - [Map Types](#map-types)
    - [Map literals continued](#map-literals-continued)
    - [Channel Types](#channel-types)
-   - [Blank identifier](#blank-identifier)
+   - [Blank Identifier](#blank-identifier)
    - [Interface Types](#interface-types)
 	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
-	 - [Interface as type](#interface-as-type)
-   - [Exercise one](#exercise-one)
-- [Control structures](#control-structures)
+	 - [Interface as Type](#interface-as-type)
+   - [Exercise One](#exercise-one)
+- [Control Structures](#control-structures)
   - [Control](#control)
     - [Control Return](#control-return)
     - [Control Goto](#control-goto)
