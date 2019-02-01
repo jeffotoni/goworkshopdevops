@@ -108,7 +108,7 @@ Soon below some channels that I participate and can find me online.
 - [Errors](#Errors)
   - [Introduction Errors](#introduction-Errors)
     - [How Error Control Works](#how-error-control-works)
-    - [Errors New](#errors.new)
+    - [Errors New](#errorsnew)
     - [Custom Errors](#custom-errors)    
     - [fmt Errorf](#fmt-errorf)
 - [Functions](#functions)
