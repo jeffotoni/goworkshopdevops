@@ -122,7 +122,7 @@ Soon below some channels that I participate and can find me online.
 - [Defer](#defer)
 - [Exercise two](#exercise-two)
 
-## Lab 03 Json with Golang
+## Lab 03 Parse With Golang, Yaml, Toml and Json
 
 - [Json](#Json)
   - [introduction](#introduction)
