@@ -2032,10 +2032,10 @@ type ApiLogin struct {
 ```
 
 In this example we only time the pointer of a struct already defined above.
-To access it we do not need to create it again, just refer to it with "&" and this way "And2: &Anddress{}", very nice, right?
+To access it we do not need to create it again, just refer to it with "&" and this way "And2: &Address{}", very nice, right?
 ```go
 type ApiLogin struct {
-	And2 *Anddress
+	And2 *Address
 }
 ```
 
@@ -2045,7 +2045,7 @@ package main
 
 import "fmt"
 
-type Anddress struct {
+type Address struct {
 	City         string `json:"city"`
 	Neighborhood string `json:"neighborhood"`
 	Zipcode      string `json:"zipcode"`
@@ -2056,11 +2056,17 @@ type ApiLogin struct {
 	Cpf   string `json:"cpf"`
 	Login string `json:"login"`
 	Email string `json:"email"`
-	And1  *struct {
+
+	// anonymous
+	And1 *struct {
 		City string
 	}
 
-	And2 *Anddress
+	// pointer
+	And2 *Address
+
+	// list Address
+	And3 []Address
 }
 
 func main() {
@@ -2075,40 +2081,85 @@ func main() {
 	fmt.Println(apilogin1.And1)
 	fmt.Println(apilogin1.And1.City)
 
-	apilogin2 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And2: &Anddress{City: "BH"}}
+	apilogin2 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And2: &Address{City: "BH"}}
 	fmt.Println(apilogin2)
 	fmt.Println(apilogin2.Name)
 	fmt.Println(apilogin2.And2)
 	fmt.Println(apilogin2.And2.City)
 
-	var apilogin3 ApiLogin
+	apilogin3 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34", And1: &struct{ City string }{City: "BH"}, And2: &Address{City: "BH"}}
 	fmt.Println(apilogin3)
+	fmt.Println(apilogin3.Name)
+	fmt.Println(apilogin3.And1)
+	fmt.Println(apilogin3.And1.City)
+	fmt.Println(apilogin3.And2)
+	fmt.Println(apilogin3.And2.City)
 
-	apilogin4 := ApiLogin{}
+	var apilogin4 ApiLogin
 	fmt.Println(apilogin4)
 
-	apilogin5 := &ApiLogin{}
+	apilogin5 := ApiLogin{}
 	fmt.Println(apilogin5)
 
-	apilogin6 := new(ApiLogin)
+	apilogin6 := &ApiLogin{}
 	fmt.Println(apilogin6)
+
+	apilogin7 := new(ApiLogin)
+	fmt.Println(apilogin7)
+
+	// another way to feed the struct
+	g1add := Address{City: "Belo Horizonte"}
+	g2add := Address{City: "Curitiba"}
+
+	// declaring as list
+	gall := []Address{}
+
+	// add items
+	gall = append(gall, g1add)
+	gall = append(gall, g2add)
+
+	fmt.Println(gall)
+
+	// initializes Struct
+	apil3 := ApiLogin{}
+
+	// recive same type
+	apil3.And3 = gall
+
+	// show struct
+	fmt.Println(apil3)
+
+	// another way to initialize and feed the struct list
+	apil3.And3 = []Address{{City: "Sao Paulo"}, {City: "Brasilia"}}
+
+	// show struct
+	fmt.Println(apil3)
 }
 ```
 
 Output:
 ```bash
-&{@jeffotoni 093.393.334-34   0xc00000e1e0 <nil>}
+&{@jeffotoni 093.393.334-34   0xc00000e1e0 <nil> []}
 @jeffotoni
 &{BH}
 BH
-&{@jeffotoni 093.393.334-34   <nil> 0xc000060150}
+&{@jeffotoni 093.393.334-34   <nil> 0xc000060150 []}
 @jeffotoni
 &{BH  }
 BH
-{    <nil> <nil>}
-{    <nil> <nil>}
-&{    <nil> <nil>}
-&{    <nil> <nil>}
+&{@jeffotoni 093.393.334-34   0xc00000e300 0xc0000601b0 []}
+@jeffotoni
+&{BH}
+BH
+&{BH  }
+BH
+{    <nil> <nil> []}
+{    <nil> <nil> []}
+&{    <nil> <nil> []}
+&{    <nil> <nil> []}
+[{Belo Horizonte  } {Curitiba  }]
+{    <nil> <nil> [{Belo Horizonte  } {Curitiba  }]}
+{    <nil> <nil> [{Sao Paulo  } {Brasilia  }]}
 ```
 
 The example below is to demonstrate the ease we have when we manipulate structs in Golang.
@@ -4309,7 +4360,7 @@ import (
 	"log"
 )
 
-type Anddress struct {
+type Address struct {
 	City         string `json:"city"`
 	Neighborhood string `json:"neighborhood"`
 	Zipcode      string `json:"zipcode"`
@@ -4324,13 +4375,13 @@ type ApiLogin struct {
 		City string
 	}
 
-	And2 *Anddress
+	And2 *Address
 }
 
 func main() {
 
 	apilogin1 := &ApiLogin{Name: "@jeffotoni", Cpf: "093.393.334-34",
-		And1: &struct{ City string }{City: "BH"}, And2: &Anddress{City: "BH"}}
+		And1: &struct{ City string }{City: "BH"}, And2: &Address{City: "BH"}}
 	//m, err := json.Marshal(apilogin1)
 	m, err := json.MarshalIndent(apilogin1, "", "\t")
 
@@ -4661,7 +4712,7 @@ func main() {
 			"login":  "jeffotoni",
 			"level":  1000,
 			"create": true,
-		}, "Anddress": body{
+		}, "Address": body{
 			"City": "Jersey City",
 			"Zip":  "34.566-333",
 			"Fone": body{
@@ -4711,14 +4762,14 @@ func main() {
 
 Output:
 ```bash
-&{Test Struct to Map 345 map[Data:map[create:true login:jeffotoni level:1000] Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
-&{Test Struct to Map 345 map[Data:map[login:jeffotoni level:1000 create:true] Anddress:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Ecu:16 Mem:8 Instance:c5.xlarge vCpu:4] success}
+&{Test Struct to Map 345 map[Data:map[create:true login:jeffotoni level:1000] Address:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Instance:c5.xlarge vCpu:4 Ecu:16 Mem:8] success}
+&{Test Struct to Map 345 map[Data:map[login:jeffotoni level:1000 create:true] Address:map[City:Jersey City Zip:34.566-333 Fone:map[fone1:87-77047345 fone2:83-93483838]]] map[Ecu:16 Mem:8 Instance:c5.xlarge vCpu:4] success}
 ##### json
 {
 	"subject": "Test Struct to Map",
 	"sent": 345,
 	"body": {
-		"Anddress": {
+		"Address": {
 			"City": "Jersey City",
 			"Fone": {
 				"fone1": "87-77047345",
@@ -5664,7 +5715,7 @@ type User struct {
 func main() {
 
 	a := address{
-		"Anddress": address{
+		"Address": address{
 			"City": "Belo Horizonte",
 			"Zip":  "34.566-333",
 			"Fone": address{
@@ -5733,7 +5784,7 @@ func structToMap(i interface{}) (values url.Values) {
 Output:
 ```bash
 map[Login:[jeffotoni] Email:[jeffotoni@gm.com] Status:[alive] 
-Address:[Anddress map[City:Belo Horizonte Zip:34.566-333 
+Address:[Address map[City:Belo Horizonte Zip:34.566-333 
 Fone:map[fone1:87-77047345 fone2:83-93483838]]]]
 ```
 
