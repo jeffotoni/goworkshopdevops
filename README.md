@@ -148,20 +148,21 @@ Soon below some channels that I participate and can find me online.
 
 ## Lab 04 building apis with net/http
 
-- [net/http Server](#)
-  - [introduction](#)
+- [net/http Server](#net-http-Server)
+  - [introduction http](#introduction-http)
+  	- [Constants Common HTTP methods](#constants-common-http-methods)
+  	- [DetectContentType](#DetectContentType)
+  	- [Func Error](#func-error)
+  	- [Func Handle](#func-handle)
+  	- [Func Handlefunc](#func-handlefunc)
+  	- [func ListenAndServe](#func-listenAndServe)
+  	- [ListenAndServeTLS](#)
     - [http.NewServeMux](#)
-    - [http.HandlerFunc](#)
-    - [http.Handle](#)
-    - [http.Handler](#)
     - [http.Server](#)
-    - [next.ServeHTTP](#)
-    - [ListenAndServe](#)
-    - [ListenAndServeTLS](#)
+    - [next.ServeHTTP](#)   
     - [Server.Shutdown](#)
     - [Middleware](#)
 - [Exercise five](#Exercise-five)
-
 - [net/http Client](#)
   - [introduction](#)
     - [http.Transport](#)
@@ -7294,15 +7295,221 @@ Of course it helps when you know what you're doing, and it's very useful sometim
 ## Lab 04 building apis with net/http
 ---
 
+
+### introduction http
+
 Now we get to the best part, put into practice everything we learn.
-
 Let's get to know the net / http package one of the most powerful packages in Go, there are many speculations about it but we will really do our best in what it provides with the features it offers.
-
 There are many implementations on the net / http, several routes, frameworks, libs all to minimize the work and speed up various tasks when coding our apis.
-
 Our goal is to create native APIs, as we did in Lab 03 Parse with Golang.
 
 Everything in Go follows this model, has lib for a lot, and the more you master the language the more habit you will be to choose the libs better or develop your own libs.
-
 Let's start by developing our API Server, so we can consume it later.
+APIS as a server can be done in several ways, either by building APIS in the **rEST, GraphQL, SOAP, XML-RPC** and several other forms of communication such as **RPC, Socket or Websocket**.
+
+We have a powerful and vast library, everything we had in **C or C ++** is in **Go improved**.
+Every **net/http** package is working on Goroutine, this is one of the pillars of [net/http](https://golang.org/pkg/net/http/)
+
+
+
+### Constants Common HTTP methods
+
+Unless otherwise noted, these are defined in RFC 7231 section 4.3.
+
+```go
+ const (
+        MethodGet     = "GET"
+        MethodHead    = "HEAD"
+        MethodPost    = "POST"
+        MethodPut     = "PUT"
+        MethodPatch   = "PATCH" // RFC 5789
+        MethodDelete  = "DELETE"
+        MethodConnect = "CONNECT"
+        MethodOptions = "OPTIONS"
+        MethodTrace   = "TRACE"
+)
+```
+
+**HTTP status codes** as registered with IANA. See: [http/status/code](https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml)
+
+```go
+const (
+        StatusContinue           = 100 // RFC 7231, 6.2.1
+        StatusSwitchingProtocols = 101 // RFC 7231, 6.2.2
+        StatusProcessing         = 102 // RFC 2518, 10.1
+
+        StatusOK                   = 200 // RFC 7231, 6.3.1
+        StatusCreated              = 201 // RFC 7231, 6.3.2
+        StatusAccepted             = 202 // RFC 7231, 6.3.3
+        StatusNonAuthoritativeInfo = 203 // RFC 7231, 6.3.4
+        StatusNoContent            = 204 // RFC 7231, 6.3.5
+        StatusResetContent         = 205 // RFC 7231, 6.3.6
+        StatusPartialContent       = 206 // RFC 7233, 4.1
+        StatusMultiStatus          = 207 // RFC 4918, 11.1
+        StatusAlreadyReported      = 208 // RFC 5842, 7.1
+        StatusIMUsed               = 226 // RFC 3229, 10.4.1
+
+        StatusMultipleChoices  = 300 // RFC 7231, 6.4.1
+        StatusMovedPermanently = 301 // RFC 7231, 6.4.2
+        StatusFound            = 302 // RFC 7231, 6.4.3
+        StatusSeeOther         = 303 // RFC 7231, 6.4.4
+        StatusNotModified      = 304 // RFC 7232, 4.1
+        StatusUseProxy         = 305 // RFC 7231, 6.4.5
+
+        StatusTemporaryRedirect = 307 // RFC 7231, 6.4.7
+        StatusPermanentRedirect = 308 // RFC 7538, 3
+
+        StatusBadRequest                   = 400 // RFC 7231, 6.5.1
+        StatusUnauthorized                 = 401 // RFC 7235, 3.1
+        StatusPaymentRequired              = 402 // RFC 7231, 6.5.2
+        StatusForbidden                    = 403 // RFC 7231, 6.5.3
+        StatusNotFound                     = 404 // RFC 7231, 6.5.4
+        StatusMethodNotAllowed             = 405 // RFC 7231, 6.5.5
+        StatusNotAcceptable                = 406 // RFC 7231, 6.5.6
+        StatusProxyAuthRequired            = 407 // RFC 7235, 3.2
+        StatusRequestTimeout               = 408 // RFC 7231, 6.5.7
+        StatusConflict                     = 409 // RFC 7231, 6.5.8
+        StatusGone                         = 410 // RFC 7231, 6.5.9
+        StatusLengthRequired               = 411 // RFC 7231, 6.5.10
+        StatusPreconditionFailed           = 412 // RFC 7232, 4.2
+        StatusRequestEntityTooLarge        = 413 // RFC 7231, 6.5.11
+        StatusRequestURITooLong            = 414 // RFC 7231, 6.5.12
+        StatusUnsupportedMediaType         = 415 // RFC 7231, 6.5.13
+        StatusRequestedRangeNotSatisfiable = 416 // RFC 7233, 4.4
+        StatusExpectationFailed            = 417 // RFC 7231, 6.5.14
+        StatusTeapot                       = 418 // RFC 7168, 2.3.3
+        StatusMisdirectedRequest           = 421 // RFC 7540, 9.1.2
+        StatusUnprocessableEntity          = 422 // RFC 4918, 11.2
+        StatusLocked                       = 423 // RFC 4918, 11.3
+        StatusFailedDependency             = 424 // RFC 4918, 11.4
+        StatusUpgradeRequired              = 426 // RFC 7231, 6.5.15
+        StatusPreconditionRequired         = 428 // RFC 6585, 3
+        StatusTooManyRequests              = 429 // RFC 6585, 4
+        StatusRequestHeaderFieldsTooLarge  = 431 // RFC 6585, 5
+        StatusUnavailableForLegalReasons   = 451 // RFC 7725, 3
+
+        StatusInternalServerError           = 500 // RFC 7231, 6.6.1
+        StatusNotImplemented                = 501 // RFC 7231, 6.6.2
+        StatusBadGateway                    = 502 // RFC 7231, 6.6.3
+        StatusServiceUnavailable            = 503 // RFC 7231, 6.6.4
+        StatusGatewayTimeout                = 504 // RFC 7231, 6.6.5
+        StatusHTTPVersionNotSupported       = 505 // RFC 7231, 6.6.6
+        StatusVariantAlsoNegotiates         = 506 // RFC 2295, 8.1
+        StatusInsufficientStorage           = 507 // RFC 4918, 11.5
+        StatusLoopDetected                  = 508 // RFC 5842, 7.2
+        StatusNotExtended                   = 510 // RFC 2774, 7
+        StatusNetworkAuthenticationRequired = 511 // RFC 6585, 6
+)
+```
+
+DefaultMaxHeaderBytes is the maximum permitted size of the headers in an HTTP request. This can be overridden by setting **Server.MaxHeaderBytes**.
+
+```go
+const DefaultMaxHeaderBytes = 1 << 20 // 1 MB
+```
+
+DefaultMaxIdleConnsPerHost is the default value of Transport's MaxIdleConnsPerHost. 
+
+```go
+const DefaultMaxIdleConnsPerHost = 2
+```
+
+TimeFormat is the time format to use when generating times in HTTP headers. It is like time.RFC1123 but hard-codes GMT as the time zone. The time being formatted must be in UTC for Format to generate the correct format.
+
+For parsing this time format, see ParseTime. 
+
+```go
+const TimeFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
+```
+
+### DetectContentType
+
+DetectContentType implements the algorithm described at [mimesniff](https://mimesniff.spec.whatwg.org/) to determine the Content-Type of the given data. It considers at most the first 512 bytes of data. DetectContentType always returns a valid MIME type: if it cannot determine a more specific one, it returns "application/octet-stream". 
+
+ ```go
+ func DetectContentType(data []byte) string
+ ```
+
+### Func Error
+
+Error replies to the request with the specified error message and HTTP code. It does not otherwise end the request; the caller should ensure no further writes are done to w. The error message should be plain text. 
+
+ ```go
+ func Error(w ResponseWriter, error string, code int)
+ ```
+
+### Func Handle
+
+Handle registers the handler for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
+
+```go
+func Handle(pattern string, handler Handler)
+```
+
+### Func Handlefunc
+
+HandleFunc registers the handler function for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
+
+```go
+func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+```
+
+
+### func ListenAndServe
+
+HandleFunc registers the handler function for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
+
+```go
+func ListenAndServe(addr string, handler Handler) error
+```
+
+ListenAndServe listens on the TCP network address addr and then calls Serve with handler to handle requests on incoming connections. Accepted connections are configured to enable TCP keep-alives.
+
+The handler is typically nil, in which case the DefaultServeMux is used.
+
+ListenAndServe always returns a non-nil error. 
+
+
+Check out our first example:
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	// our function
+	helloHandler := func(w http.ResponseWriter, req *http.Request) {
+		io.WriteString(w, "DevopsBH, Golang for Devops!\n")
+	}
+
+	// handlerFunc
+	http.HandleFunc("/v1/api/ping", helloHandler)
+
+	// Listen
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+In this apis scenario, the program is listening on the port determined by the function **ListenAndServe** waiting for the requests to be received so that it can respond to incoming requests.
+
+```bash
+$ curl -i -XPOST localhost:8080/v1/api/ping
+```
+
+Output:
+```bash
+HTTP/1.1 200 OK
+Date: Fri, 01 Feb 2019 17:01:23 GMT
+Content-Length: 29
+Content-Type: text/plain; charset=utf-8
+
+DevopsBH, Golang for Devops!
+```
+
+
 
