@@ -37,11 +37,11 @@ Soon below some channels that I participate and can find me online.
    - [gobr](https://t.me/go_br)
 ### Slack: 
    - [gophers.slack.com](https://gophers.slack.com)
-      - brazil
-      - brasil
-      - general
-      - go-kit
-      - gotimefm
+      - Brazil
+      - Brasil
+      - General
+      - Go-kit
+      - Gotimefm
       
 ## Lab 01 Install and Commands Golang
 
@@ -127,12 +127,12 @@ Soon below some channels that I participate and can find me online.
 - [Json](#Json)
   - [Introduction](#introduction)
     - [Json Marshal Encode](#json-marshal-encode)
-    - [json MarshalIndent](#json-marshalIndent)
+    - [Json MarshalIndent](#json-marshalIndent)
     - [Option Omitempty](#option-omitempty)
     - [Initialized Collections of Data](#initialized-collections-of-data)
     - [Json NewEncoder](#json-newencoder)
     - [Json Unmarshal Decode](#json-unmarshal-decode)
-    - [Generic JSON with Interface{} and Assertion](#generic-json-with-interface-and-assertion)
+    - [Generic JSON with Interface {} and Assertion](#generic-json-with-interface-and-assertion)
     - [Dynamic Type](#dynamic-type)
     - [What is Reflection](#what-is-reflection)
     - [Making Reflect with Struct](#making-reflect-with-struct)
@@ -140,8 +140,8 @@ Soon below some channels that I participate and can find me online.
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
-	- [Parsing in yaml format using Go](#parsing-in-yaml-format-using-go)
-	- [Parsing in Toml format using Go](#parsing-in-toml-format-using-go)
+	- [Parsing in Yaml Format Using Go](#parsing-in-yaml-format-using-go)
+	- [Parsing in Toml Format Using Go](#parsing-in-toml-format-using-go)
 	- [Parsing with Viper](#parsing-with-viper)
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise Three](#Exercise-three)
@@ -155,8 +155,13 @@ Soon below some channels that I participate and can find me online.
   	- [Func Error](#func-error)
   	- [Func Handle](#func-handle)
   	- [Func Handlefunc](#func-handlefunc)
+<<<<<<< HEAD
   	- [func ListenAndServe](#func-listenAndServe)
   	- [func ListenAndServeTLS](#func-listenAndServetls)
+=======
+  	- [Func ListenAndServe](#func-listenAndServe)
+  	- [ListenAndServeTLS](#)
+>>>>>>> 07b2ac964282e624d1173644a6ff74312d75de9b
     - [http.NewServeMux](#)
     - [http.Server](#)
     - [next.ServeHTTP](#)   
@@ -280,7 +285,7 @@ $ echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
 $ echo "export PATH=$PATH:$GOPATH/bin" >> $HOME/.profile
 ```
 
-### Test our installation
+### Test our Installation
 
 Let's run go version to see if everything is correct.
 
@@ -432,7 +437,7 @@ More information and details you can visit this link: [hub.docker](https://hub.d
 $ docker pull golang
 ```
 
-### Compile your app inside the Docker container
+### Compile Your app Inside The Docker Container
 
 There may be occasions where it is not appropriate to run your app inside a container. To compile, but not run your app inside the 
 Docker instance, you can write something like:
@@ -447,7 +452,7 @@ This will add your current directory as a volume to the container, set the worki
 $ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.11.5 make
 ```
 
-### Cross-compile your app inside the Docker container
+### Cross-compile Your app Inside The Docker Container
 If you need to compile your application for a platform other than linux/amd64 (such as windows/386):
 
 ```bash
