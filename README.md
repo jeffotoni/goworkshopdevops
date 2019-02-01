@@ -21,7 +21,7 @@ We will try to improve the material all the time so we can have a reference when
 
 I hope you all enjoy it and can serve as a base for learning and help several possible Gophers.
 
-The content and references used are from the <a href="pagina.htm" target="_blank"> https://golang.org </a> [Golang Official Site](https://golang.org) and the material being developed 
+The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
