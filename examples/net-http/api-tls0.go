@@ -14,11 +14,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 var (
-	PORT = 443
+	addr = ":443"
 )
 
 func main() {
@@ -28,10 +27,10 @@ func main() {
 	})
 
 	// show
-	log.Printf("Server Run :%d TLS / https://localhost:%d", PORT, PORT)
+	log.Printf("Server Run %s TLS / https://localhost%s", addr, addr)
 
 	// conf listen TLS
-	err := http.ListenAndServeTLS(":"+strconv.Itoa(PORT), "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(addr, "server.crt", "server.key", nil)
 	log.Fatal(err)
 }
 

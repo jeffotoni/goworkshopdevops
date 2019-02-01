@@ -156,7 +156,7 @@ Soon below some channels that I participate and can find me online.
   	- [Func Handle](#func-handle)
   	- [Func Handlefunc](#func-handlefunc)
   	- [func ListenAndServe](#func-listenAndServe)
-  	- [ListenAndServeTLS](#)
+  	- [func ListenAndServeTLS](#func-listenAndServetls)
     - [http.NewServeMux](#)
     - [http.Server](#)
     - [next.ServeHTTP](#)   
@@ -7541,11 +7541,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 var (
-	PORT = 443
+	addr = ":443"
 )
 
 func main() {
@@ -7555,10 +7554,10 @@ func main() {
 	})
 
 	// show
-	log.Printf("Server Run :%d TLS / https://localhost:%d", PORT, PORT)
+	log.Printf("Server Run %s TLS / https://localhost%s", addr, addr)
 
 	// conf listen TLS
-	err := http.ListenAndServeTLS(":"+strconv.Itoa(PORT), "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(addr, "server.crt", "server.key", nil)
 	log.Fatal(err)
 }
 ```
@@ -7567,4 +7566,52 @@ func main() {
 $ curl --insecure -i -XGET https://localhost:8443/v1/api/ping
 or
 $ curl -k -i -XGET https://localhost:8443/v1/api/ping
+```
+
+Now let's put some functions that will make a difference when we run our api for high performance, let's try not to use the fmt library to write to the monitor, let's use io and buff.
+Well performance is something absurdly faster.
+
+From one checked in the complete code below:
+```go
+package main
+
+import (
+	"bufio"
+	"io"
+	"log"
+	"net/http"
+	"os"
+)
+
+var (
+	addr = ":8080"
+)
+
+// write bufio to optimization
+func write(text string) {
+	// var writer *bufio.Writer
+	writer := bufio.NewWriter(os.Stdout)
+	writer.WriteString(text)
+	writer.Flush()
+}
+
+func main() {
+
+	// our function
+	helloHandler := func(w http.ResponseWriter, req *http.Request) {
+		json := `{"status":"success", "msg";"DevopsBH, Golang for Devops!\n"}`
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusUnauthorized)
+		io.WriteString(w, json)
+	}
+
+	// handlerFunc
+	http.HandleFunc("/v1/api/ping", helloHandler)
+
+	// show
+	write("\033[0;33mServer Run Port " + addr + "\033[0m\n")
+
+	// Listen
+	log.Fatal(http.ListenAndServe(addr, nil))
+}
 ```
