@@ -17,7 +17,7 @@ This is a material in Golang to be presented **"face-to-face"** in a **"hand in 
 All content aims at the basic level of the student many practical examples were made with details richness to make life easier than it is initiating.
 If you know little and almost nothing programming will not be problem every manual was made to level starting to advanced.
 All the difficulties I had when I started trying to contemplate this material.
-We will try to improve the material all the time so we can have a reference when it comes to Go.
+We will try to improve the material all the time so we can have a reference when it comes to **Go**.
 
 I hope you all enjoy it and can serve as a base for learning and help several possible Gophers.
 
