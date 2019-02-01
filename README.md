@@ -17,7 +17,7 @@ This is a material in Golang to be presented **"face-to-face"** in a **"hand in 
 All content aims at the basic level of the student many practical examples were made with details richness to make life easier than it is initiating.
 If you know little and almost nothing programming will not be problem every manual was made to level starting to advanced.
 All the difficulties I had when I started trying to contemplate this material.
-We will try to improve the material all the time so we can have a reference when it comes to Go.
+We will try to improve the material all the time so we can have a reference when it comes to **Go**.
 
 I hope you all enjoy it and can serve as a base for learning and help several possible Gophers.
 
@@ -108,12 +108,12 @@ Soon below some channels that I participate and can find me online.
 - [Errors](#Errors)
   - [Introduction Errors](#introduction-Errors)
     - [How Error Control Works](#how-error-control-works)
-    - [Errors.New](#errors-new)
+    - [Errors New](#errorsnew)
     - [Custom Errors](#custom-errors)    
     - [fmt Errorf](#fmt-errorf)
 - [Functions](#functions)
   - [Introduction Function](#introduction-function)
-    - [Return multiple values](#return-multiple) 
+    - [Return Multiple Values](#return-multiple-values) 
     - [Variadic Functions](#variadic-functions) 
     - [functions as a parameter](#functions-as-a-parameter) 
     - [Closures](#closures)
@@ -122,10 +122,10 @@ Soon below some channels that I participate and can find me online.
 - [Defer](#defer)
 - [Exercise two](#exercise-two)
 
-## Lab 03 Json with Golang
+## Lab 03 Parse with Golang, Yaml, Toml and Json
 
 - [Json](#Json)
-  - [introduction](#)
+  - [introduction](#introduction)
     - [Json marshal Encode](#json-marshal-encode)
     - [json MarshalIndent](#json-marshalIndent)
     - [Option Omitempty](#option-omitempty)
@@ -138,7 +138,6 @@ Soon below some channels that I participate and can find me online.
     - [Making reflect with struct](#making-reflect-with-struct)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
-	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
 	- [Parsing in yaml format using Go](#parsing-in-yaml-format-using-go)
