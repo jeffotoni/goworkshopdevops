@@ -138,7 +138,6 @@ Soon below some channels that I participate and can find me online.
     - [Making reflect with struct](#making-reflect-with-struct)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
-	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
 	- [Parsing in yaml format using Go](#parsing-in-yaml-format-using-go)
