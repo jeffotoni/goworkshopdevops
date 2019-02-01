@@ -7280,6 +7280,7 @@ The viper is very powerful we can do Marshal, Unmarsha works with multiple viper
 
 It is worth checking.
 
+
 ### Links Json to Golang
 
 Below I am making available some links to convert from Json to Struct in Golang, it gets a json or you write your Json and it mounts the struct for you.
@@ -7290,38 +7291,18 @@ Of course it helps when you know what you're doing, and it's very useful sometim
  - [Json2struct](http://json2struct.mervine.net/)
 
 
-
 ## Lab 04 building apis with net/http
+---
 
-- [net/http Server](#)
-  - [introduction](#)
-    - [http.NewServeMux](#)
-    - [http.HandlerFunc](#)
-    - [http.Handle](#)
-    - [http.Handler](#)
-    - [http.Server](#)
-    - [next.ServeHTTP](#)
-    - [ListenAndServe](#)
-    - [ListenAndServeTLS](#)
-    - [Server.Shutdown](#)
-    - [Middleware](#)
-- [Exercise five](#Exercise-five)
+Now we get to the best part, put into practice everything we learn.
 
-- [net/http Client](#)
-  - [introduction](#)
-    - [http.Transport](#)
-    - [http.Client](#)
-    - [http.Get](#)
-    - [http,Post](#)
-    - [http.NewRequest](#)
-    - [Context.WithCancel](#)
-- [Exercise six](#Exercise-six)
+Let's get to know the net / http package one of the most powerful packages in Go, there are many speculations about it but we will really do our best in what it provides with the features it offers.
 
-- [net/http Server Pages](#)
-  - [introduction](#)
-    - [http.FileServer](#)
-    - [http.NotFound](#)
-    - [Disable http.FileServer](#)
-    - [http.Dir](#)
-    - [http.StripPrefix](#)    
-- [Exercise seven](#Exercise-seven)
+There are many implementations on the net / http, several routes, frameworks, libs all to minimize the work and speed up various tasks when coding our apis.
+
+Our goal is to create native APIs, as we did in Lab 03 Parse with Golang.
+
+Everything in Go follows this model, has lib for a lot, and the more you master the language the more habit you will be to choose the libs better or develop your own libs.
+
+Let's start by developing our API Server, so we can consume it later.
+
