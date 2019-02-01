@@ -55,54 +55,54 @@ Soon below some channels that I participate and can find me online.
     - [Outside GOPATH](#outside-gopath)
 - [Installation Docker](#installation-docker)
 	- [Install Docker to Golang](#install-docker-to-golang)
-	- [Compile your app inside the Docker container](#compile-your-app-inside-the-docker-container)
-	- [Cross-compile your app inside the Docker container](#cross-compile-your-app-inside-the-docker-container)
-- [Introduction golang](#introduction-golang)
-  - [Golang language](#golang-language)
+	- [Compile your app Inside the Docker Container](#compile-your-app-inside-the-docker-container)
+	- [Cross-compile Your app Inside the Docker Container](#cross-compile-your-app-inside-the-docker-container)
+- [Introduction Golang](#introduction-golang)
+  - [Golang Language](#golang-language)
     - [Keywords](#keywords)
-    - [Operators and punctuation](#operators-and-punctuation)
+    - [Operators and Punctuation](#operators-and-punctuation)
     - [Println Print](#println-print)
     - [Bufio NewWriter](#bufio-newWriter)
     - [Func Main](#func-main)
-- [Go commands](#go-commands)
-   - [Go commands introduction](#go-commands-introduction)
-   - [Go run](#go-run) 
-   - [Go build](#go-build)
-   - [Go install](#go-install)
-   - [Go get](#go-get)
-   - [Go mod](#go-mod)
-   - [Go mod init](#go-mod-init)
-   - [Go mod vendor](#go-mod-vendor)
+- [Go Commands](#go-commands)
+   - [Go Commands Introduction](#go-commands-introduction)
+   - [Go Run](#go-run) 
+   - [Go Build](#go-build)
+   - [Go Install](#go-install)
+   - [Go Get](#go-get)
+   - [Go Mod](#go-mod)
+   - [Go Mod Init](#go-mod-init)
+   - [Go Mod Vendor](#go-mod-vendor)
    - [GO111MODULE](#go111module)
-   - [Go test](#go-test)
+   - [Go Test](#go-test)
 
 ## Lab 02 The Golang Types
 
 - [Types](#types)
    - [Numeric Types](#numeric-types)
-   - [String types](#string-types)
+   - [String Types](#string-types)
    - [Pointer Types](#pointer-types)
    - [Array Types](#array-types)
    - [Slice Types](#slice-types)
    - [Struct Types](#struct-types)
-   - [Struct in C](#struct-in-c)
+   - [Struct In C](#struct-in-c)
    - [Struct Type Tags Json](#struct-type-tags-json)
    - [Fatih Structs to Map](#fatih-structs-to-map)
    - [Map Types](#map-types)
-   - [Map literals continued](#map-literals-continued)
+   - [Map Literals Continued](#map-literals-continued)
    - [Channel Types](#channel-types)
    - [Blank Identifier](#blank-identifier)
    - [Interface Types](#interface-types)
-	 - [Here's an interface as a method](#heres-an-interface-as-a-method)
+	 - [Here's an Interface as a Method](#heres-an-interface-as-a-method)
 	 - [Interface as Type](#interface-as-type)
    - [Exercise One](#exercise-one)
 - [Control Structures](#control-structures)
   - [Control](#control)
     - [Control Return](#control-return)
     - [Control Goto](#control-goto)
-    - [Control if else](#control-if-else)
-    - [Control for break continue](#control-for-break-continue)
-    - [Control Switch case break](#control-switch-case-break)
+    - [Control if Else](#control-if-else)
+    - [Control For Break Continue](#control-for-break-continue)
+    - [Control Switch Case Break](#control-switch-case-break)
     - [Control Label](#control-label)
     - [Control Range](#control-range)
 - [Errors](#Errors)
@@ -115,42 +115,42 @@ Soon below some channels that I participate and can find me online.
   - [Introduction Function](#introduction-function)
     - [Return Multiple Values](#return-multiple-values) 
     - [Variadic Functions](#variadic-functions) 
-    - [functions as a parameter](#functions-as-a-parameter) 
+    - [Functions as a Parameter](#functions-as-a-parameter) 
     - [Closures](#closures)
     - [Recursion](#recursion)
     - [Asynchronous Functions](#asynchronous-functions)
 - [Defer](#defer)
-- [Exercise two](#exercise-two)
+- [Exercise Two](#exercise-two)
 
 ## Lab 03 Parse with Golang, Yaml, Toml and Json
 
 - [Json](#Json)
-  - [introduction](#introduction)
-    - [Json marshal Encode](#json-marshal-encode)
+  - [Introduction](#introduction)
+    - [Json Marshal Encode](#json-marshal-encode)
     - [json MarshalIndent](#json-marshalIndent)
     - [Option Omitempty](#option-omitempty)
-    - [Initialized collections of data](#initialized-collections-of-data)
+    - [Initialized Collections of Data](#initialized-collections-of-data)
     - [Json NewEncoder](#json-newencoder)
     - [Json Unmarshal Decode](#json-unmarshal-decode)
-    - [Generic JSON with interface{} and assertion](#generic-json-with-interface-and-assertion)
-    - [Dynamic type](#dynamic-type)
-    - [What is reflection](#what-is-reflection)
-    - [Making reflect with struct](#making-reflect-with-struct)
+    - [Generic JSON with Interface{} and Assertion](#generic-json-with-interface-and-assertion)
+    - [Dynamic Type](#dynamic-type)
+    - [What is Reflection](#what-is-reflection)
+    - [Making Reflect with Struct](#making-reflect-with-struct)
 - [Parse Json](#Json)
 	- [Reading and Parsing a JSON File](#reading-and-parsing-a-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
 	- [Parsing in yaml format using Go](#parsing-in-yaml-format-using-go)
 	- [Parsing in Toml format using Go](#parsing-in-toml-format-using-go)
-	- [Parsing with viper](#parsing-with-viper)
+	- [Parsing with Viper](#parsing-with-viper)
 - [Links Json to Golang](#links-json-to-golang)
-- [Exercise three](#Exercise-three)
+- [Exercise Three](#Exercise-three)
 
-## Lab 04 building apis with net/http
+## Lab 04 Building apis with net/http
 
 - [net/http Server](#net-http-Server)
-  - [introduction http](#introduction-http)
-  	- [Constants Common HTTP methods](#constants-common-http-methods)
+  - [Introduction http](#introduction-http)
+  	- [Constants Common HTTP Methods](#constants-common-http-methods)
   	- [DetectContentType](#DetectContentType)
   	- [Func Error](#func-error)
   	- [Func Handle](#func-handle)
@@ -162,51 +162,51 @@ Soon below some channels that I participate and can find me online.
     - [next.ServeHTTP](#)   
     - [Server.Shutdown](#)
     - [Middleware](#)
-- [Exercise five](#Exercise-five)
+- [Exercise Five](#Exercise-five)
 - [net/http Client](#)
-  - [introduction](#)
+  - [Introduction](#)
     - [http.Transport](#)
     - [http.Client](#)
     - [http.Get](#)
     - [http,Post](#)
     - [http.NewRequest](#)
     - [Context.WithCancel](#)
-- [Exercise six](#Exercise-six)
+- [Exercise Six](#Exercise-six)
 
 - [net/http Server Pages](#)
-  - [introduction](#)
+  - [Introduction](#)
     - [http.FileServer](#)
     - [http.NotFound](#)
     - [Disable http.FileServer](#)
     - [http.Dir](#)
     - [http.StripPrefix](#)    
-- [Exercise seven](#Exercise-seven)
+- [Exercise Seven](#Exercise-seven)
 
-## Lab 05 Using Golang to create Command Line programs
+## Lab 05 Using Golang to Create Command Line Programs
 
 - [Golang Cli](#golang-cli)
-  - [introduction](#)
+  - [Introduction](#)
   	- [Environment Variables](#environment-variables)
   	- [Open and Read File](#open-write-file)
   	- [Write File](#write-file)
   	- [New Scanner and Scan](#new-scanner-and-scan)
   	- [Stdout](#stdout)
     - [Stdin](#stdin)
-    - [Go flag types](#go-flag-types)
-    - [Go flag Parse](go-flag-parse)
-    - [Go flag PrintDefaults](go-flag-printDefaults)
+    - [Go Flag Types](#go-flag-types)
+    - [Go Flag Parse](go-flag-parse)
+    - [Go Flag PrintDefaults](go-flag-printDefaults)
     - [Os Args](#os-args)
-    - [func init](#func-init)
-    - [Go exec Command](#go-exec-command)
+    - [Func Init](#func-init)
+    - [Go Exec Command](#go-exec-command)
     - [Parse Url](#parse-url)
     - [Parse Yaml](#parse-yaml)
 
-- [Exercise five](#Exercise-five)
+- [Exercise Five](#Exercise-five)
 
-## Lab 06 Goroutine the power
+## Lab 06 Goroutine The Power
 
 - [Goroutine](#)
-  - [introduction](#)
+  - [Introduction](#)
     - [Channel](#)
     - [Parallelism](#)
     - [GOMAXPROCS](#)
@@ -217,7 +217,7 @@ Soon below some channels that I participate and can find me online.
     - [Ticker](#)
     - [Singleton Connect Thread Safe](#)
 
-- [Exercise four](#Exercise-four)
+- [Exercise Four](#Exercise-four)
 
 ### Overview
 ---
@@ -236,7 +236,7 @@ It is a "General Use" language that can be used to solve various problems and in
 Problems involving competition, web applications, high performance applications, development of APIs, communications sockets etc ... 
 Is where language is increasingly becoming prominent in the market and in communities.
 
-### Introduction installation
+### Introduction Installation
 
 In golang the installation is all very simple and practical, for Linux, Mac and Windows.
 
@@ -280,7 +280,7 @@ $ echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
 $ echo "export PATH=$PATH:$GOPATH/bin" >> $HOME/.profile
 ```
 
-### Test your installation
+### Test our installation
 
 Let's run go version to see if everything is correct.
 
@@ -299,7 +299,7 @@ Next, make the directory src/hello inside your workspace, and in that directory 
 
 Workspace is our place of work, where we will organize our directories with our projects. As shown above, until **Go version 1.11** we were forced to do everything under the Workspace. $GOPATH Down Projects.
 
-**Example hello**
+**Example Hello**
 ```bash
 $ export GOPATH=$HOME/go
 $ mkdir $HOME/go
@@ -359,7 +359,7 @@ In the scenario above everything would have to stay in our **$GOPATH** so that o
 
 Now we can do our projects without being in $GOPATH, we can, for example, do it in any directory.
 
-**Project outside GOPATH**
+**Project Outside GOPATH**
 
 ```bash
 $ export GOPATH=$HOME/go
@@ -490,7 +490,7 @@ Output:
 go version go1.11.5 linux/amd64
 ```
 
-### Introduction golang
+### Introduction Golang
 ---
 
 Go is a general-purpose language designed with systems programming in mind. It is strongly typed and garbage-collected and has explicit support for concurrent programming. 
@@ -498,7 +498,7 @@ Programs are constructed from packages, whose properties allow efficient managem
 
 The grammar is compact and regular, allowing for easy analysis by automatic tools such as integrated development environments.
 
-### Golang language
+### Golang Language
 ---
 
 ### Keywords
@@ -513,7 +513,7 @@ const        fallthrough  if           range        type
 continue     for          import       return       var
 ```
 
-### Operators and punctuation
+### Operators and Punctuation
 
 The following character sequences represent operators (including assignment operators) and punctuation: 
 
@@ -716,10 +716,10 @@ $ go clean -i
 $ ls -lhs $HOME/go/bin
 ```
 
-### Go commands
+### Go Commands
 ---
 
-### Go commands introduction
+### Go Commands Introduction
 
 In golang we have an arsenal to help us when it comes to compiling, testing, documenting, managing Profiling etc.
 
@@ -746,7 +746,7 @@ vet         report likely mistakes in packages
 Use "go help " for more information about a command.
 
 
-### Go run
+### Go Run
 ---
 
 Usage:
@@ -784,7 +784,7 @@ Output:
 Debugging my system with println
 ```
 
-### Go build
+### Go Build
 ---
 
 Build compiles the packages named by the import paths, along with their dependencies, but it does not install the results. 
@@ -893,7 +893,7 @@ $ go get -v github.com/sirupsen/logru
 ```
 
 
-### Go mod
+### Go Mod
 ---
 
 A module is a collection of related Go packages. Modules are the unit of source code interchange and versioning. The go command has direct support for working with modules, including recording and resolving dependencies on other modules. Modules replace the old GOPATH-based approach to specifying which source files are used in a given build. 
@@ -969,7 +969,7 @@ require (
 )
 ```
 
-### Go mod vendor
+### Go Mod Vendor
 
 The go mod vendor command will download all dependencies to the "vendor" directory.
 When using go mod init the packages are not in your directory.
@@ -1296,7 +1296,7 @@ uintptr  an unsigned integer large enough to store the uninterpreted bits of a p
 
 To avoid portability issues all numeric types are defined types and thus distinct except byte, which is an alias for uint8, and rune, which is an alias for int32. Conversions are required when different numeric types are mixed in an expression or assignment. For instance, int32 and int are not the same type even though they may have the same size on a particular architecture. 
 
-### String types
+### String Types
 
 A string type represents the set of string values. A string value is a (possibly empty) sequence of bytes. Strings are immutable: once created, it is impossible to change the contents of a string. The predeclared string type is string; it is a defined type.
 
@@ -1344,7 +1344,7 @@ Glyph:             "日本語"
 UTF-8:             [e6 97 a5 e6 9c ac e8 aa 9e]
 Unicode codepoint: [U+65E5 U+672C U+8A9E]
 ```
-### Pointer types
+### Pointer Types
 
 Struct fields can be accessed through a struct pointer.
 
@@ -1467,7 +1467,7 @@ success is not nil
 success pointer is nil
 ```
 
-### Array types
+### Array Types
 
 An array is a numbered sequence of elements of a single type, called the element type. The number of elements is called the length and is never negative.
 
@@ -1779,7 +1779,7 @@ slice2 =  [Clojure Scala Elixir Assembly Rust Go]
 s = [Java C Lisp Haskell], len = 4, cap = 4
 ```
 
-### Struct types
+### Struct Types
 
 A struct is a sequence of named elements, called fields, each of which has a name and a type. Field names may be specified explicitly (IdentifierList) or implicitly (EmbeddedField). Within a struct, non-blank field names must be unique.
 
@@ -2397,7 +2397,7 @@ Server
 true
 ```
 
-### Map types
+### Map Types
 
 A map is an unordered group of elements of one type, called the element type, indexed by a set of unique keys of another type, called the key type. The value of an uninitialized map is nil.
 
@@ -2598,7 +2598,7 @@ Output:
 map[{}:{}]
 ```
 
-### Map literals continued
+### Map Literals Continued
 
 A map literal is a very convenient way to initialize a map with some data. You just need to pass the key-value pairs separated by colon inside curly braces.
 
@@ -2835,7 +2835,7 @@ Output:
 100
 ```
 
-### Blank identifier
+### Blank Identifier
 
 The blank identifier is represented by the underscore character **_**. It serves as an anonymous placeholder instead of a regular (non-blank) identifier and has special meaning in declarations, as an operand, and in assignments.
 
@@ -2848,7 +2848,7 @@ func f() (int, string, error)
 _, _, _ := f()
 ```
 
-### Interface types
+### Interface Types
 
 **An interface is two things:**
  - it is a set of methods
@@ -3063,12 +3063,12 @@ func main() {
 }
 ```
 
-### Exercise one
+### Exercise One
 Exercise:
 Fill in the struct JsonMessage AWS above, initialize the struct and fill in the fields, and make a fmt.Println to display the filled fields.
 To be more readable you can separate into each struct type struct.
 
-### Control structures
+### Control Structures
 ---
 
 ### Control
@@ -3164,7 +3164,7 @@ n 9 LOOP1 here...
 fim
 ```
 
-### Control if else
+### Control if Else
 
 2. An "if" statement in which:
       - the "else" branch is present, and
@@ -3194,7 +3194,7 @@ Output:
 else here.. n > 100
 ```
 
-### Control For break continue
+### Control For Break Continue
 
 3. A "for" statement in which:
       - there are no "break" statements referring to the "for" statement, and
@@ -3275,7 +3275,7 @@ func main() {
 }
 ```
 
-### Control Switch case break
+### Control Switch Case Break
 
 4. A "switch" statement in which:
       - there are no "break" statements referring to the "switch" statement,
@@ -3575,7 +3575,7 @@ Output:
 json: unsupported type: chan int
 ```
 
-### Errors.New
+### Errors New
 
 ```go
 package main
@@ -3749,7 +3749,7 @@ Output:
 Hello, @go_br
 ```
 
-### Return multiple values
+### Return Multiple Values
 
 Go has built-in support for multiple return values. This feature is used often in idiomatic Go, for example to return both result and error values from a function.
 
@@ -3836,7 +3836,7 @@ The Len of 3 is: [ Clojure,Elixir,Scala ]
 The Len of 4 is: [ Algol,C,C++,Golang ]
 ```
 
-### functions as a parameter
+### Functions as a Parameter
 
 You can pass function as parameter to a Go function. Here is an example of passing function as parameter to another Go function.
 
@@ -4134,7 +4134,7 @@ defer res.Body.Close()
 
 Package json implements encoding and decoding of JSON as defined in **RFC 7159**. The mapping between JSON and Go values is described in the documentation for the **Marshal** and **Unmarshal** functions.
 
-### introduction
+### Introduction
 
 **JSON** (JavaScript Object Notation) is a simple data interchange format. Syntactically it resembles the objects and lists of JavaScript. It is most commonly used for communication between web back-ends and JavaScript programs running in the browser, but it is used in many other places, too. Its home page, json.org, provides a wonderfully clear and concise definition of the standard. 
 
@@ -4216,7 +4216,7 @@ Output:
 {"name":"Jefferson","cpf":"033.343.434-89"}
 ```
 
-### json MarshalIndent
+### Json MarshalIndent
 
 MarshalIndent is like Marshal but applies Indent to format the output. Each JSON element in the output will begin on a new line beginning with prefix followed by one or more copies of indent according to the indentation nesting. 
 
@@ -4793,7 +4793,7 @@ Output:
 }
 ```
 
-### Initialized collections of data
+### Initialized Collections Of Data
 
 Some ways to anonymously declare and initialize types and collections of types in marshal to transform into Json.
 
@@ -4945,7 +4945,7 @@ All of the content below has been described and created examples using unmarshal
 
 Soon after we will return in unmarshal using structs.
 
-### Generic JSON with interface{} and assertion
+### Generic JSON with Interface{} and Assertion
 
 The interface{} (empty interface) type describes an interface with zero methods. Every Go type implements at least zero methods and therefore satisfies the empty interface.
 
@@ -5013,7 +5013,7 @@ DevOpsBh true
 0 false
 ```
 
-**Type switches**
+**Type Switches**
 
 A type switch is a construct that permits several type assertions in series.
 A type switch is like a regular switch statement, but the cases in a type switch specify types (not values), and those values are compared against the type of the value held by the given interface value.
@@ -5108,7 +5108,7 @@ map[{Lang}:[Go Rust Scala Elixir]]
 ```
 It is noticed that the interface created accepted all the types that was passed to it, was created dynamically.
 
-**Syntax of type assertion is defined as:** 
+**Syntax of Type Assertion is Defined as:** 
 
 ```go
 PrimaryExpression.(Type)
@@ -5221,7 +5221,7 @@ Check the code below:
 	case map[string]interface{}:
 ```
 
-### Dynamic type
+### Dynamic Type
 
 Besides static type that all variables have (it’s a type from variable’s declaration), variables of interface type also have a dynamic type. It’s a type of value currently set in interface type variable. Over the course of program execution variable of interface type has the same static type but its dynamic type can change as different values implementing desired interface will be assigned:
 
@@ -5257,7 +5257,7 @@ main.A
 main.B
 ```
 
-### What is reflection
+### What is Reflection
 
 Reflection is the ability of a program to inspect its variables and values at run time and find their type. You might not understand what this means but that's alright. You will get a clear understanding of reflection by the end of this section, so stay with me.
 
@@ -5414,7 +5414,7 @@ val3 is float64 4
 CountKey1 is float64 2
 ```
 
-### Making reflect with struct
+### Making Reflect with Struct
 
 The example below clearly shows how we would do a reflect in a struct in a simple way.
 We were able to sweep the struct at element level, we get the Struct Name, the Field Name the field types, the tags in the fields and their values when they are filled. Phew, a lot of cool stuff there.
@@ -6504,7 +6504,7 @@ age 23
 nick @iesodias
 ```
 
-**What if I have a recursion in Json?**
+**What if I have a Recursion in Json?**
 
 ```json
 {
@@ -6848,7 +6848,7 @@ weight=55
 Now, we did something totally recursive, presenting all the keys and values from our Json file.
 
 
-### Parsing in yaml format using Go
+### Parsing in yaml Format Using Go
 
 After this bunch of information we learn how to do parse with reflection using Go we are ready to create our own libs to parse in files. Reflection is very powerful and has several features and applicabilities, existing libs use reflection to parse files in json, toml, yaml or gcfg formats.
 
@@ -6950,7 +6950,7 @@ Server1.Host:  127.0.0.1
 Server2.Host:  127.0.0.10
 ```
 
-### Parsing in Toml format using Go
+### Parsing in Toml Format Using Go
 
 Now let's parse Toml files, there are several libs that do this, we will use github.com/BurntSushi/toml to do our parses.
 
@@ -7073,7 +7073,7 @@ aws
 cloud
 ```
 
-### Parsing with viper
+### Parsing with Viper
 
 When building a modern application, you don’t want to worry about configuration file formats; you want to focus on building awesome software. Viper is here to help with that.
 
@@ -7292,11 +7292,11 @@ Of course it helps when you know what you're doing, and it's very useful sometim
  - [Json2struct](http://json2struct.mervine.net/)
 
 
-## Lab 04 building apis with net/http
+## Lab 04 Building apis with net/http
 ---
 
 
-### introduction http
+### Introduction http
 
 Now we get to the best part, put into practice everything we learn.
 Let's get to know the net / http package one of the most powerful packages in Go, there are many speculations about it but we will really do our best in what it provides with the features it offers.
@@ -7312,7 +7312,7 @@ Every **net/http** package is working on Goroutine, this is one of the pillars o
 
 
 
-### Constants Common HTTP methods
+### Constants Common HTTP Methods
 
 Unless otherwise noted, these are defined in RFC 7231 section 4.3.
 
@@ -7455,7 +7455,7 @@ func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 ```
 
 
-### func ListenAndServe
+### Func ListenAndServe
 
 HandleFunc registers the handler function for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
 
