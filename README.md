@@ -141,8 +141,9 @@ Soon below some channels that I participate and can find me online.
 	- [Reading the JSON File](#reading-the-json-file)
 	- [Parsing with Structs](#parsing-with-structs)
 	- [Parsing with Map and Interface](#parsing-with-map-and-interface)
-	- [Parsing in yaml format using Go](#json-yaml)
-    
+	- [Parsing in yaml format using Go](#parsing-in-yaml-format-using-go)
+	- [Parsing in Toml format using Go](#parsing-in-toml-format-using-go)
+	- [Parsing with viper](#parsing-with-viper)
 - [Links Json to Golang](#links-json-to-golang)
 - [Exercise three](#Exercise-three)
 
@@ -7021,10 +7022,213 @@ aws
 cloud
 ```
 
+### Parsing with viper
 
+When building a modern application, you don’t want to worry about configuration file formats; you want to focus on building awesome software. Viper is here to help with that.
 
-- [Links Json to Golang](#links-json-to-golang)
-- [Exercise three](#Exercise-three)
+Viper is a complete configuration solution for Go applications including 12-Factor apps. It is designed to work within an application, and can handle all types of configuration needs and formats. It supports:
+
+```bash
+ - setting defaults
+ - reading from JSON, TOML, YAML, HCL, and Java properties config files
+ - live watching and re-reading of config files (optional)
+ - reading from environment variables
+ - reading from remote config systems (etcd or Consul), and watching changes
+ - reading from command line flags
+ - reading from buffer
+ - setting explicit values
+```
+
+Viper can be thought of as a registry for all of your applications configuration needs.
+
+Let's now see some practical examples of how to work with viper.
+
+### Viper file Json, Yaml and Toml
+
+```bash
+$ go get github.com/spf13/viper
+```
+
+Look at the code below:
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
+
+func main() {
+
+	// viper.SetConfigType("toml")
+	// viper.SetConfigName("servert") // name of config file (without extension)
+
+	// viper.SetConfigType("yaml")
+	// viper.SetConfigName("servery") // name of config file (without extension)
+
+	viper.SetConfigType("json")
+	viper.SetConfigName("serverj") // name of config file (without extension)
+
+	viper.AddConfigPath(".") // optionally look for config in the working directory
+
+	//viper.AddConfigPath("/etc/appname/")  // path to look for the config file in
+	//viper.AddConfigPath("$HOME/.appname") // call multiple times to add many search paths
+
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
+
+	viper.Set("Verbose", true)
+	//viper.Set("LogFile", LogFile)
+
+	fmt.Println("datastore.metric.host: ", viper.GetString("datastore.metric.host"))
+	fmt.Println("datastore.warehouse.host: ", viper.GetString("datastore.warehouse.host"))
+
+	fmt.Println("version.json: ", viper.GetString("version"))
+	fmt.Println("info.json: ", viper.GetString("info.description"))
+	fmt.Println("server1.host.json: ", viper.GetString("server1.host"))
+	fmt.Println("server1.user.json: ", viper.GetString("server1.user"))
+
+	fmt.Println("server2.host.json: ", viper.GetString("server2.host"))
+	fmt.Println("server2.user.json: ", viper.GetString("server2.user"))
+}
+```
+
+Output:
+```bash
+datastore.metric.host:  192.168.0.113
+datastore.warehouse.host:  198.0.0.1
+version.json:  1.0
+info.json:  this is an example of yaml file to server an ssh ..
+server1.host.json:  127.0.0.1
+server1.user.json:  ubuntu
+server2.host.json:  127.0.0.13
+server2.user.json:  centos
+```
+
+In the above example the great advantage that we did not change our code to adapt to any specific pattern, we read Json, Toml and Yaml without having to change a line.
+
+One realizes that we did not create struct to capture the fields nor to create collections, the viper did everything for people, all magic that we learned of reflection he applied in his lib.
+
+### Viper Map with Interface
+
+We made an interface map to test with Viper.
+
+From a check how it was:
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
+
+func main() {
+	v1, err := readConfig("enviroment", map[string]interface{}{
+		"version": 1.0,
+		"info": map[string]string{
+			"description": "this is an example of yaml file to server an ssh server or",
+		},
+		"server1": map[string]string{
+			"host": "localhost",
+			"user": "titpetric",
+		},
+	})
+	if err != nil {
+		panic(fmt.Errorf("Error when reading config: %v\n", err))
+	}
+
+	version := v1.GetFloat64("version")
+	info := v1.GetString("info.description")
+	server1 := v1.GetStringMapString("server1")
+
+	fmt.Printf("version: %0.1f\n", version)
+	fmt.Printf("info.description: %s\n", info)
+	fmt.Printf("server1:%#v\n", server1)
+	fmt.Printf("server1.host: %s\n", server1["host"])
+}
+
+func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
+	v := viper.New()
+	for key, value := range defaults {
+		v.SetDefault(key, value)
+	}
+
+	v.SetConfigName(filename)
+	v.AddConfigPath(".")
+	v.AutomaticEnv()
+	err := v.ReadInConfig()
+	return v, err
+}
+```
+
+```bash
+version: 1.0
+info.description: this is an example of yaml file to server an ssh server or multiple servers to do ssh automating services on server
+server1:map[string]string{"type":"env", "file":"key_1.pem", "env":"KEY_AWS", "host":"127.0.0.1", "port":"22", "user":"ubuntu"}
+server1.host: 127.0.0.1
+```
+
+### Viper in Memory
+
+The example below shows that we can use variables with the content in Yaml, Json or Toml format so that we can parse.
+
+Check out the complete code below:
+```go
+package main
+
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/spf13/viper"
+)
+
+func main() {
+
+	viper.SetConfigType("yaml") // or viper.SetConfigType("YAML")
+
+	// any approach to require this configuration into your program.
+	var yamlExample = []byte(`
+version: 1.0
+info: 
+ description: this is an example of yaml file to ...
+server1:
+  host: 127.0.0.1
+  port: 22
+  user: ubuntu
+  type: env
+  file: key_1.pem
+  env: KEY_AWS
+  Clouds: [Aws, Google, Azure]
+`)
+
+	viper.ReadConfig(bytes.NewBuffer(yamlExample))
+
+	fmt.Println(viper.Get("version"))
+	fmt.Println(viper.Get("info.description"))
+	fmt.Println(viper.Get("server1.host"))
+	fmt.Println(viper.Get("server1.user"))
+	mapsc := viper.GetStringSlice("server1.clouds")
+
+	fmt.Println(mapsc[0])
+}
+```
+
+```bash
+1
+this is an example of yaml file to ...
+127.0.0.1
+ubuntu
+Aws
+```
+
+The viper is very powerful we can do Marshal, Unmarsha works with multiple viper, access, works with Flags etc.
+
+It is worth checking.
 
 ### Links Json to Golang
 

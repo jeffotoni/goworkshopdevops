@@ -1,0 +1,20 @@
+# Using yaml 
+version: "1.0"
+info:
+  description: "this is an example of yaml file to server an ssh server or multiple servers to do ssh automating services on server"
+
+server1:
+      # Config server
+      host: "127.0.0.1"
+      port: 22
+      user: "ubuntu"
+
+      # type file or env
+      type: "env"
+      #type: "file"
+
+      # when it is by file
+      file: "key_1.pem"
+
+      # type key
+      env: "KEY_AWS"
