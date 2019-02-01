@@ -2,6 +2,7 @@
 // Code in Go vs C
 // @jeffotoni
 // 2019-01-24
+
 package main
 
 import "fmt"

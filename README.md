@@ -7289,3 +7289,40 @@ Of course it helps when you know what you're doing, and it's very useful sometim
  - [Mholt Json to Go](https://mholt.github.io/json-to-go/)
  - [Transform json to Go](https://transform.now.sh/json-to-go/)
  - [Json2struct](http://json2struct.mervine.net/)
+
+
+
+## Lab 04 building apis with net/http
+
+- [net/http Server](#)
+  - [introduction](#)
+    - [http.NewServeMux](#)
+    - [http.HandlerFunc](#)
+    - [http.Handle](#)
+    - [http.Handler](#)
+    - [http.Server](#)
+    - [next.ServeHTTP](#)
+    - [ListenAndServe](#)
+    - [ListenAndServeTLS](#)
+    - [Server.Shutdown](#)
+    - [Middleware](#)
+- [Exercise five](#Exercise-five)
+
+- [net/http Client](#)
+  - [introduction](#)
+    - [http.Transport](#)
+    - [http.Client](#)
+    - [http.Get](#)
+    - [http,Post](#)
+    - [http.NewRequest](#)
+    - [Context.WithCancel](#)
+- [Exercise six](#Exercise-six)
+
+- [net/http Server Pages](#)
+  - [introduction](#)
+    - [http.FileServer](#)
+    - [http.NotFound](#)
+    - [Disable http.FileServer](#)
+    - [http.Dir](#)
+    - [http.StripPrefix](#)    
+- [Exercise seven](#Exercise-seven)
