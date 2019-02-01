@@ -280,7 +280,7 @@ $ echo "export PATH=$PATH:/usr/local/go/bin" >> $HOME/.profile
 $ echo "export PATH=$PATH:$GOPATH/bin" >> $HOME/.profile
 ```
 
-### Test our installation
+### Test our Installation
 
 Let's run go version to see if everything is correct.
 
@@ -432,7 +432,7 @@ More information and details you can visit this link: [hub.docker](https://hub.d
 $ docker pull golang
 ```
 
-### Compile your app inside the Docker container
+### Compile Your app Inside The Docker Container
 
 There may be occasions where it is not appropriate to run your app inside a container. To compile, but not run your app inside the 
 Docker instance, you can write something like:
@@ -447,7 +447,7 @@ This will add your current directory as a volume to the container, set the worki
 $ docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:1.11.5 make
 ```
 
-### Cross-compile your app inside the Docker container
+### Cross-compile Your app Inside The Docker Container
 If you need to compile your application for a platform other than linux/amd64 (such as windows/386):
 
 ```bash
