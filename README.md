@@ -7511,5 +7511,60 @@ Content-Type: text/plain; charset=utf-8
 DevopsBH, Golang for Devops!
 ```
 
+### func ListenAndServeTLS 
 
+ListenAndServeTLS acts identically to ListenAndServe, except that it expects HTTPS connections. Additionally, files containing a certificate and matching private key for the server must be provided. If the certificate is signed by a certificate authority, the certFile should be the concatenation of the server's certificate, any intermediates, and the CA's certificate. 
 
+```go
+func ListenAndServeTLS(addr, certFile, keyFile string, handler Handler) error
+```
+
+Before we have to generate the keys, .pem or .crt and the .key file.
+Let's generate all running openssl.
+
+Check the codes below:
+```bash
+#generating .key and .csr
+$ openssl req -nodes -newkey rsa:2048 -keyout server.key -out server.csr -subj "/C=BR/ST=Minas/L=Belo Horizonte/O=s3wf Ltd./OU=IT/CN=localhost"
+
+# generating server .crt or .pem
+$ openssl x509 -req -sha256 -in server.csr -signkey server.key -out server.crt -days 365
+```
+
+Soon we generate server.crt, server.csr, server.key.
+
+Now, let's go to our api below:
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+	"strconv"
+)
+
+var (
+	PORT = 443
+)
+
+func main() {
+
+	http.HandleFunc("/v1/api/ping", func(w http.ResponseWriter, req *http.Request) {
+		io.WriteString(w, "DevopsBH, Golang for Devops TLS!\n")
+	})
+
+	// show
+	log.Printf("Server Run :%d TLS / https://localhost:%d", PORT, PORT)
+
+	// conf listen TLS
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(PORT), "server.crt", "server.key", nil)
+	log.Fatal(err)
+}
+```
+
+```bash
+$ curl --insecure -i -XGET https://localhost:8443/v1/api/ping
+or
+$ curl -k -i -XGET https://localhost:8443/v1/api/ping
+```

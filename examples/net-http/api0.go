@@ -20,6 +20,9 @@ func main() {
 	// handlerFunc
 	http.HandleFunc("/v1/api/ping", helloHandler)
 
+	// show
+	log.Printf("Server Run :8080")
+
 	// Listen
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
