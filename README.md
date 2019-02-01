@@ -19,6 +19,8 @@ If you know little and almost nothing programming will not be problem every manu
 All the difficulties I had when I started trying to contemplate this material.
 We will try to improve the material all the time so we can have a reference when it comes to Go.
 
+<a href="https://www.google.com" target="_blank">Google</a>
+
 I hope you all enjoy it and can serve as a base for learning and help several possible Gophers.
 
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
