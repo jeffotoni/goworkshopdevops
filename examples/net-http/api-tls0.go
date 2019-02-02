@@ -22,9 +22,10 @@ var (
 
 func main() {
 
-	http.HandleFunc("/v1/api/ping", func(w http.ResponseWriter, req *http.Request) {
-		io.WriteString(w, "DevopsBH, Golang for Devops TLS!\n")
-	})
+	http.HandleFunc("/v1/api/ping",
+		func(w http.ResponseWriter, req *http.Request) {
+			io.WriteString(w, "DevopsBH, Golang for Devops TLS!\n")
+		})
 
 	// show
 	log.Printf("Server Run %s TLS / https://localhost%s", addr, addr)

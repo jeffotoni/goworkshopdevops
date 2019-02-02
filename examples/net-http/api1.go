@@ -27,18 +27,20 @@ func write(text string) {
 func main() {
 
 	// our function
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
-		json := `{"status":"success", "msg";"DevopsBH, Golang for Devops!\n"}`
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		json := `{"status":"success", "msg":"DevopsBH, Golang for Devops!"}`
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusUnauthorized)
 		io.WriteString(w, json)
 	}
 
-	// handlerFunc
-	http.HandleFunc("/v1/api/ping", helloHandler)
+	// HandleFunc
+	http.HandleFunc("/v1/api/ping", pingHandler)
 
 	// show
-	write("\033[0;33mServer Run Port " + addr + "\033[0m\n")
+	write("\033[0;33mServer Run " 
+	+ "Port " +
+		addr + "\033[0m\n")
 
 	// Listen
 	log.Fatal(http.ListenAndServe(addr, nil))

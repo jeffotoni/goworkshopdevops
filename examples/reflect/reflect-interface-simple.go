@@ -48,7 +48,8 @@ func main() {
 	float64_ary := [4]float64{1.1, 2.2, 3.3, 4.4}
 
 	// array string
-	string_ary := [...]string{"Scala", "Elixir", "Lisp", "Clojure"}
+	string_ary := [...]string{"Scala", "Elixir",
+		"Lisp", "Clojure"}
 
 	dump_interface_array(int_ary)
 	dump_interface_array(float32_ary)

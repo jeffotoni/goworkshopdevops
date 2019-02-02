@@ -151,18 +151,19 @@ Soon below some channels that I participate and can find me online.
 - [net/http Server](#net-http-Server)
   - [Introduction http](#introduction-http)
   	- [Constants Common HTTP Methods](#constants-common-http-methods)
+  	- [http DetectContentType](#http-detectcontentType)
   	- [DetectContentType](#DetectContentType)
   	- [Func Error](#func-error)
   	- [Func Handle](#func-handle)
   	- [Func Handlefunc](#func-handlefunc)
-<<<<<<< HEAD
+  	- [Type Handlerfun](#type-handlerfun)
+  	- [Type ServeMux](#type-servemux)
+  	- [Type NewServeMux](#type-newservemux)
   	- [func ListenAndServe](#func-listenAndServe)
   	- [func ListenAndServeTLS](#func-listenAndServetls)
-=======
   	- [Func ListenAndServe](#func-listenAndServe)
-  	- [ListenAndServeTLS](#)
->>>>>>> 07b2ac964282e624d1173644a6ff74312d75de9b
-    - [http.NewServeMux](#)
+
+    
     - [http.Server](#)
     - [next.ServeHTTP](#)   
     - [Server.Shutdown](#)
@@ -7316,6 +7317,193 @@ We have a powerful and vast library, everything we had in **C or C ++** is in **
 Every **net/http** package is working on Goroutine, this is one of the pillars of [net/http](https://golang.org/pkg/net/http/)
 
 
+### type Handler
+
+A Handler responds to an HTTP request.
+
+ServeHTTP should write reply headers and data to the ResponseWriter and then return. Returning signals that the request is finished; it is not valid to use the ResponseWriter or read from the Request.Body after or concurrently with the completion of the ServeHTTP call. 
+
+Once implemented the http.Handler can be passed to http.ListenAndServe, which will call the ServeHTTP method on every incoming request.
+http.Request contains all relevant information about an incoming http request which is being served by your http.Handler.
+
+```go
+type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+}
+```
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+type pingHandler struct{}
+
+func (h pingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "DevopsBH for Golang simple %s\n", r.URL.Path)
+}
+
+func main() {
+	log.Printf("\nServer run 8080\n")
+	err := http.ListenAndServe(":8080", pingHandler{})
+	log.Fatal(err)
+}
+```
+Run the curl:
+```bash
+$ curl -i -Xget localhost:8080/v1/api/ping
+$ curl -i -Xget localhost:8080
+```
+
+The http.ResponseWriter is the interface through which you can respond to the request. It implements the io.Writer interface, so you can use methods like fmt.Fprintf to write a formatted string as the response body, or ones like io.Copy to write out the contents of a file (or any other io.Reader). The response code can be set before you begin writing data using the WriteHeader method.
+
+Go’s http package has turned into one of my favorite things about the Go programming language. Initially it appears to be somewhat complex, but in reality it can be broken down into a couple of simple components that are extremely flexible in how they can be used. 
+
+
+### Type Handlerfunc
+
+The HandlerFunc type is an adapter to allow the use of ordinary functions as HTTP handlers. If f is a function with the appropriate signature, HandlerFunc(f) is a Handler that calls f. 
+
+Often defining a full type to implement the http.Handler interface is a bit overkill, especially for extremely simple ServeHTTP functions like the one above. The http package provides a helper function, http.HandlerFunc, which wraps a function which has the signature func(w http.ResponseWriter, r *http.Request), returning an http.Handler which will call it in all cases.*
+
+The following behaves exactly like the previous example, but uses http.HandlerFunc instead of defining a new type.
+
+```go
+type HandlerFunc func(ResponseWriter, *Request)
+```
+
+Check out:
+```go
+handlerApiPing := http.HandlerFunc(Ping)
+```
+
+Look at the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "DevopsBH for Golang simple two %s\n", r.URL.Path)
+	})
+
+	log.Printf("\nServer run 8080\n")
+	err := http.ListenAndServe(":8080", h)
+	log.Fatal(err)
+}
+```
+
+### Func http Handlefunc
+
+ HandleFunc registers the handler function for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched.
+
+```go
+func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+```
+
+Check out the examples below:
+```go
+http.HandleFunc("/v1/api/ping", pingHandler)
+```
+
+```go
+http.HandleFunc("/v1/api/ping", func(w http.ResponseWriter, req *http.Request){})
+```
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	// our function
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("\nDevops BH for Golang HandleFunc!"))
+	}
+
+	// handleFunc
+	http.HandleFunc("/v1/api/ping", pingHandler)
+	http.HandleFunc("/v1/api/ping2", pingHandler)
+	http.HandleFunc("/v1/api/ping3", pingHandler)
+	http.HandleFunc("/v1/api/ping4", pingHandler)
+	http.HandleFunc("/v1/api/ping5", pingHandler)
+	http.HandleFunc("/v1/api/ping6", pingHandler)
+
+	log.Printf("\nServer run 8080\n")
+	// Listen
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+### Func http Handle
+
+ Handle registers the handler for the given pattern in the DefaultServeMux.
+
+```go
+func Handle(pattern string, handler Handler)
+```
+
+Check out the example below:
+```go
+http.Handle("/v1/api/ping", http.HandlerFunc(Ping))
+```
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	// our function
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("\nDevops BH for Golang HandleFunc!"))
+	}
+
+	// handleFunc
+	http.Handle("/v1/api/ping", http.HandlerFunc(pingHandler))
+	http.Handle("/v1/api/ping2", http.HandlerFunc(pingHandler))
+	http.Handle("/v1/api/ping3", http.HandlerFunc(pingHandler))
+	http.Handle("/v1/api/ping4", http.HandlerFunc(pingHandler))
+	http.Handle("/v1/api/ping5", http.HandlerFunc(pingHandler))
+	http.Handle("/v1/api/ping6", http.HandlerFunc(pingHandler))
+
+	log.Printf("\nServer run 8080\n")
+	// Listen
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+### Func http Error
+
+Error replies to the request with the specified error message and HTTP code. It does not otherwise end the request; the caller should ensure no further writes are done to w. The error message should be plain text. 
+
+ ```go
+ func Error(w ResponseWriter, error string, code int)
+ ```
+
+Check out the example below:
+```go
+json := `{"status":"error", "msg":"method not supported, only POST"}`
+http.Error(w, json, http.StatusUnauthorized)
+```
 
 ### Constants Common HTTP Methods
 
@@ -7427,38 +7615,101 @@ For parsing this time format, see ParseTime.
 const TimeFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
 ```
 
-### DetectContentType
+### Type ServeMux
 
-DetectContentType implements the algorithm described at [mimesniff](https://mimesniff.spec.whatwg.org/) to determine the Content-Type of the given data. It considers at most the first 512 bytes of data. DetectContentType always returns a valid MIME type: if it cannot determine a more specific one, it returns "application/octet-stream". 
+ServeMux is an HTTP request multiplexer. It matches the URL of each incoming request against a list of registered patterns and calls the handler for the pattern that most closely matches the URL.
 
- ```go
- func DetectContentType(data []byte) string
- ```
+Patterns name fixed, rooted paths, like "/favicon.ico", or rooted subtrees, like "/images/" (note the trailing slash). Longer patterns take precedence over shorter ones, so that if there are handlers registered for both "/images/" and "/images/thumbnails/", the latter handler will be called for paths beginning "/images/thumbnails/" and the former will receive requests for any other paths in the "/images/" subtree.
 
-### Func Error
+Note that since a pattern ending in a slash names a rooted subtree, the pattern "/" matches all paths not matched by other registered patterns, not just the URL with Path == "/".
 
-Error replies to the request with the specified error message and HTTP code. It does not otherwise end the request; the caller should ensure no further writes are done to w. The error message should be plain text. 
+If a subtree has been registered and a request is received naming the subtree root without its trailing slash, ServeMux redirects that request to the subtree root (adding the trailing slash). This behavior can be overridden with a separate registration for the path without the trailing slash. For example, registering "/images/" causes ServeMux to redirect a request for "/images" to "/images/", unless "/images" has been registered separately.
 
- ```go
- func Error(w ResponseWriter, error string, code int)
- ```
+Patterns may optionally begin with a host name, restricting matches to URLs on that host only. Host-specific patterns take precedence over general patterns, so that a handler might register for the two patterns "/codesearch" and "codesearch.google.com/" without also taking over requests for "http://www.google.com/".
 
-### Func Handle
-
-Handle registers the handler for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
+ServeMux also takes care of sanitizing the URL request path and the Host header, stripping the port number and redirecting any request containing . or .. elements or repeated slashes to an equivalent, cleaner URL.
 
 ```go
-func Handle(pattern string, handler Handler)
+type ServeMux struct {
+     // contains filtered or unexported fields
+}
 ```
 
-### Func Handlefunc
+### Type NewServeMux
 
-HandleFunc registers the handler function for the given pattern in the DefaultServeMux. The documentation for ServeMux explains how patterns are matched. 
+NewServeMux allocates and returns a new ServeMux. 
 
 ```go
-func HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+func NewServeMux() *ServeMux
 ```
 
+Check out:
+```go
+mux := http.NewServeMux()
+```
+
+### func (\*ServeMux) HandleFunc
+
+```go
+func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+```
+
+HandleFunc registers the handler function for the given pattern.
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	mux := http.NewServeMux()
+
+	// our function
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("\nDevops BH for Golang mux HandleFunc!"))
+	}
+
+	// handleFunc
+	mux.HandleFunc("/v1/api/ping", pingHandler)
+	mux.HandleFunc("/v1/api/ping2", pingHandler)
+	mux.HandleFunc("/v1/api/ping3", pingHandler)
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintln(w, "You're lost, go home devopsBH!")
+	})
+
+	log.Printf("\nServer run 8080\n")
+	// Listen
+	log.Fatal(http.ListenAndServe(":8080", mux))
+}
+
+```
+
+Run cURL:
+```bash
+$ curl -i -Xget localhost:8080/
+```
+
+### Type ServeMux Handle
+
+Handle registers the handler for the given pattern. If a handler already exists for pattern, Handle panics. 
+
+```go
+func (mux *ServeMux) Handle(pattern string, handler Handler)
+```
+
+Check out:
+```go
+mux := http.NewServeMux()
+mux.Handle("/v1/api/ping", http.HandlerFunc(Ping))
+```
 
 ### Func ListenAndServe
 
@@ -7488,12 +7739,12 @@ import (
 func main() {
 
 	// our function
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, "DevopsBH, Golang for Devops!\n")
 	}
 
 	// handlerFunc
-	http.HandleFunc("/v1/api/ping", helloHandler)
+	http.HandleFunc("/v1/api/ping", pingHandler)
 
 	// Listen
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -7603,15 +7854,15 @@ func write(text string) {
 func main() {
 
 	// our function
-	helloHandler := func(w http.ResponseWriter, req *http.Request) {
-		json := `{"status":"success", "msg";"DevopsBH, Golang for Devops!\n"}`
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		json := `{"status":"success", "msg":"DevopsBH, Golang for Devops!"}`
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusUnauthorized)
 		io.WriteString(w, json)
 	}
 
 	// handlerFunc
-	http.HandleFunc("/v1/api/ping", helloHandler)
+	http.HandleFunc("/v1/api/ping", pingHandler)
 
 	// show
 	write("\033[0;33mServer Run Port " + addr + "\033[0m\n")
@@ -7619,4 +7870,160 @@ func main() {
 	// Listen
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
+```
+
+```go
+// Go in action
+// @jeffotoni
+// 2019-01-01
+
+package main
+
+import (
+	"bufio"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+var (
+	addr = ":8080"
+)
+
+// show log on screen
+func logf(method, uri, nameHandle string, timeHandler time.Duration) {
+
+	expre := "\033[5m%s \033[0;103m%s\033[0m \033[0;93m%s\033[0m \033[1;44m%s\033[0m"
+	log.Printf(expre, method, uri, nameHandle, timeHandler)
+}
+
+// write bufio to optimization
+func write(text string) {
+	// var writer *bufio.Writer
+	writer := bufio.NewWriter(os.Stdout)
+	writer.WriteString(text)
+	writer.Flush()
+}
+
+func Ping(w http.ResponseWriter, r *http.Request) {
+
+	// start time
+	start := time.Now()
+
+	if http.MethodPost == strings.ToUpper(r.Method) {
+
+		json := `{"status":"success", "msg":"DevopsBH, Golang for Devops!"}`
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, json)
+
+	} else {
+
+		json := `{"status":"error", "msg":"method not supported, only POST"}`
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusUnauthorized)
+		io.WriteString(w, json)
+	}
+
+	logf(r.Method,
+		r.RequestURI,
+		"Ping",
+		time.Since(start))
+}
+
+func main() {
+
+	// handlerFunc
+	http.HandleFunc("/v1/api/ping", Ping)
+
+	// show
+	write("\033[0;33mServer Run " +
+		"Port " +
+		addr + "\033[0m\n")
+
+	// Listen
+	log.Fatal(http.ListenAndServe(addr, nil))
+}
+```
+
+```bash
+$ curl -i -XPOSt localhost:8080/v1/api/ping
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 01 Feb 2019 22:04:57 GMT
+Content-Length: 58
+{"status":"success", "msg":"DevopsBH, Golang for Devops!"}
+```
+
+```bash
+$ curl -i -XGET localhost:8080/v1/api/ping
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json; charset=utf-8
+Date: Fri, 01 Feb 2019 22:05:46 GMT
+Content-Length: 59
+{"status":"error", "msg":"method not supported, only POST"}
+```
+
+### http DetectContentType
+
+DetectContentType implements the algorithm described at [mimesniff](https://mimesniff.spec.whatwg.org/) to determine the Content-Type of the given data. It considers at most the first 512 bytes of data. DetectContentType always returns a valid MIME type: if it cannot determine a more specific one, it returns "application/octet-stream". 
+
+ ```go
+ func DetectContentType(data []byte) string
+ ```
+
+Let's now visualize a code that is will simply open the file to discover its content-type.
+
+We see that we can use the http.DetectContentType function to work together even without being an API directly.
+
+Check the code below:
+```go
+import (
+    "fmt"
+    "net/http"
+    "os"
+)
+
+func main() {
+
+    // Open File
+    f, err := os.Open("./jeff-super.jpeg")
+    if err != nil {
+        panic(err)
+    }
+    defer f.Close()
+
+    // Get the content
+    contentType, err := GetFileContentType(f)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println("Content Type: " + contentType)
+}
+
+func GetFileContentType(out *os.File) (string, error) {
+
+    // Only the first 512 bytes are used to sniff the content type.
+    buffer := make([]byte, 512)
+
+    _, err := out.Read(buffer)
+    if err != nil {
+        return "", err
+    }
+
+    // Use the net/http package's handy DectectContentType function. Always returns a valid
+    // content-type by returning "application/octet-stream" if no others seemed to match.
+    contentType := http.DetectContentType(buffer)
+
+    return contentType, nil
+}
+```
+
+Output:
+```bash
+Content Type: image/jpeg
 ```
