@@ -20,11 +20,10 @@ func main() {
 	http.HandleFunc("/v1/api/ping", pingHandler)
 	http.HandleFunc("/v1/api/ping2", pingHandler)
 	http.HandleFunc("/v1/api/ping3", pingHandler)
-	http.HandleFunc("/v1/api/ping4", pingHandler)
-	http.HandleFunc("/v1/api/ping5", pingHandler)
-	http.HandleFunc("/v1/api/ping6", pingHandler)
 
+	// show run server
 	log.Printf("\nServer run 8080\n")
+
 	// Listen
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -7393,12 +7393,12 @@ import (
 )
 
 func main() {
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handlerfunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "DevopsBH for Golang simple two %s\n", r.URL.Path)
 	})
 
 	log.Printf("\nServer run 8080\n")
-	err := http.ListenAndServe(":8080", h)
+	err := http.ListenAndServe(":8080", handlerfunc)
 	log.Fatal(err)
 }
 ```
@@ -7439,11 +7439,10 @@ func main() {
 	http.HandleFunc("/v1/api/ping", pingHandler)
 	http.HandleFunc("/v1/api/ping2", pingHandler)
 	http.HandleFunc("/v1/api/ping3", pingHandler)
-	http.HandleFunc("/v1/api/ping4", pingHandler)
-	http.HandleFunc("/v1/api/ping5", pingHandler)
-	http.HandleFunc("/v1/api/ping6", pingHandler)
 
+	// show run server
 	log.Printf("\nServer run 8080\n")
+
 	// Listen
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -7451,7 +7450,7 @@ func main() {
 
 ### Func http Handle
 
- Handle registers the handler for the given pattern in the DefaultServeMux.
+Handle registers the handler for the given pattern in the DefaultServeMux.
 
 ```go
 func Handle(pattern string, handler Handler)
@@ -7474,19 +7473,20 @@ func main() {
 
 	// our function
 	pingHandler := func(w http.ResponseWriter, req *http.Request) {
-		w.Write([]byte("\nDevops BH for Golang HandleFunc!"))
+		w.Write([]byte("\nDevops BH for Golang Handle tree!"))
 	}
 
-	// handleFunc
+	// Handle and recive http.HandlerFunc
 	http.Handle("/v1/api/ping", http.HandlerFunc(pingHandler))
 	http.Handle("/v1/api/ping2", http.HandlerFunc(pingHandler))
 	http.Handle("/v1/api/ping3", http.HandlerFunc(pingHandler))
-	http.Handle("/v1/api/ping4", http.HandlerFunc(pingHandler))
-	http.Handle("/v1/api/ping5", http.HandlerFunc(pingHandler))
-	http.Handle("/v1/api/ping6", http.HandlerFunc(pingHandler))
+	// http.Handle("/v1/api/ping", pingHandler) // error
 
+	// show run
 	log.Printf("\nServer run 8080\n")
+
 	// Listen
+	// log.Fatal(http.ListenAndServe(":8080", http.HandlerFunc(pingHandler))) ok
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 ```
@@ -7676,9 +7676,11 @@ func main() {
 	}
 
 	// handleFunc
-	mux.HandleFunc("/v1/api/ping", pingHandler)
-	mux.HandleFunc("/v1/api/ping2", pingHandler)
-	mux.HandleFunc("/v1/api/ping3", pingHandler)
+	mux.HandleFunc("/v1/api/ping", pingHandler) // ok
+
+	mux.HandleFunc("/v1/api/ping2", http.HandlerFunc(pingHandler)) // ok
+
+	mux.HandleFunc("/v1/api/ping3", pingHandler) // ok
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
@@ -7689,7 +7691,6 @@ func main() {
 	// Listen
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
-
 ```
 
 Run cURL:
@@ -7710,6 +7711,45 @@ Check out:
 mux := http.NewServeMux()
 mux.Handle("/v1/api/ping", http.HandlerFunc(Ping))
 ```
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main() {
+
+	mux := http.NewServeMux()
+
+	// our function
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("\nDevops BH for Golang mux Handle()!"))
+	}
+
+	// handlerFunc
+	mux.Handle("/v1/api/ping", http.HandlerFunc(pingHandler)) // ok
+	// mux.Handle("/v1/api/ping2", pingHandler) // error
+	// mux.Handle("/v1/api/ping", mux.HandlerFunc(pingHandler)) // error
+
+	// mux.Handle("/", func(w http.ResponseWriter, r *http.Request) {  // error
+	// 	w.WriteHeader(http.StatusNotFound)
+	// 	fmt.Fprintln(w, "You're lost, go home devopsBH!")
+	// })
+
+	log.Printf("\nServer run 8080\n")
+	// Listen
+	log.Fatal(http.ListenAndServe(":8080", mux))
+}
+```
+
+Run cURL:
+```bash
+$ curl -i -Xget localhost:8080/
+```
+
 
 ### Func ListenAndServe
 
@@ -7747,7 +7787,9 @@ func main() {
 	http.HandleFunc("/v1/api/ping", pingHandler)
 
 	// Listen
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// log.Fatal(http.ListenAndServe(":8080", http.HandlerFunc(pingHandler))) ok
+	log.Fatal(http.ListenAndServe(":8080", nil)) // ok
+
 }
 ```
 
@@ -7817,12 +7859,113 @@ func main() {
 	log.Fatal(err)
 }
 ```
+Below the same code however modifying listen TLS using http.HandlerFunc()
+
+Check the code below:
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+)
+
+var (
+	addr = ":443"
+)
+
+func main() {
+
+	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+		io.WriteString(w, "DevopsBH, Golang for Devops TLS!\n")
+	}
+
+	// show
+	log.Printf("Server Run %s TLS / https://localhost%s", addr, addr)
+
+	// conf listen TLS
+	err := http.ListenAndServeTLS(addr, "server.crt", "server.key", http.HandlerFunc(pingHandler))
+	log.Fatal(err)
+}
+
+// curl --insecure -i -XGET https://localhost:8443/v1/api/ping
+// curl -k -i -XGET https://localhost:8443/v1/api/ping
+```
 
 ```bash
-$ curl --insecure -i -XGET https://localhost:8443/v1/api/ping
+$ curl --insecure -i -XGET https://localhost:443/v1/api/ping
 or
-$ curl -k -i -XGET https://localhost:8443/v1/api/ping
+$ curl -k -i -XGET https://localhost:443/v1/api/ping
 ```
+
+Now we will use some properties of the tls package and we will make a config, as we have already learned mux we will use it as well.
+At first it seems confusing, but in fact it's simple let's check it out.
+
+Look at the code below:
+```go
+package main
+
+import (
+	"crypto/tls"
+	"io"
+	"log"
+	"net/http"
+)
+
+var (
+	addr = ":443"
+)
+
+func main() {
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/v1/api/ping",
+		func(w http.ResponseWriter, req *http.Request) {
+			w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
+			io.WriteString(w, "DevopsBH, Golang for Devops TLS MUX!\n")
+		})
+
+	cfg := &tls.Config{
+		MinVersion:               tls.VersionTLS12,
+		CurvePreferences:         []tls.CurveID{tls.CurveP521, tls.CurveP384, tls.CurveP256},
+		PreferServerCipherSuites: true,
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+		},
+	}
+
+	srv := &http.Server{
+		Addr:         addr,
+		Handler:      mux,
+		TLSConfig:    cfg,
+		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+	}
+
+	// show
+	log.Printf("Server Run %s TLS / https://localhost%s", addr, addr)
+
+	// conf listen TLS
+	err := srv.ListenAndServeTLS("server.crt", "server.key")
+	log.Fatal(err)
+}
+
+// curl --insecure -i -XGET https://localhost:443/v1/api/ping
+// curl -k -i -XGET https://localhost:443/v1/api/ping
+```
+
+Run cURL:
+```bash
+$ curl --insecure -i -XGET https://localhost:443/v1/api/ping
+or
+$ curl -k -i -XGET https://localhost:443/v1/api/ping
+```
+
+---
 
 Now let's put some functions that will make a difference when we run our api for high performance, let's try not to use the fmt library to write to the monitor, let's use io and buff.
 Well performance is something absurdly faster.
@@ -7965,6 +8108,366 @@ Content-Type: application/json; charset=utf-8
 Date: Fri, 01 Feb 2019 22:05:46 GMT
 Content-Length: 59
 {"status":"error", "msg":"method not supported, only POST"}
+```
+
+### Other Muxes
+
+There are numerous replacements for **http.ServeMux** like **gorilla/mux** which give you things like automatically pulling variables out of paths, easily asserting what http methods are allowed on an endpoint, and more. Most of these replacements will implement http.Handler like http.ServeMux does, and accept **http.Handlers** as arguments, and so are easy to use in conjunction with the rest of the things I’m going to talk about in this post.
+
+Let's write our own http.HandlerFunc, let's create something simple just so we can understand what happens with our apis.
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+type numberDumperString string
+type numberDumperInt int
+
+// http HandlerFunc
+func (n numberDumperString) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "DevOps BH, Golang is Life, Here's your number: %s\n", n)
+}
+
+// http HandlerFunc
+func (n numberDumperInt) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "DevOps BH, Golang is Life, Here's your number: %d\n", n)
+}
+
+func main() {
+	mux := http.NewServeMux()
+
+	mux.Handle("/one", numberDumperString("one"))
+	mux.Handle("/two", numberDumperString("two"))
+	mux.Handle("/three", numberDumperInt(3))
+	mux.Handle("/four", numberDumperInt(4))
+	mux.Handle("/five", numberDumperInt(5))
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(404)
+		fmt.Fprintln(w, "That's not a supported number new Ghoper!")
+	})
+
+	// show run
+	log.Printf("\nServer run 8080\n")
+
+	// listen
+	err := http.ListenAndServe(":8080", mux)
+	log.Fatal(err)
+}
+```
+
+Run cURL:
+```bash
+$ curl -i -Xget localhost:8080/one
+HTTP/1.1 200 OK
+Date: Sat, 02 Feb 2019 01:25:39 GMT
+Content-Length: 51
+Content-Type: text/plain; charset=utf-8
+
+DevOps BH, Golang is Life, Here's your number: one
+
+$ curl -i -Xget localhost:8080/two 
+HTTP/1.1 200 OK
+Date: Sat, 02 Feb 2019 01:25:39 GMT
+Content-Length: 51
+Content-Type: text/plain; charset=utf-8
+
+DevOps BH, Golang is Life, Here's your number: two
+
+$ curl -i -Xget localhost:8080/three
+HTTP/1.1 200 OK
+Date: Sat, 02 Feb 2019 01:25:39 GMT
+Content-Length: 51
+Content-Type: text/plain; charset=utf-8
+
+DevOps BH, Golang is Life, Here's your number: three
+
+$ curl -i -Xget localhost:8080/four
+HTTP/1.1 200 OK
+Date: Sat, 02 Feb 2019 01:25:39 GMT
+Content-Length: 51
+Content-Type: text/plain; charset=utf-8
+
+DevOps BH, Golang is Life, Here's your number: four
+
+$ curl -i -Xget localhost:8080/eleven
+
+HTTP/1.1 404 Not Found
+Date: Sat, 02 Feb 2019 01:26:57 GMT
+Content-Length: 42
+Content-Type: text/plain; charset=utf-8
+
+That's not a supported number new Ghoper!
+```
+
+### Testing Http endpoints
+
+Testing http endpoints is extremely easy in Go, and doesn’t even require you to actually listen on any ports! The httptest package provides a few handy utilities, including NewRecorder which implements http.ResponseWriter and allows you to effectively make an http request by calling ServeHTTP directly. Here’s an example of a test for our previously 
+implemented numberDumperInt and numberDumperString, commented with what exactly is happening:
+
+Let's test the api above, to see the behavior and how easy it is to use tests using endpoints...
+
+Check the code below:
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	. "testing"
+)
+
+func TestNumberDumperInt(t *T) {
+	// We first create the http.Handler we wish to test
+	n := numberDumperInt(3)
+
+	// We create an http.Request object to test with. The http.Request is
+	// totally customizable in every way that a real-life http request is, so
+	// even the most intricate behavior can be tested
+	r, _ := http.NewRequest("GET", "/one", nil)
+
+	// httptest.Recorder implements the http.ResponseWriter interface, and as
+	// such can be passed into ServeHTTP to receive the response. It will act as
+	// if all data being given to it is being sent to a real client, when in
+	// reality it's being buffered for later observation
+	w := httptest.NewRecorder()
+
+	// Pass in our httptest.Recorder and http.Request to our numberDumper. At
+	// this point the numberDumper will act just as if it was responding to a
+	// real request
+	n.ServeHTTP(w, r)
+
+	// httptest.Recorder gives a number of fields and methods which can be used
+	// to observe the response made to our request. Here we check the response
+	// code
+	if w.Code != 200 {
+		t.Fatalf("wrong code returned: %d", w.Code)
+	}
+
+	// We can also get the full body out of the httptest.Recorder, and check
+	// that its contents are what we expect
+	body := w.Body.String()
+
+	if body != fmt.Sprintf("DevOps BH, Golang is Life, Here's your number: 3\n") {
+		t.Fatalf("wrong body returned: %s", body)
+	}
+}
+```
+
+In this way it’s easy to create tests for your individual components that you are using to build your application, keeping the tests near to the functionality they’re testing.
+**Note:** if you ever do need to spin up a test server in your tests, httptest also provides a way to create a server listening on a random open port for use in tests as well.
+
+Run go
+```bash
+$ go test 
+```
+
+Output:
+```bash
+PASS
+ok  	net-http/tests-endpoints	0.002s
+
+```
+
+### Http Shutdown Gracefully
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"sync"
+	"time"
+)
+
+// HTMLServer represents the web service that serves up HTML
+type GoServerHttp struct {
+	server *http.Server
+	wg     sync.WaitGroup
+}
+
+func indexHandler(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte(`
+	<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Golang/DevOpsBH</title>
+
+  <style>
+  body {
+  background-color: #424242;
+  color: #F6F6F6;
+  text-align: center;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  }
+  h1, h2, h3 {
+  margin: 0;
+  line-height: 1.5;
+  }
+  .print-container {
+  background-color: rgba(0, 0, 0, .3);
+  padding: 15px;
+  margin: 30px auto;
+  width: 50%;
+  border-radius: 4px;
+  }
+</style>
+
+</head>
+<body>
+  <div class="print-container">
+  <h1>{{ .Name }}</h1>
+  <h2>Workshop Golang for DevOps!</h2>
+  </div>
+</body>
+</html>
+	`))
+}
+
+func Ping(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte(`{"status":"success","msg":"Devops BH for Golang StartServer!"}`))
+}
+
+func main() {
+	// DefaultServeMux
+	mux := http.NewServeMux()
+
+	// POST handler /api/v1/ping
+	handlerApiPing := http.HandlerFunc(Ping)
+
+	// handler ping
+	mux.Handle("/v1/api/ping", handlerApiPing)
+
+	// templates/index html
+	// if you want to activate this handler, the directory templates
+	// where the html file is located must
+	// be sent next to the binary to work, as it needs to parse the html
+	// mux.HandleFunc("/", tpl.ShowHtml)
+
+	// this handler implements the version
+	// that does not need the html file
+	mux.Handle("/", http.HandlerFunc(indexHandler))
+
+	// Create the HTML Server
+	ApiServer := GoServerHttp{
+		server: &http.Server{
+			Addr:           ":8080",
+			Handler:        mux,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   20 * time.Second,
+			MaxHeaderBytes: 1 << 25, //32Mb
+		},
+	}
+
+	go func() {
+
+		log.Printf("\nServer run :8080\n")
+		// service connections
+		if err := ApiServer.server.ListenAndServe(); err != nil {
+			log.Printf("listen: %s\n", err)
+		}
+	}()
+
+	var errs = make(chan error, 2)
+
+	go func() {
+		// Setting up signal capturing
+		c := make(chan os.Signal)
+		signal.Notify(c, os.Interrupt)
+		errs <- fmt.Errorf("Notify here: %s", <-c)
+
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+
+	// Waiting for SIGINT (pkill -2)
+	//<-errs
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	//quit := make(chan os.Signal)
+	//signal.Notify(quit, os.Interrupt)
+	//<-quit
+	<-stop
+
+	log.Println("Shutdown Server ...")
+	// ... here is the code to close all
+	// ...
+	// ....
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := ApiServer.server.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown now:", err)
+		// ... here is the code to close all error context
+		// ...
+		// ....
+	}
+
+	// execute finish
+	log.Println("Server exist")
+
+	<-errs
+}
+```
+
+Go to the browser and type:
+```bash
+http://localhost:8080
+```
+
+Making a request in your api:
+```bash
+$ curl -i -Xget localhost:8080/v1/api/ping
+
+HTTP/1.1 200 OK
+Date: Sat, 02 Feb 2019 02:32:32 GMT
+Content-Length: 62
+Content-Type: text/plain; charset=utf-8
+
+{"status":"success","msg":"Devops BH for Golang StartServer!"}%   
+```
+
+After stopping the program, with CTRL + C, look what will happen.
+```bash
+2019/02/02 00:55:30 
+Server run :8080
+^C2019/02/02 00:55:31 Shutdown Server ...
+2019/02/02 00:55:31 Server exist
+2019/02/02 00:55:31 listen: http: Server closed
+```
+
+Now let's try using the kill command
+```bash
+$ ps aux | grep "name-api"
+$ kill -SIGINT <PID>
+```
+
+Look at the exit:
+```bash
+2019/02/02 00:52:24 
+Server run :8080
+2019/02/02 00:55:10 Shutdown Server ...
+2019/02/02 00:55:10 listen: http: Server closed
+2019/02/02 00:55:10 Server exist
 ```
 
 ### http DetectContentType

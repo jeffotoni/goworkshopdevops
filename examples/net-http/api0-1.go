@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handlerfunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "DevopsBH for Golang simple one %s\n", r.URL.Path)
 	})
 
 	log.Printf("\nServer run 8080\n")
-	err := http.ListenAndServe(":8080", h)
+	err := http.ListenAndServe(":8080", handlerfunc)
 	log.Fatal(err)
 }

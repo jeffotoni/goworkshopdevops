@@ -14,7 +14,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	// our function
-	pingHandler := func(w http.ResponseWriter, req *http.Request) {
+	pingHandler := func(w http.ResponseWriter, req *http.Request) { // ok
 		w.Write([]byte("\nDevops BH for Golang mux Handle()!"))
 	}
 
