@@ -149,7 +149,7 @@ Soon below some channels that I participate and can find me online.
 ## Lab 04 Building apis with net/http
 
 - [Introduction http](#introduction-http)
-	- [Type Handler](#type-handler)
+	- [ype Handler](#type-handler)
 	- [Type HandlerFunc](#type-HandlerFunc)
 	- [Func http Handlefunc](#func-http-handlefunc)
 	- [Func http Handle](#func-http-handle)
