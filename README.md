@@ -31,6 +31,8 @@ We have a very interesting link that we have been able to search for packages wr
 
 We have this link that presents us as a manual all libs developed in Golang [Dev Docs](https://devdocs.io/go/)
 
+Here we find an awesome go, there are several lists as it is, and sometimes it's cool to check out some libs to help us with some projects. [awesome-go](https://awesome-go.com)
+
 Soon below some channels that I participate and can find me online.
 
 ### Telegram:
