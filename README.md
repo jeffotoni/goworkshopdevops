@@ -23,6 +23,7 @@ I hope you all enjoy it and can serve as a base for learning and help several po
 
 The content and references used are from the [Golang Official Site](https://golang.org) and the material being developed 
 which is a compilation of all Golang language and can be checked here [jeffotoni/Compilation]( https://github.com/jeffotoni/goworkshopdevops#installation)
+Some presentations I made can be viewed here [Presentations](https://speakerdeck.com/jeffotoni)
 
 There are thousands of references today regarding Golang, let's start at the beginning and we could not stop talking about [Golang Tour](https://tour.golang.org).
 Well that site here [Play Golang](https://play.golang.org/p/ayud1GTDJ0G) or [Play Go Space](https://goplay.space/#ayud1GTDJ0G) we can play Golang online.
